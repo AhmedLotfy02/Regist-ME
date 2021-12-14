@@ -56,7 +56,7 @@ getMousePosition Macro x, y, stat
 
 getMousePosition Endm
 
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 DisplayChar macro x,y,char
     ; Push all used regeister in stack to get their original value after the operation 
     push ax
@@ -76,6 +76,7 @@ DisplayChar macro x,y,char
 ENDM DisplayChar
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 GetKeyPressed macro 
     push ax
     CHECK: mov ah,1
@@ -88,11 +89,60 @@ GetKeyPressed macro
 ENDM GetKeyPressed
 
 
-
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 HideMouse macro
     push ax
     mov ax,2
     int 33h
     pop ax
 ENDM HideMouse
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ClearScreen MACRO beginCol,beginRow,endCol,endRow 
+    ; Push all used regeister in stack to get their original value after the operation 
+    push ax
+    push bx
+    push cx
+    push dx
+    mov ax,0600h
+    mov bh,07
+    ; assign registers to detrmined clear area
+    mov cl,beginCol
+    mov ch,beginRow
+    mov dl,endCol
+    mov dh,endRow
+    ;interrupt to clear dtermined screen
+    int 10h
+    pop dx
+    pop cx
+    pop bx
+    pop ax
+    
+ENDM
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+movCursorToRightPosition MACRO 
+    push ax
+    push bx
+    push cx
+    push dx
+
+
+    ; check if mouse position in text box in click 
+    getMousePosition cx,dx,bx
+    cmp cx,10
+    jl notinbox
+    cmp cx,70
+    jg notinbox
+    cmp dx,20
+    jl notinbox
+    ;if it in the text box will move the cursor to text box 
+    movCursor 10,70
+
+    notinbox: 
+
+    pop dx
+    pop cx
+    pop bx
+    pop ax
+ENDM
