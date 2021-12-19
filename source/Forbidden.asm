@@ -26,7 +26,7 @@ Forbidden_char2 db '0'
 ;Comp_size to check if forbidden character is in array or not
 ; if 0 means its not there
 ; else  you should jump to lose_point label
-check_forbidden macro Forbidden_array,index
+check_forbidden PROC NEAR Forbidden_array,index
     push Ax
     push bx
     mov bh,0
@@ -36,9 +36,9 @@ check_forbidden macro Forbidden_array,index
     pop bx  
     pop Ax
     jz lose_point    ; jmp here or outside ?! to be discussed later
-Endm check_forbidden
+Endp check_forbidden
 
-set_forbidden macro instruction_name,Forbidden_array,Forbidden_char,size,index
+set_forbidden PROC NEAR instruction_name,Forbidden_array,Forbidden_char,size,index
     local Set_bit
     local Dont_Set_bit
     push DI
@@ -63,7 +63,7 @@ set_forbidden macro instruction_name,Forbidden_array,Forbidden_char,size,index
     pop Cx
     pop Ax
     pop Di
-Endm check_forbidden
+Endp check_forbidden
 
 .code
 
