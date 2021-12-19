@@ -34,25 +34,30 @@ readString MACRO str
 readString ENDM 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-getMousePosition Macro x, y, stat
-     ; Push all used regeister in stack to get their original value after the operation
+getMousePosition Macro x, y
+     ; Push all used regeister in stack to get their original value after the operation 
+     ShowMouse
+     local Mypos
      push ax
      push cx
      push bx
      push dx
      
      ;Intrrupt to get the mouse position x in CX, y in DX, Mouse status in BX
-     mov ah, 3
-     int 33h
-     
+     mov ax, 3
+     mov bx,0
+     Mypos:int 33h
+     cmp bx,1           ; on click will close the loop
+     ;jz print 
+     jnz print          ; should jump to print_other_user_Commands after 
      mov x, cx
      mov y, dx
-     mov stat, bx
      
      pop dx
      pop bx
      pop cx
-     pop ax
+     pop ax              ; you need to jump zero after the macro jz mov_instruction  
+     HideMouse
 
 getMousePosition Endm
 
