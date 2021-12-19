@@ -151,3 +151,48 @@ movCursorToRightPosition MACRO
     pop bx
     pop ax
 ENDM
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+DrawRec Macro Xb,Yb,Xen,Yen 
+PUSH AX
+PUSH DX
+PUSH CX
+mov cx,Yb ;Column
+mov dx,Xb ;Row
+mov al,5 ;Pixel color
+mov ah,0ch ;Draw Pixel Command
+
+
+
+back1: int 10h
+inc cx
+cmp cx,Yen
+jnz back1 
+
+mov cx,Yb ;Column
+mov dx,Xen ;Row
+
+back2: int 10h
+inc cx
+cmp cx,Yen
+jnz back2 
+
+mov cx,Yb ;Column
+mov dx,Xb ;Row
+         
+back3: int 10h
+inc dx
+cmp dx,xen
+jnz back3
+
+mov cx,Yen ;Column
+mov dx,Xb ;Row
+         
+back4: int 10h
+inc dx
+cmp dx,xen
+jnz back4
+POP CX 
+POP DX
+POP AX
+
+ENDM
