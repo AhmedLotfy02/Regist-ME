@@ -11,13 +11,19 @@ Choose_game db    'To Start Game Press F2','$'
 Choose_Exit db    'To Exit Press Esc','$' 
 chat_invitation db    'you sent Chat invitation to ','$'
 game_invitation db    'you sent Game invitation to ','$'
-chat_invitation2 db    'sent Chat invitation to you ','$'
-game_invitation2 db    ' sent Game invitation to you','$'
+chat_invitation2 db    ' sent Chat invitation to you ','$'
+game_invitation2 db    ' sent Game invitation to you','$'  
+print_level1 db 'to Select Level 1 press 1 ','$'
+print_level2 db 'to Select Level 2 press 2 ','$'  
+print_forbidden db 'Enter forbidden character for ','$'
 Player1_Name db    'Sabry','$'
 Player2_Name db    'Assad','$'  
   
 user_level_selection db 1                    ; determine which user will start game user1 or user2    
-pressed_button db   '$'                      ; determine last pressed button before start chat or game
+pressed_button db   '$'                      ; determine last pressed button before start chat or game    
+selected_level db 1
+forbidden_char1 db '$'
+forbidden_char2 db '$'
 .code
 
 
@@ -55,17 +61,22 @@ Show_mouse Macro
 Endm Show_mouse   
 Clear_Screen macro
 
-    ;push ax
-    ;push cx
+    push ax
+    push cx 
+    push dx
+    push bx
     mov ax,0600h 
     mov bh,07
     mov cx,0 
     mov dx,184FH
     int 10h
-    ;pop cx
-    ;pop ax
-endm Clear_Screen
-main proc far
+    pop bx
+    pop dx
+    pop cx
+    pop ax
+Clear_Screen endm 
+main proc far      
+    
     
     mov ax,@data
     mov ds,ax
@@ -73,30 +84,30 @@ main proc far
     main_screen:
     ; First Set cursor to Location you want
         ; call function set cursor from macro and pass location
-    set_cursor 07h,05h    
+    set_cursor 17h,05h    
     ; Second Print Choose_chat
     Print_Msg  choose_chat
     ; thrid Set cursor to Location you want
-    set_cursor 07h,08h 
+    set_cursor 17h,08h 
     ; Fourth Print Choose_chat 
      Print_Msg  Choose_game
     ; fifth Set cursor to Location you want
-    set_cursor 07h,0bh     
+    set_cursor 17h,0bh     
     ; sixth Print Choose_chat       
      Print_Msg  Choose_Exit      
      
     ; call function set cursor from macro and pass location
-    set_cursor 27h,05h    
+    ;set_cursor 27h,05h    
     ; Second Print Choose_chat
-    Print_Msg  choose_chat
+    ;Print_Msg  choose_chat
     ; thrid Set cursor to Location you want
-    set_cursor 27h,08h 
+    ;set_cursor 27h,08h 
     ; Fourth Print Choose_chat 
-     Print_Msg  Choose_game
+    ; Print_Msg  Choose_game
     ; fifth Set cursor to Location you want
-    set_cursor 27h,0bh     
+    ;set_cursor 27h,0bh     
     ; sixth Print Choose_chat       
-     Print_Msg  Choose_Exit   
+    ; Print_Msg  Choose_Exit   
     ;...................................USER1................................................... 
     ; get key to determine what user want to do
     ; push ax ; if needed
@@ -213,16 +224,145 @@ main proc far
     
     
     chat_code:     
-    set_cursor 07h,18h
-    Print_Msg chat_invitation 
-    Print_Msg Player2_Name
+    ;set_cursor 07h,18h
+    ;Print_Msg chat_invitation 
+    ;Print_Msg Player2_Name
     
     
     game_code:             
 
-    set_cursor 00h,17h
-    Print_Msg game_invitation
-    Print_Msg Player2_Name  
+
+    
+    Clear_Screen
+    
+    ;mov ah,2
+    ;mov al,0
+    ;mov dl,17
+    ;mov dh,8
+    ;int 10h   
+    ;set_cursor 0,0 
+    set_cursor 17h,08h
+    ; Fourth Print Choose_chat 
+    Print_Msg  print_level1
+    ; fifth Set cursor to Location you want
+    set_cursor 17h,0bh     
+    ; sixth Print Choose_chat       
+    Print_Msg print_level2    
+    
+get_level_1_or_2:
+    get_key
+    cmp al,'1'
+    jz start_selection_of_forbidden_level1
+    cmp al,'2'
+    jz edit_level
+    jmp get_level_1_or_2  
+    
+edit_level:    
+    mov selected_level,2
+    jmp start_selection_of_forbidden_level2                  
+
+;---------------------------------------------------------------------------------------------------------    
+    start_selection_of_forbidden_level1:   
+    Clear_Screen
+    mov al,user_level_selection     
+    
+    cmp al,1           
+    
+    jz user_one_starts_level_1              ; should select level first & forbidden character
+    jmp user_two_starts_level_1
+;---------------------------------------------------------------------------------------------------------    
+    user_one_starts_level_1:
+
+    
+    set_cursor 17h,08h     
+    ; sixth Print Choose_chat       
+    Print_Msg print_forbidden 
+    Print_Msg Player2_Name        
+    mov ah,8
+    mov bh,0
+    int 10 
+    mov forbidden_char2,al 
+    Clear_Screen    
+    set_cursor 17h,08h     
+    ; sixth Print Choose_chat       
+    Print_Msg print_forbidden 
+    Print_Msg Player1_Name   
+    mov ah,8
+    mov bh,0
+    int 10    
+    mov forbidden_char1,al
+    jmp exit_hlt
+;---------------------------------------------------------------------------------------------------------
+    user_two_starts_level_1: 
+    
+    set_cursor 17h,08h     
+    ; sixth Print Choose_chat       
+    Print_Msg print_forbidden 
+    Print_Msg Player1_Name
+    mov ah,8
+    mov bh,0
+    int 10     
+    mov forbidden_char1,al
+    Clear_Screen    
+    set_cursor 17h,08h     
+    ; sixth Print Choose_chat       
+    Print_Msg print_forbidden 
+    Print_Msg Player2_Name      
+    mov ah,8
+    mov bh,0
+    int 10    
+    mov forbidden_char2,al 
+    
+;---------------------------------------------------------------------------------------------------------    
+    start_selection_of_forbidden_level2:   
+    Clear_Screen
+    mov al,user_level_selection     
+    
+    cmp al,1           
+    
+    jz user_one_starts_level_2              ; should select level first & forbidden character
+    jmp user_two_starts_level_2
+;---------------------------------------------------------------------------------------------------------    
+    user_one_starts_level_2:
+    set_cursor 17h,08h     
+    ; sixth Print Choose_chat       
+    Print_Msg print_forbidden 
+    Print_Msg Player2_Name         
+    mov ah,07
+    int 21h
+    mov forbidden_char2,al 
+    
+    Clear_Screen    
+    set_cursor 17h,08h     
+    ; sixth Print Choose_chat       
+    Print_Msg print_forbidden 
+    Print_Msg Player1_Name      
+    mov ah,07
+    int 21h    
+    mov forbidden_char1,al
+    jmp exit_hlt
+;---------------------------------------------------------------------------------------------------------
+    user_two_starts_level_2:
+    
+    set_cursor 17h,08h     
+    ; sixth Print Choose_chat       
+    Print_Msg print_forbidden 
+    Print_Msg Player1_Name    
+    mov ah,07
+    int 21h    
+    mov forbidden_char1,al
+    
+    Clear_Screen    
+    set_cursor 17h,08h     
+    ; sixth Print Choose_chat       
+    Print_Msg print_forbidden 
+    Print_Msg Player2_Name     
+    mov ah,07
+    int 21h    
+    mov forbidden_char2,al    
+    
+    
+    
       
     exit_hlt:
     
