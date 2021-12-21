@@ -1,6 +1,6 @@
 ;------------------------------------------ Macros for clicking an icon on the GUI -----------------------------------------------
 moveToRightLabel PROC near
-    local noTADD,noTCLC,noTDEC,noTINC,noTNOP,noTPOP,noTPUSH,noTRCL,noTRCR,noTROL,noTROR,notSAR,notSBB,notSHL,notSHR,notSUB,notXOR
+    local notmov,movlabel,notADD,ADDabel,notADC,ADCLabel,notSUB,SUBLabel,notSBB,SBBlabel,notXOR,XORlabel,notAND,ANDlabel,notOR,ORlabel,notNOP,NOPlabel,notSHR,SHRlabel,notSHL,SHLlabel,notSAR,SARlabel,notCLC,CLClabel,notROR,RORlabel,notROL,ROLlabel,notRCL,RCLlabel,notRCR,RCRlabel,notPUSH,PUSHlabel,notPOP,POPlabel,notINC,INClabel,notDEC,DEClabel,notDiv,Divlabel,notIDiv,IDivlabel,notMUL,MULlabel,notIMUL,IMULlabel
     PUSH AX
     PUSH BX
     PUSH CX
@@ -277,6 +277,51 @@ CMP AX,DECCORDINATES[0]
     jg notDEC
     jump DEClabel
     noTDEC:
+
+
+CMP AX,DivCORDINATES[0]
+    jl notDiv
+    cmp AX,DivCORDINATES[2]
+    jg notDiv
+    cmp bx,DivCORDINATES[1]
+    jl notDiv
+    cmp bx,DivCORDINATES[3]
+    jg notDiv
+    jump Divlabel
+    noTDiv:
+
+CMP AX,IDivCORDINATES[0]
+    jl notIDiv
+    cmp AX,IDivCORDINATES[2]
+    jg notIDiv
+    cmp bx,IDivCORDINATES[1]
+    jl notIDiv
+    cmp bx,IDivCORDINATES[3]
+    jg notIDiv
+    jump IDivlabel
+    noTIDiv:
+
+CMP AX,MULCORDINATES[0]
+    jl notMUL
+    cmp AX,MULCORDINATES[2]
+    jg notMUL
+    cmp bx,MULCORDINATES[1]
+    jl notMUL
+    cmp bx,MULCORDINATES[3]
+    jg notMUL
+    jump MULlabel
+    noTMUL:
+
+CMP AX,IMULCORDINATES[0]
+    jl notIMUL
+    cmp AX,IMULCORDINATES[2]
+    jg notIMUL
+    cmp bx,IMULCORDINATES[1]
+    jl notIMUL
+    cmp bx,IMULCORDINATES[3]
+    jg notIMUL
+    jump IMULlabel
+    noTIMUL:
 
     POP DX
     POP CX
