@@ -1,5 +1,3 @@
-registers db "ax ", "al ", "ah ", "bx ", "bl ", "bh ", "cx ", "cl ", "ch ", "dx ", "dl ", "dh ", "si ", "di ", "sp ", "bp ","val "
-Player1_Data_Register dw '0000','0000','0000','0000','0000','0000','0000','0000','0000'
 ;we will use the variables of the coordinates of the registers in the GUI
 CickedRegister MACRO Name,value,NumberOfBytDI
 
