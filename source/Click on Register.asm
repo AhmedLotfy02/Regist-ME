@@ -1,5 +1,5 @@
 ;we will use the variables of the coordinates of the registers in the GUI
-CickedRegister MACRO Name,value,NumberOfBytDI
+CickedRegister MACRO Name,value,NumberOfBytes
     local notAX,notAL,notAH,notBX,notBL,notBH,notCX,notCL,notCH,notDX,notDL,notDH,notSI,notDI,notSP,notBP
     PUSH AX
     PUSH BX
