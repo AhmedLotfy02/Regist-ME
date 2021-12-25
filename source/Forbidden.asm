@@ -2,16 +2,16 @@
 .Data
 ; All instructions, digits and registers
 instructions db "mov ", "add ", "sub ", "mul ", "div ", "and ", "or ", "nor ", "xor ", "shr ", "shl ", "ror ", "rol ", "push ", "pop ", "inc ", "dec "  
-registers db "ax ", "al ", "ah ", "bx ", "bl ", "bh ", "cx ", "cl ", "ch ", "dx ", "dl ", "dh ", "si ", "di ", "sp ", "bp ","val " ,"address "
+registers db "ax ", "al ", "ah ", "bx ", "bl ", "bh ", "cx ", "cl ", "ch ", "dx ", "dl ", "dh ", "si ", "di ", "sp ", "bp ","val ","address "
 Player1_Data_Register dw '0000','0000','0000','0000','0000','0000','0000','0000','0000','0000'
 ;------------------------- Ax-----BX-----CX-----DX-----SI-----DI-----SP-----BP----value-addressvalue----  
 Player2_Data_Register dw '0000','0000','0000','0000','0000','0000','0000','0000','0000','0000'
 ;------------------------- Ax-----BX-----CX-----DX-----SI-----DI-----SP-----BP----value-addressvalue----
 digits db "0 ", "1 ", "2 ", "3 ", "4 ", "5 ", "6 ", "7 ", "8 ", "9 "  
-index1 db ?
-index2 db ?
-index3 db ?
-index4 db ?   
+src_index_reg db ?
+dest_index_reg db ?
+src_index_val db ?
+dest_index_val db ?   
 count_bit_1 db ?   
 count_bit_2 db ?
 
@@ -88,7 +88,7 @@ main proc far
     
     
     
-    ;  
+    ; call lotfy code power up or instruction
 
     Mov_instruction: 
         check_forbidden Forbidden_instruction,0 
@@ -131,7 +131,14 @@ main proc far
 ;            testing subcode & overall code  
 ;
 ;                                                                                                            
-;---------------------------------logic instruction end  -------------------------------------------------                                                                                                             
+;---------------------------------logic instruction end  ------------------------------------------------- 
+; --------------------------------sabry & assad -------------------------------------------------
+;                 we have 6 indexes 
+;                 register-> assad  or address -> sabry
+;
+;
+;
+;                                                                                                            
                                                                                                             
     ADD_instruction:  
         check_forbidden Forbidden_instruction,1
