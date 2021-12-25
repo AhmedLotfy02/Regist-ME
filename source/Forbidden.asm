@@ -3,17 +3,21 @@
 ; All instructions, digits and registers
 instructions db "mov ", "add ", "sub ", "mul ", "div ", "and ", "or ", "nor ", "xor ", "shr ", "shl ", "ror ", "rol ", "push ", "pop ", "inc ", "dec "  
 registers db "ax ", "al ", "ah ", "bx ", "bl ", "bh ", "cx ", "cl ", "ch ", "dx ", "dl ", "dh ", "si ", "di ", "sp ", "bp ","val ","address "
-Player1_Data_Register dw '0000','0000','0000','0000','0000','0000','0000','0000','0000','0000'
-;------------------------- Ax-----BX-----CX-----DX-----SI-----DI-----SP-----BP----value-addressvalue----  
-Player2_Data_Register dw '0000','0000','0000','0000','0000','0000','0000','0000','0000','0000'
-;------------------------- Ax-----BX-----CX-----DX-----SI-----DI-----SP-----BP----value-addressvalue----
+Player1_Data_Register dw 0000,0000,0000,0000,0000,0000,0000,0000,0000,0005
+;-------------------------Ax---BX---CX---DX---SI---DI---SP---BP---value-addressvalue----  
+Player2_Data_Register dw  0001,0000,0000,0000,0000,0000,0000,0000,0000,0005
+;-------------------------Ax---BX---CX---DX---SI---DI---SP---BP---value-addressvalue----     
+data_segment_1 db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0  
+data_segment_2 db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+
 digits db "0 ", "1 ", "2 ", "3 ", "4 ", "5 ", "6 ", "7 ", "8 ", "9 "  
-src_index_reg db ?
-dest_index_reg db ?
-src_index_val db ?
-dest_index_val db ?   
-count_bit_1 db ?   
-count_bit_2 db ?
+src_index_reg db 17
+dest_index_reg db 0
+src_index_val db 18
+dest_index_val db 0 
+address_mode db 1  
+count_bit_1 db 2   
+count_bit_2 db 2
 
 ;Forbidden Arrays to check if it is forbidden or not, if the corresponding index has value 1, it is forbidden  
 Forbidden_digits_1 db '0000000000'
@@ -100,19 +104,80 @@ main proc far
         ; index3 for source register value  
         ; index4 for destination register(value) value 
         
-        check_forbidden Forbidden_Registers,index1
-        
-        ; call bolbol function
-        ; check if index2 is value or register
-        mov al, index2
-        cmp al,16                        ; index to value
-        jz check_forbidden_digit_mov 
-        jnz check_forbidden_regsiter_mov 
-        check_forbidden_digit_mov:
-            check_forbidden Forbidden_digits,0 
-            ;jmp to next calculation 
-        check_forbidden_regsiter_mov:
-            check_forbidden Forbidden_Registers,index2      
+       ;-----------------------------i have all indexes-------------------------------------------- 
+; ---------------------------- assume bolbol will send byte indicate if its address or not
+        mov al,address_mode
+        cmp al,1
+        jz address_mode_mov1
+        ; assad code
+          
+; address mode processing ---------------------------------------------------------         
+        address_mode_mov1:             
+            mov bl,src_index_reg
+            mov bh,0     
+            ; check if is forbidden or not 
+            ; check if src_index_reg is value or register
+            cmp bl,17                        ; index to value
+            jz check_forbidden_digit_mov 
+            jnz check_forbidden_regsiter_mov 
+            check_forbidden_digit_mov:
+                ; macro needed to check if value has a forbidden digit or not
+                mov bh,0
+                mov bl,src_index_val
+                mov ax,Player2_Data_Register[bx]
+                ; call macro that check if value in ax is correct
+                check_forbidden Forbidden_digits_2,0 
+                jmp cont_address_mode_mov 
+            check_forbidden_regsiter_mov:
+                check_forbidden Forbidden_Registers_2,bl
+                mov bh,0
+                mov bl,src_index_val
+                mov ax,Player2_Data_Register[bx]                                   
+         cont_address_mode_mov:
+            ;check if value in ax is less than f
+            cmp ax,000fh
+            JA lose_point   ; out of index of data segment -> should be error
+ ; check other operand------------------ 
+            
+            ; call lotfy code to get second operand 
+            mov bl,dest_index_reg
+            mov bh,0
+            cmp bl,16                        ; index to value
+            jz check_forbidden_digit_mov2 
+            jnz check_forbidden_regsiter_mov2
+            check_forbidden_digit_mov2:
+                ; macro needed to check if value has a forbidden digit or not
+                mov bh,0
+                mov bl,dest_index_val
+                mov ax,Player2_Data_Register[bx] 
+                ; call macro that check if value in ax is correct
+                ;check_forbidden Forbidden_digits_2,0 
+                jmp final_address_mode_mov
+            check_forbidden_regsiter_mov2:
+                check_forbidden Forbidden_Registers_2,bl
+                mov bh,0
+                mov bl,dest_index_val
+                mov ax,Player2_Data_Register[bx]
+
+            ; now its valid instruction ----------------------------------
+            final_address_mode_mov:
+            mov bh,0
+            mov bl,src_index_val
+            mov si,Player2_Data_Register[bx]
+            mov bl,dest_index_val
+            mov cx,Player2_Data_Register[bx]
+             
+            ; check if its two byte or not 
+            mov dl,count_bit_2
+            mov dh,0
+            loop_on_mov_bytes:
+                mov data_segment_2[si],ch
+                ;mov data_segment_2[si+1],cl 
+                inc si
+                mov ch,cl 
+                dec dl
+                jnz loop_on_mov_bytes
+
 ;---------------------------------logic instruction start -------------------------------------------------               
 ;           0) instruction or power up
 ;               1)  call lotfy code (address or register)
