@@ -1,13 +1,13 @@
 .model small
 .Data
 ; All instructions, digits and registers
-instructoins db "mov", "add", "sub", "mul", "div", "and", "or", "nor", "xor", "shr", "shl", "ror", "rol", "push", "pop", "inc", "dec"  
-registers db "ax", "al", "ah", "bx", "bh", "bl", "cx", "cl", "ch", "dx", "dl", "dh", "si", "di", "sp", "bp","val"
-Player1_Data_Register dw '0000','0000','0000','0000','0000','0000','0000','0000','0000'
-;------------------------- Ax-----BX-----CX-----DX-----SI-----DI-----SP-----BP----value-----  
-Player2_Data_Register dw '0000','0000','0000','0000','0000','0000','0000','0000','0000'
-;------------------------- Ax-----BX-----CX-----DX-----SI-----DI-----SP-----BP----value-----
-digits db "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"  
+instructions db "mov ", "add ", "sub ", "mul ", "div ", "and ", "or ", "nor ", "xor ", "shr ", "shl ", "ror ", "rol ", "push ", "pop ", "inc ", "dec "  
+registers db "ax ", "al ", "ah ", "bx ", "bl ", "bh ", "cx ", "cl ", "ch ", "dx ", "dl ", "dh ", "si ", "di ", "sp ", "bp ","val " ,"address "
+Player1_Data_Register dw '0000','0000','0000','0000','0000','0000','0000','0000','0000','0000'
+;------------------------- Ax-----BX-----CX-----DX-----SI-----DI-----SP-----BP----value-addressvalue----  
+Player2_Data_Register dw '0000','0000','0000','0000','0000','0000','0000','0000','0000','0000'
+;------------------------- Ax-----BX-----CX-----DX-----SI-----DI-----SP-----BP----value-addressvalue----
+digits db "0 ", "1 ", "2 ", "3 ", "4 ", "5 ", "6 ", "7 ", "8 ", "9 "  
 index1 db ?
 index2 db ?
 index3 db ?
@@ -16,17 +16,23 @@ count_bit_1 db ?
 count_bit_2 db ?
 
 ;Forbidden Arrays to check if it is forbidden or not, if the corresponding index has value 1, it is forbidden  
-Forbidden_digits db '0000000000'
-Forbidden_Registers '0000000000000000'
-Forbidden_instruction db '00000000000000000'
+Forbidden_digits_1 db '0000000000'
+Forbidden_Registers_1 db '0000000000000000'
+Forbidden_instruction_1 db '00000000000000000' 
 Forbidden_char1 db 'o'
-Forbidden_char2 db '0'   
+Forbidden_digits_2 db '0000000000'
+Forbidden_Registers_2 db '0000000000000000'
+Forbidden_instruction_2 db '00000000000000000'
+Forbidden_char2 db 'h'   
 
  
 ;Comp_size to check if forbidden character is in array or not
 ; if 0 means its not there
 ; else  you should jump to lose_point label
-check_forbidden PROC NEAR Forbidden_array,index
+;Comp_size to check if forbidden character is in array or not
+; if 0 means its not there
+; else  you should jump to lose_point label
+check_forbidden macro Forbidden_array,index
     push Ax
     push bx
     mov bh,0
@@ -36,9 +42,9 @@ check_forbidden PROC NEAR Forbidden_array,index
     pop bx  
     pop Ax
     jz lose_point    ; jmp here or outside ?! to be discussed later
-Endp check_forbidden
+Endm check_forbidden
 
-set_forbidden PROC NEAR instruction_name,Forbidden_array,Forbidden_char,size,index
+set_forbidden macro instruction_name,Forbidden_array,Forbidden_char,size,index
     local Set_bit
     local Dont_Set_bit
     push DI
@@ -46,7 +52,8 @@ set_forbidden PROC NEAR instruction_name,Forbidden_array,Forbidden_char,size,ind
     push Cx 
     push bx 
     
-    mov DI,offset instruction_name 
+    ;lea DI,instruction_name
+    mov di, instruction_name
     mov al,Forbidden_char
     mov ch,0
     mov cl,size   ;Search the string in  DI for Forbidden char
@@ -63,7 +70,7 @@ set_forbidden PROC NEAR instruction_name,Forbidden_array,Forbidden_char,size,ind
     pop Cx
     pop Ax
     pop Di
-Endp check_forbidden
+Endm set_forbidden 
 
 .code
 
@@ -87,24 +94,45 @@ main proc far
         check_forbidden Forbidden_instruction,0 
         
         ; call macro that check register & value & addressing mode
-        ; bolbol index1,index2,index3,index4 
+        ; bolbol index1,index2,index3,index4,numberbytes1,numberbytes2 
+        ; index1 for source register  
+        ; index2 for destination register(value)  
+        ; index3 for source register value  
+        ; index4 for destination register(value) value 
         
         check_forbidden Forbidden_Registers,index1
         
         ; call bolbol function
         ; check if index2 is value or register
         mov al, index2
-        cmp al,16
-        jz check_forbidden_digit_mov
+        cmp al,16                        ; index to value
+        jz check_forbidden_digit_mov 
         jnz check_forbidden_regsiter_mov 
         check_forbidden_digit_mov:
             check_forbidden Forbidden_digits,0 
             ;jmp to next calculation 
         check_forbidden_regsiter_mov:
-            check_forbidden Forbidden_Registers,index2  
-            
-               
-    
+            check_forbidden Forbidden_Registers,index2      
+;---------------------------------logic instruction start -------------------------------------------------               
+;           0) instruction or power up
+;               1)  call lotfy code (address or register)
+;                    subcodes  of gui                                                                                           
+;                   2) if address show value button or register button
+;                      3) if value read byte from user and but it in 'val'  
+;                      4) if register select index of register
+;                   5)if register show all registers of operand1 & select index of register
+;               6)  same for operand 2 but with value
+;               7)  process instruction 
+;               8)  valid or not (lose point or not).
+;               9)  jump to player2
+;           10) go to power up
+;               11)   
+;
+;            testing subcode & overall code  
+;
+;                                                                                                            
+;---------------------------------logic instruction end  -------------------------------------------------                                                                                                             
+                                                                                                            
     ADD_instruction:  
         check_forbidden Forbidden_instruction,1
         ; call macro that check register & value & addressing mode
