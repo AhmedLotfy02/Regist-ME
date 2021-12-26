@@ -3,10 +3,10 @@
 ; All instructions, digits and registers
 instructions db "mov ", "add ", "sub ", "mul ", "div ", "and ", "or ", "nor ", "xor ", "shr ", "shl ", "ror ", "rol ", "push ", "pop ", "inc ", "dec "  
 registers db "ax ", "al ", "ah ", "bx ", "bl ", "bh ", "cx ", "cl ", "ch ", "dx ", "dl ", "dh ", "si ", "di ", "sp ", "bp ","val ","address "
-Player1_Data_Register dw 0000,0000,0000,0000,0000,0000,0000,0000,0000,0005
+Player1_Data_Register dw 0000h,0000h,105eh,0000h,0000h,0000h,0000h,0000h,0000h,0005h
 ;-------------------------Ax---BX---CX---DX---SI---DI---SP---BP---value-addressvalue----  
-Player2_Data_Register dw  0001,0000,0000,0000,0000,0000,0000,0000,0000,0005
-;-------------------------Ax---BX---CX---DX---SI---DI---SP---BP---value-addressvalue----     
+Player2_Data_Register dw  0001h,0000h,105eh,0000h,0000h,0000h,0000h,0000h,0000h,0005h
+;-------------------------Ax---BX---CX---DX---SI---DI---SP---BP---value-addressvalue---- 
 data_segment_1 db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0  
 data_segment_2 db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 
@@ -18,6 +18,10 @@ dest_index_val db 0
 address_mode db 1  
 count_bit_1 db 2   
 count_bit_2 db 2
+win_player1 db 0
+win_player2 db 0   
+
+target dw 105eh
 
 ;Forbidden Arrays to check if it is forbidden or not, if the corresponding index has value 1, it is forbidden  
 Forbidden_digits_1 db '0000000000'
