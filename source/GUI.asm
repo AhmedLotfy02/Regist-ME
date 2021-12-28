@@ -1,6 +1,10 @@
 .model huge
 .stack 64
 .data
+    x1 dw ?
+    x2 dw ?
+    y1 dw ?
+    y2 dw ?
     chara db 'c'
     mess db 'AX: ','$'
     mess1 db 'BX: ','$'
@@ -319,44 +323,76 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 DRAW_REGISTER_NAMES proc far
-    movCursor 70,2
-    mov di,0
-    mov cx,2
-    DrawRegisterNAME mess
+mov x1, 30
+mov y1, 555
+mov x2, 45
+mov y2, 585 
+movCursor 70,2 
+mov di,0 
+mov cx,2 
+DrawRegisterNAME mess 
+DrawRec x1,y1,x2,y2
+movCursor 70,4 
 
-    movCursor 70,3
-    mov di,0
-    mov cx,2
-    DrawRegisterNAME mess1
+add x1, 32
+add x2, 32
 
-    movCursor 70,4
-    mov di,0
-    mov cx,2
-    DrawRegisterNAME mess2
+mov di,0 
+mov cx,2 
+DrawRegisterNAME mess1 
+DrawRec x1,y1,x2,y2
+ 
+movCursor 70,6 
+
+add x1, 32
+add x2, 32
+mov di,0 
+mov cx,2 
+DrawRegisterNAME mess2 
+DrawRec x1, y1, x2,y2
+ 
 
 
-    movCursor 70,5
-    DrawRegisterNAME mess3
+ 
+add x1, 32
+add x2, 32
+movCursor 70,8 
+DrawRegisterNAME mess3 
+DrawRec x1, y1, x2,y2
 
-    movCursor 70,6
-    DrawRegisterNAME mess4
 
-    movCursor 70,7
-    DrawRegisterNAME mess5
+add x1, 32
+add x2, 32
+movCursor 70,10 
+DrawRegisterNAME mess4 
+DrawRec x1, y1, x2,y2
 
-    movCursor 70,8
-    DrawRegisterNAME mess6
+add x1, 32
+add x2, 32
+movCursor 70,12
+DrawRegisterNAME mess5 
+DrawRec x1, y1, x2,y2
 
-    movCursor 70,9
-    DrawRegisterNAME mess7
 
-    movCursor 60,15
-    mov dx, offset name1
-    mov ah, 9h
-    int 21h
-    DrawRec 235,470,260,520
+add x1, 32
+add x2, 32
+movCursor 70,14
+DrawRegisterNAME mess6 
+DrawRec x1, y1, x2,y2
 
-    ret
+add x1, 32
+add x2, 32
+movCursor 70,16
+DrawRegisterNAME mess7 
+DrawRec x1, y1, x2,y2
+
+
+movCursor 65,18 
+mov dx, offset name1 
+mov ah, 9h 
+int 21h 
+ 
+ret 
 DRAW_REGISTER_NAMES endp
 
 HIDE_POWER_UP proc far
@@ -669,6 +705,7 @@ SHOW_POWER_UPS_CHOICE endp
 SHOW_PLAYER_TWO_NAME endp
 
 DRAW_CHAT_LINE proc far
+
     push ax
     push cx
     push dx
@@ -688,7 +725,29 @@ DRAW_CHAT_LINE proc far
     pop cx
     pop ax
     ret
-DRAW_CHAT_LINE endp
+DRAW_CHAT_LINE endp 
+
+
+DRAW_VERTICAL_LINE proc far
+    push ax
+    push cx
+    push dx
+    push si
+    mov cx, 400;Column
+    mov dx,0 ;Row
+    mov si,400
+    mov al,0ah ;Pixel color
+    mov ah,0ch ;Draw Pixel Command
+    back0: int 10h
+    inc dx
+    cmp dx, 400
+    jne back0
+    pop si
+    pop dx
+    pop cx
+    pop ax
+    ret
+DRAW_VERTICAL_LINE endp
 
 SHOW_PLAYERS_NAMES_ON_CHAT proc far
     movCursor 2,26
@@ -740,6 +799,7 @@ MAIN PROC FAR
     ;CALL SHOW_INSTRUCTION_BUTTON
     ;CALL SHOW_INSTRUCTIONS
     ;CALL HIDE_POWER_UP
+    call DRAW_VERTICAL_LINE
     CALL BEGIN_GAME
     ;CALL SHOW_AFTER_INSTRUCTION
     ;CALL SHOW_2ND_OPERAND
@@ -751,21 +811,21 @@ MAIN PROC FAR
 
 
     ;;ASAAD'S TEST OF MOUSE CLICKS
-    getMousePosition x, y
-    cmp y, 20
-    jb next
-    cmp y, 60
-    ja next
+    Again: getMousePosition x, y
+        cmp y, 20
+        jb Again
+        cmp y, 60
+        ja Again
 
-    cmp x, 30
-    jb next
-    cmp x, 140
-    ja next
-    ;blankScreen 05h,0,100
-    ;ClearScreen 0, 0, 25, 80
-    CALL CLR
-    CALL SHOW_INSTRUCTIONS
-    Show_mouse
+        cmp x, 30
+        jb Again
+        cmp x, 140
+        ja Again
+        ;blankScreen 05h,0,100
+        ;ClearScreen 0, 0, 25, 80
+        CALL CLR
+        CALL SHOW_INSTRUCTIONS
+        Show_mouse
     ;;;;;;
     ;CALL SHOW_AFTER_INSTRUCTION
     ;CALL SHOW_2ND_OPERAND
@@ -774,14 +834,11 @@ MAIN PROC FAR
     ;CALL SHOW_PLAYER_ONE_NAME
     ;CALL SHOW_PLAYER_TWO_NAME
     ;CALL SHOW_CHAT
-    next:
 
+    ; loop1:
 
-
-    loop1:
-
-    jmp loop1
-    hlt
+    ; jmp loop1
+    ; hlt
 MAIN endp
 
 END MAIN
