@@ -7,6 +7,7 @@ instructions db "mov ", "add ", "sub ", "mul ", "div ", "and ", "or ", "nor ", "
 registers db "ax ", "al ", "ah ", "bx ", "bl ", "bh ", "cx ", "cl ", "ch ", "dx ", "dl ", "dh ", "si ", "di ", "sp ", "bp ","val ","address "
 digits db "0 ", "1 ", "2 ", "3 ", "4 ", "5 ", "6 ", "7 ", "8 ", "9 "  
 
+instruction_index db 0
 src_index_reg db 0
 dest_index_reg db 17
 src_index_val db 0
@@ -154,16 +155,16 @@ main proc far
         
     Mov_instruction: 
     
-    
+        ; set variable to number then compaer
         mov al,address_mode
         cmp al,1
         jz address_mode_mov1
         jmp reg_mode_mov1        
 ; address mode processing ---------------------------------------------------------         
     address_mode_mov1: 
-        call  mov_address_player1
+        call  add_address_player1
     reg_mode_mov1:
-        call  mov_register_player1
+        call  add_register_player1
             
 
 
@@ -590,9 +591,10 @@ add_register_player1 proc near
             to_this_add_player1:
             cmp address_mode2,1 
             
-            jz address_mode_add_des_player1
-            address_mode_add_des_player1:
+            jz address_mode_add_des_player1 
             jmp  address_mode_add_des_no_player1
+            address_mode_add_des_player1:
+
             call add_reg_des_player1
             jmp far ptr end_add_reg_player1
             address_mode_add_des_no_player1:
