@@ -191,12 +191,15 @@
 
     DrawRegisterNAME macro Stringo
         local loop4
+        pusha
+
         mov di,0    
         mov cx,3
         loop4:
             printCharacter Stringo[di]
             inc di
         loop loop4
+        POPA
     endm
     movCursor MACRO x, y
         ; Push all used regeister in stack to get their original value after the operation
