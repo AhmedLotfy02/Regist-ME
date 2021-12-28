@@ -193,6 +193,9 @@ mov cx,Yb ;Column
 mov dx,Xb ;Row
 mov al,5 ;Pixel color
 mov ah,0ch ;Draw Pixel Command
+pop Cx
+pop DX
+pop ax
 
 
 local back1, back2, back3, back4
