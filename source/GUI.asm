@@ -285,6 +285,9 @@ HideMouse macro
 ENDM 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+ 
+
+
 
 getMousePosition Macro x, y
      ; Push all used regeister in stack to get their original value after the operation 
@@ -363,7 +366,8 @@ jb next
 cmp x, 140
 ja next
 ;blankScreen 05h,0,100
-ClearScreen 0, 0, 25, 80
+;ClearScreen 0, 0, 25, 80
+CALL CLR
 CALL SHOW_INSTRUCTIONS
 
 ;;;;;;
@@ -779,5 +783,12 @@ CALL SHOW_PLAYERS_NAMES_ON_CHAT
 ret
 SHOW_CHAT endp
 
+CLR proc far
+mov al, 12h ; Video mode number
+mov ah, 0h
+int 10h
+
+ret
+CLR endp
 
 END MAIN
