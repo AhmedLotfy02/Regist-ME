@@ -191,6 +191,36 @@ main proc far
         cmp al,1
         jz address_mode_mov1
         ; assad code
+        ;call lotfy function to show all registers
+        ;call bolbol function to get the src_index_register, bit_count
+        mov bl, src_index_reg
+        mov bh, 0
+        check_forbidden Forbidden_Registers_2, bl
+        mov bh,0
+        mov bl,src_index_val ;index 0 --> Al, index 1 --> Ah,Ax , index2 --> Bl, ....... 
+        cmp count_bit_2, 1
+        jz one_byte_reg; if it is only one byte  
+        mov ax, bx; check if the index even or odd, so we put it in ax
+        mov bx, 2
+        div bx    ; divide the index by 2 and it will put the rest in dx
+        cmp dx, 0 
+        mov bh, 0
+        mov bl, src_index_val
+        jnz Dec_Index; if it is not even, jump to decrease the index 
+        mov ax, Player1_Data_Register[bx]; else, store the return value in the variable
+        mov src_val_word, ax 
+        jmp skip
+        Dec_Index:
+            dec bx; decrease the index by one to get the right index
+            mov ax, Player1_Data_Register[bx]
+            mov src_val_word, ax
+            jmp skip
+        one_byte_reg:
+            mov ax, Player1_Data_Register[bx]
+            mov src_val_byte, al; The lower part of Ax will always contain our value
+        skip:  
+        
+        
           
         ; address mode processing ---------------------------------------------------------         
         address_mode_mov1:             
