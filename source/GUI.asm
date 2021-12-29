@@ -5,6 +5,9 @@
     x2 dw ?
     y1 dw ?
     y2 dw ?
+    VALUE DB 'VALUE','$'
+    REGISTER DB 'REGISTER','$'
+    ADDRESS DB 'ADDRESS','$'
     P1Name db 'Asaad', '$'
     P2Name db 'Nabil', '$'
     chara db 'c'
@@ -192,18 +195,22 @@
 
 
 
-    DrawRegisterNAME macro Stringo
+    DrawButtonMessage macro String
         local loop4
         pusha
 
-        mov di,0    
-        mov cx,3
+        mov di,0   
+        mov bh, '$' 
         loop4:
-            printCharacter Stringo[di]
+            printCharacter String[di]
             inc di
-        loop loop4
-        POPA
-    endm
+            mov bl, String[di]
+            cmp bl, bh
+        jne loop4
+
+        popa
+    ENDM
+
     movCursor MACRO x, y
         ; Push all used regeister in stack to get their original value after the operation
         push ax
@@ -336,59 +343,56 @@ mov y1, 540
 mov x2, 45
 mov y2, 570 
 movCursor 68,2 
-mov di,0 
-mov cx,2 
-DrawRegisterNAME mess 
+
+DrawButtonMessage mess 
 DrawRec x1,y1,x2,y2
 movCursor 68,4 
 
 add x1, 32
 add x2, 32
 
-mov di,0 
-mov cx,2 
-DrawRegisterNAME mess1 
+
+DrawButtonMessage mess1 
 DrawRec x1,y1,x2,y2
  
 movCursor 68,6 
 
 add x1, 32
 add x2, 32
-mov di,0 
-mov cx,2 
-DrawRegisterNAME mess2 
+
+DrawButtonMessage mess2 
 DrawRec x1, y1, x2,y2
 
 add x1, 32
 add x2, 32
 movCursor 68,8 
-DrawRegisterNAME mess3 
+DrawButtonMessage mess3 
 DrawRec x1, y1, x2,y2
 
 
 add x1, 32
 add x2, 32
 movCursor 68,10 
-DrawRegisterNAME mess4 
+DrawButtonMessage mess4 
 DrawRec x1, y1, x2,y2
 
 add x1, 32
 add x2, 32
 movCursor 68,12
-DrawRegisterNAME mess5 
+DrawButtonMessage mess5 
 DrawRec x1, y1, x2,y2
 
 
 add x1, 32
 add x2, 32
 movCursor 68,14
-DrawRegisterNAME mess6 
+DrawButtonMessage mess6 
 DrawRec x1, y1, x2,y2
 
 add x1, 32
 add x2, 32
 movCursor 68,16
-DrawRegisterNAME mess7 
+DrawButtonMessage mess7 
 DrawRec x1, y1, x2,y2
 
 
@@ -406,59 +410,56 @@ mov y1, 410
 mov x2, 45
 mov y2, 440 
 movCursor 52,2 
-mov di,0 
-mov cx,2 
-DrawRegisterNAME mess 
+ 
+DrawButtonMessage mess 
 DrawRec x1,y1,x2,y2
 movCursor 52,4 
 
 add x1, 32
 add x2, 32
 
-mov di,0 
-mov cx,2 
-DrawRegisterNAME mess1 
+
+DrawButtonMessage mess1 
 DrawRec x1,y1,x2,y2
  
 movCursor 52,6 
 
 add x1, 32
 add x2, 32
-mov di,0 
-mov cx,2 
-DrawRegisterNAME mess2 
+
+DrawButtonMessage mess2 
 DrawRec x1, y1, x2,y2
  
 add x1, 32
 add x2, 32
 movCursor 52,8 
-DrawRegisterNAME mess3 
+DrawButtonMessage mess3 
 DrawRec x1, y1, x2,y2
 
 
 add x1, 32
 add x2, 32
 movCursor 52,10 
-DrawRegisterNAME mess4 
+DrawButtonMessage mess4 
 DrawRec x1, y1, x2,y2
 
 add x1, 32
 add x2, 32
 movCursor 52,12
-DrawRegisterNAME mess5 
+DrawButtonMessage mess5 
 DrawRec x1, y1, x2,y2
 
 
 add x1, 32
 add x2, 32
 movCursor 52,14
-DrawRegisterNAME mess6 
+DrawButtonMessage mess6 
 DrawRec x1, y1, x2,y2
 
 add x1, 32
 add x2, 32
 movCursor 52,16
-DrawRegisterNAME mess7 
+DrawButtonMessage mess7 
 DrawRec x1, y1, x2,y2
 
 
@@ -859,6 +860,36 @@ FIXED proc far
     RET
 FIXED endp
 
+FIRSTSCREEN PROC FAR
+    CALL FIXED
+    movCursor 14,9
+    DrawRec 130,90,170,190
+    DrawButtonMessage ADDRESS
+    
+
+    movCursor 14,14
+    DrawRec 210,90,250,190
+    DrawButtonMessage REGISTER
+    RET
+FIRSTSCREEN ENDP
+
+;THE SECOND SCREEN WILL MAKE THE USER CHOOSE BETWEEN REGISTER AND VALUE AND ADRESS
+SECONDSCREEN PROC FAR
+    CALL FIXED
+    movCursor 14,9
+    DrawButtonMessage VALUE
+    DrawRec 130,90,170,190
+    
+    movCursor 14,14
+    DrawButtonMessage REGISTER
+    DrawRec 210,90,250,190
+
+    movCursor 14,19
+    DrawButtonMessage ADDRESS
+    DrawRec 290,90,330,190
+
+    RET
+SECONDSCREEN ENDP
 MAIN PROC FAR
     MOV AX,@DATA
     MOV DS,AX
