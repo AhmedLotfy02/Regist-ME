@@ -929,9 +929,9 @@ div_mul_inc_dec_address_player1  proc near
             ; check if src_index_reg is value or register
             ;cmp bl,17                        ; index to value
             cmp bl , 18                      ; index to address value -> choose which value ?!
-            jz check_forbidden_digit_address_div 
-            jnz check_forbidden_regsiter_address_div 
-            check_forbidden_digit_address_div:
+            jz forbidden_digit_address_div 
+            jnz forbidden_regsiter_address_div 
+            forbidden_digit_address_div:
                 ; macro needed to check if value has a forbidden digit or not
                 mov bh,0
                 mov bl,src_index_val
@@ -951,7 +951,7 @@ div_mul_inc_dec_address_player1  proc near
                 jmp far ptr end_div_address_player1
         ; destination now is correct  value ------------------------------------------------------------------------------                 
                 jmp cont_address_mode_div 
-           check_forbidden_regsiter_address_div:
+           forbidden_regsiter_address_div:
                 check_forbidden Forbidden_Registers_2,bl
                 ; need macro to check if this register is not bx or di or si to make later -> should jmp lose_point
                 mov al,losepoint 
@@ -1166,9 +1166,9 @@ shl_shr_ror_rol_address_player1  proc near
             ; check if src_index_reg is value or register
             ;cmp bl,17                        ; index to value
             cmp bl , 18                      ; index to address value -> choose which value ?!
-            jz check_forbidden_digit_address_shl 
-            jnz check_forbidden_regsiter_address_shl 
-            check_forbidden_digit_address_shl:
+            jz forbidden_digit_address_shl 
+            jnz forbidden_regsiter_address_shl 
+            forbidden_digit_address_shl:
                 ; macro needed to check if value has a forbidden digit or not
                 mov bh,0
                 mov bl,src_index_val
@@ -1188,7 +1188,7 @@ shl_shr_ror_rol_address_player1  proc near
                 jmp far ptr end_shl_address_player1
         ; destination now is correct  value ------------------------------------------------------------------------------                 
                 jmp cont_address_mode_shl 
-           check_forbidden_regsiter_address_shl:
+           forbidden_regsiter_address_shl:
                 check_forbidden Forbidden_Registers_2,bl
                 ; need macro to check if this register is not bx or di or si to make later -> should jmp lose_point
                 mov al,losepoint 
