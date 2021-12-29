@@ -5,6 +5,11 @@
     x2 dw ?
     y1 dw ?
     y2 dw ?
+    VALUE DB 'VALUE','$'
+    REGISTER DB 'REGISTER','$'
+    ADDRESS DB 'ADDRESS','$'
+    P1Name db 'Asaad', '$'
+    P2Name db 'Nabil', '$'
     chara db 'c'
     mess db 'AX: ','$'
     mess1 db 'BX: ','$'
@@ -163,6 +168,7 @@
     ENDM
 
 
+
     PRINT_STRING_3DIGIT MACRO Stringo
         local loop4
         mov di,0    
@@ -189,15 +195,22 @@
 
 
 
-    DrawRegisterNAME macro Stringo
+    DrawButtonMessage macro String
         local loop4
-        mov di,0    
-        mov cx,3
+        pusha
+
+        mov di,0   
+        mov bh, '$' 
         loop4:
-            printCharacter Stringo[di]
+            printCharacter String[di]
             inc di
-        loop loop4
-    endm
+            mov bl, String[di]
+            cmp bl, bh
+        jne loop4
+
+        popa
+    ENDM
+
     movCursor MACRO x, y
         ; Push all used regeister in stack to get their original value after the operation
         push ax
@@ -321,88 +334,150 @@
         
     Endm
 
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 DRAW_REGISTER_NAMES proc far
 mov x1, 30
-mov y1, 555
+mov y1, 540
 mov x2, 45
-mov y2, 585 
-movCursor 70,2 
-mov di,0 
-mov cx,2 
-DrawRegisterNAME mess 
+mov y2, 570 
+movCursor 68,2 
+
+DrawButtonMessage mess 
 DrawRec x1,y1,x2,y2
-movCursor 70,4 
+movCursor 68,4 
 
 add x1, 32
 add x2, 32
 
-mov di,0 
-mov cx,2 
-DrawRegisterNAME mess1 
+
+DrawButtonMessage mess1 
 DrawRec x1,y1,x2,y2
  
-movCursor 70,6 
+movCursor 68,6 
 
 add x1, 32
 add x2, 32
-mov di,0 
-mov cx,2 
-DrawRegisterNAME mess2 
+
+DrawButtonMessage mess2 
 DrawRec x1, y1, x2,y2
- 
 
-
- 
 add x1, 32
 add x2, 32
-movCursor 70,8 
-DrawRegisterNAME mess3 
+movCursor 68,8 
+DrawButtonMessage mess3 
 DrawRec x1, y1, x2,y2
 
 
 add x1, 32
 add x2, 32
-movCursor 70,10 
-DrawRegisterNAME mess4 
+movCursor 68,10 
+DrawButtonMessage mess4 
 DrawRec x1, y1, x2,y2
 
 add x1, 32
 add x2, 32
-movCursor 70,12
-DrawRegisterNAME mess5 
+movCursor 68,12
+DrawButtonMessage mess5 
 DrawRec x1, y1, x2,y2
 
 
 add x1, 32
 add x2, 32
-movCursor 70,14
-DrawRegisterNAME mess6 
+movCursor 68,14
+DrawButtonMessage mess6 
 DrawRec x1, y1, x2,y2
 
 add x1, 32
 add x2, 32
-movCursor 70,16
-DrawRegisterNAME mess7 
+movCursor 68,16
+DrawButtonMessage mess7 
 DrawRec x1, y1, x2,y2
 
 
-movCursor 65,18 
-mov dx, offset name1 
+movCursor 70,1 
+mov dx, offset P1NAME 
 mov ah, 9h 
 int 21h 
  
 ret 
 DRAW_REGISTER_NAMES endp
 
-HIDE_POWER_UP proc far
+DRAW_REGISTER_NAMES2 proc far
+mov x1, 32
+mov y1, 410
+mov x2, 45
+mov y2, 440 
+movCursor 52,2 
+ 
+DrawButtonMessage mess 
+DrawRec x1,y1,x2,y2
+movCursor 52,4 
 
-    CALL DRAW_REGISTER_NAMES
+add x1, 32
+add x2, 32
+
+
+DrawButtonMessage mess1 
+DrawRec x1,y1,x2,y2
+ 
+movCursor 52,6 
+
+add x1, 32
+add x2, 32
+
+DrawButtonMessage mess2 
+DrawRec x1, y1, x2,y2
+ 
+add x1, 32
+add x2, 32
+movCursor 52,8 
+DrawButtonMessage mess3 
+DrawRec x1, y1, x2,y2
+
+
+add x1, 32
+add x2, 32
+movCursor 52,10 
+DrawButtonMessage mess4 
+DrawRec x1, y1, x2,y2
+
+add x1, 32
+add x2, 32
+movCursor 52,12
+DrawButtonMessage mess5 
+DrawRec x1, y1, x2,y2
+
+
+add x1, 32
+add x2, 32
+movCursor 52,14
+DrawButtonMessage mess6 
+DrawRec x1, y1, x2,y2
+
+add x1, 32
+add x2, 32
+movCursor 52,16
+DrawButtonMessage mess7 
+DrawRec x1, y1, x2,y2
+
+
+movCursor 55,1
+mov dx, offset P2NAME 
+mov ah, 9h 
+int 21h 
+ 
+ret 
+DRAW_REGISTER_NAMES2 endp
+
+HIDE_POWER_UP proc far
+    CALL FIXED
     ret
     HIDE_POWER_UP endp
 
 
-    SHOW_POWER_UP proc far
+SHOW_POWER_UP proc far
     movCursor 65,18
 
     mov dx, offset POWER_BUTTON
@@ -426,7 +501,7 @@ SHOW_INSTRUCTION_BUTTON proc far
 SHOW_INSTRUCTION_BUTTON endp
 
 SHOW_INSTRUCTIONS proc far
-
+    CALL FIXED
     movCursor 5,2
     PRINT_STRING_3DIGIT MOV_INS
     movCursor 12,2
@@ -513,8 +588,6 @@ SHOW_INSTRUCTIONS proc far
     ;;IDIV REC
     DrawRec 360,90,385,140
 
-    CALL DRAW_REGISTER_NAMES
-    CALL SHOW_CHAT
     ret
 SHOW_INSTRUCTIONS endp
 
@@ -522,14 +595,13 @@ SHOW_INSTRUCTIONS endp
 BEGIN_GAME proc far
     CALL SHOW_INSTRUCTION_BUTTON
     CALL SHOW_POWER_UP
-    CALL DRAW_REGISTER_NAMES
-    CALL SHOW_CHAT
+    CALL FIXED
     ret
 BEGIN_GAME endp
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 SHOW_1ST_OPERAND proc far
-    CALL DRAW_REGISTER_NAMES
+    CALL FIXED
     movCursor 5,2
     PRINT_STRING_3DIGIT ADDRESS_CHOICE
     movCursor 12,2
@@ -547,7 +619,7 @@ SHOW_1ST_OPERAND endp
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 SHOW_2ND_OPERAND proc far
-    CALL DRAW_REGISTER_NAMES
+    CALL FIXED
     movCursor 5,2
     PRINT_STRING_3DIGIT ADDRESS_CHOICE
     movCursor 12,2
@@ -566,8 +638,7 @@ SHOW_2ND_OPERAND endp
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 SHOW_REGISTERS_CHOICE proc far
-    CALL DRAW_REGISTER_NAMES
-
+    CALL FIXED
 
     movCursor 5,2
     PRINT_STRING_2DIGIT AL_REG
@@ -661,7 +732,7 @@ SHOW_REGISTERS_CHOICE endp
 ;;1,2,3,5
     SHOW_POWER_UPS_CHOICE proc far
 
-    CALL DRAW_REGISTER_NAMES
+    CALL FIXED
 
     movCursor 62,20
     PRINT_STRING_2DIGIT POWER_UP_1ST
@@ -688,15 +759,15 @@ SHOW_REGISTERS_CHOICE endp
     ret
 SHOW_POWER_UPS_CHOICE endp
 
-    SHOW_PLAYER_ONE_NAME proc far
+SHOW_PLAYER_ONE_NAME proc far
     movCursor 66,15
     mov dx, offset PLAYER_ONE_NAME
     mov ah, 9h
     int 21h
     ret
-    SHOW_PLAYER_ONE_NAME endp
+SHOW_PLAYER_ONE_NAME endp
 
-    SHOW_PLAYER_TWO_NAME proc far
+SHOW_PLAYER_TWO_NAME proc far
     movCursor 66,15
     mov dx, offset PLAYER_TWO_NAME
     mov ah, 9h
@@ -767,9 +838,9 @@ SHOW_CHAT proc far
     CALL SHOW_PLAYERS_NAMES_ON_CHAT
 
     ret
-    SHOW_CHAT endp
+SHOW_CHAT endp
 
-    CLR proc far
+CLR proc far
     mov al, 12h ; Video mode number
     mov ah, 0h
     int 10h
@@ -777,7 +848,48 @@ SHOW_CHAT proc far
     ret
 CLR endp
 
+;description: the fixed data of each screen, players' registers
+FIXED proc far
+    CALL DRAW_REGISTER_NAMES
+    DrawRec 30, 535, 280, 639; draw rectangle around player1 registers
+    call DRAW_VERTICAL_LINE
 
+    call DRAW_REGISTER_NAMES2
+    DrawRec 30, 405, 280,510
+    CALL SHOW_CHAT
+    RET
+FIXED endp
+
+FIRSTSCREEN PROC FAR
+    CALL FIXED
+    movCursor 14,9
+    DrawRec 130,90,170,190
+    DrawButtonMessage ADDRESS
+    
+
+    movCursor 14,14
+    DrawRec 210,90,250,190
+    DrawButtonMessage REGISTER
+    RET
+FIRSTSCREEN ENDP
+
+;THE SECOND SCREEN WILL MAKE THE USER CHOOSE BETWEEN REGISTER AND VALUE AND ADRESS
+SECONDSCREEN PROC FAR
+    CALL FIXED
+    movCursor 14,9
+    DrawButtonMessage VALUE
+    DrawRec 130,90,170,190
+    
+    movCursor 14,14
+    DrawButtonMessage REGISTER
+    DrawRec 210,90,250,190
+
+    movCursor 14,19
+    DrawButtonMessage ADDRESS
+    DrawRec 290,90,330,190
+
+    RET
+SECONDSCREEN ENDP
 MAIN PROC FAR
     MOV AX,@DATA
     MOV DS,AX
@@ -799,7 +911,6 @@ MAIN PROC FAR
     ;CALL SHOW_INSTRUCTION_BUTTON
     ;CALL SHOW_INSTRUCTIONS
     ;CALL HIDE_POWER_UP
-    call DRAW_VERTICAL_LINE
     CALL BEGIN_GAME
     ;CALL SHOW_AFTER_INSTRUCTION
     ;CALL SHOW_2ND_OPERAND
@@ -823,9 +934,9 @@ MAIN PROC FAR
         ja Again
         ;blankScreen 05h,0,100
         ;ClearScreen 0, 0, 25, 80
-        CALL CLR
-        CALL SHOW_INSTRUCTIONS
-        Show_mouse
+    CALL CLR
+    CALL SHOW_INSTRUCTIONS
+    Show_mouse
     ;;;;;;
     ;CALL SHOW_AFTER_INSTRUCTION
     ;CALL SHOW_2ND_OPERAND
