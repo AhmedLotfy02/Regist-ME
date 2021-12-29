@@ -3,20 +3,19 @@
 .Data 
 ; general variables ----------------------------------------------------------------------------------------------
 ; All instructions, digits and registers
-instructions db "MOV ", "ADD ", "SUB ", "MUL ", "DIV ", "AND ", "OR ", "NOP ", "XOR ", "SHR ", "SHL ", "ROR ", "ROL ", "IDIV ", "IMUL ", "INC ", "DEC "  
+instructions db "MOV ", "ADD ", "SUB ", "MUL ", "DIV ", "INC ", "DEC ", "NOP ", "SAL ", "SHR ", "SHL ", "ROR ", "ROL ", "SAR ","IDIV ", "IMUL "  
 registers db "AX ", "AL ", "AH ", "BX ", "BL ", "BH ", "CX ", "CL ", "CH ", "DX ", "DL ", "DH ", "SI ", "DI ", "SP ", "BP ","val ","address "
 digits db "0 ", "1 ", "2 ", "3 ", "4 ", "5 ", "6 ", "7 ", "8 ", "9 "  
 
 instruction_index db 0 
 ; mov-> 0 add-> 1 sub-> 2
-; MUL-> 3 DIV-> 4 IDIV-> 13 IMUL-> 14 
+; MUL-> 3 DIV-> 4 IDIV-> 14 IMUL-> 15  INC-> 5 DEC-> 6 
 ; NOP-> 7
-; AND-> 5 OR-> 6 XOR-> 8
-; SHR-> 9 SHL-> 10 ROR-> 11 ROL-> 12
-; INC-> 15 DEC-> 16
+; SAL-> 8 SHR-> 9 SHL-> 10 ROR-> 11 ROL-> 12 SAR->13
+
 src_index_reg db 0
 dest_index_reg db 17
-src_index_val db 0
+src_index_val db 1
 dest_index_val db 18 
 address_mode db 0 
 address_mode2 db 1  
@@ -238,24 +237,6 @@ main proc far
             call  div_mul_inc_dec_register_player1 
       jmp far ptr end_instruction_player1
      
-    AND_instruction: 
-    
-    OR_instruction: 
-
-    
-    NOP_instruction: 
-   
-    XOR_instruction: 
-    
-    SHR_instruction: 
-     
-    SHL_instruction: 
-    
-    ROR_instruction: 
-   
-    
-    ROL_instruction: 
-    
     Idiv_instruction:
             ; call drawing and clicking procedure --------------------------------
             ; set variable to number then compare
@@ -315,7 +296,101 @@ main proc far
         reg_mode_dec1:
             call  div_mul_inc_dec_register_player1 
       jmp far ptr end_instruction_player1 
-         
+
+    
+
+    NOP_instruction:
+        jmp far ptr end_instruction_player1 
+    SAR_instruction: 
+            ; call drawing and clicking procedure --------------------------------
+            ; set variable to number then compare
+            mov instruction_index,13
+            mov al,address_mode
+            cmp al,1
+            jz address_mode_sar1
+            jmp reg_mode_sar1        
+            ; address mode processing ---------------------------------------------------------         
+        address_mode_sar1:  
+            call  shl_shr_ror_rol_address_player1
+        reg_mode_sar1:
+            call  shl_shr_ror_rol_register_player1 
+      jmp far ptr end_instruction_player1
+    SAL_instruction:  
+                ; call drawing and clicking procedure --------------------------------
+            ; set variable to number then compare
+            mov instruction_index,8
+            mov al,address_mode
+            cmp al,1
+            jz address_mode_sal1
+            jmp reg_mode_sal1        
+            ; address mode processing ---------------------------------------------------------         
+        address_mode_sal1:  
+            call  shl_shr_ror_rol_address_player1
+        reg_mode_sal1:
+            call  shl_shr_ror_rol_register_player1 
+      jmp far ptr end_instruction_player1
+    
+    SHR_instruction:
+                ; call drawing and clicking procedure --------------------------------
+            ; set variable to number then compare
+            mov instruction_index,9
+            mov al,address_mode
+            cmp al,1
+            jz address_mode_shr1
+            jmp reg_mode_shr1        
+            ; address mode processing ---------------------------------------------------------         
+        address_mode_shr1:  
+            call  shl_shr_ror_rol_address_player1
+        reg_mode_shr1:
+            call  shl_shr_ror_rol_register_player1 
+      jmp far ptr end_instruction_player1 
+     
+    SHL_instruction: 
+                ; call drawing and clicking procedure --------------------------------
+            ; set variable to number then compare
+            mov instruction_index,10
+            mov al,address_mode
+            cmp al,1
+            jz address_mode_shl1
+            jmp reg_mode_shl1        
+            ; address mode processing ---------------------------------------------------------         
+        address_mode_shl1:  
+            call  shl_shr_ror_rol_address_player1
+        reg_mode_shl1:
+            call  shl_shr_ror_rol_register_player1 
+      jmp far ptr end_instruction_player1
+    ROR_instruction: 
+            ; call drawing and clicking procedure --------------------------------
+            ; set variable to number then compare
+            mov instruction_index,11
+            mov al,address_mode
+            cmp al,1
+            jz address_mode_ror1
+            jmp reg_mode_ror1        
+            ; address mode processing ---------------------------------------------------------         
+        address_mode_ror1:  
+            call  shl_shr_ror_rol_address_player1
+        reg_mode_ror1:
+            call  shl_shr_ror_rol_register_player1 
+      jmp far ptr end_instruction_player1
+    
+    ROL_instruction: 
+            ; call drawing and clicking procedure --------------------------------
+            ; set variable to number then compare
+            mov instruction_index,12
+            mov al,address_mode
+            cmp al,1
+            jz address_mode_rol1
+            jmp reg_mode_rol1        
+            ; address mode processing ---------------------------------------------------------         
+        address_mode_rol1:  
+            call  shl_shr_ror_rol_address_player1
+        reg_mode_rol1:
+            call  shl_shr_ror_rol_register_player1 
+      jmp far ptr end_instruction_player1    
+
+    
+             
     end_instruction_player1:             
 
 
@@ -960,6 +1035,237 @@ div_mul_inc_dec_address_player1  proc near
     ret
     div_mul_inc_dec_address_player1 endp 
     
+;----------------------------shl  reg ---------------------------------------------------
+shl_shr_ror_rol_register_player1 proc near
+    
+    check_forbidden Forbidden_instruction_2,instruction_index       
+             
+            mov bl,src_index_reg
+            mov bh,0 
+                
+            check_forbidden Forbidden_Registers_2,bl
+
+            mov al,losepoint 
+            mov losepoint_player1,al 
+            cmp losepoint_player1,1
+            jz   lose_point_2_reg_shl_player1 
+            jmp cont_reg_mode_shl 
+            lose_point_2_reg_shl_player1:
+            jmp far ptr end_shl_reg_player1                 
+         cont_reg_mode_shl:
+         
+           ; check if value or cl is valid 
+           
+         cont_reg_mode_shl2:
+            mov dl,count_bit_1
+            mov dh,0
+            cmp dl,2
+            jz temp_word_shl_reg_player1
+            jmp temp_byte_shl_reg_player1
+            temp_word_shl_reg_player1:
+            jmp far ptr word_shl_reg_player1
+            temp_byte_shl_reg_player1:
+                    mov bh,0
+                    mov bl,dest_index_val
+                    mov ch,0
+                    mov cl,Player2_Data_Register[bx]
+                    mov bl, src_index_val             
+
+                    cmp instruction_index,10
+                    jz shl_reg_byte_player1
+                    cmp instruction_index,9
+                    jz shr_reg_byte_player1
+                    cmp instruction_index,11
+                    jz ror_reg_byte_player1 
+                    cmp instruction_index,12
+                    jz rol_reg_byte_player1
+                    cmp instruction_index,8
+                    jz sal_reg_byte_player1
+                    cmp instruction_index,13
+                    jz sar_reg_byte_player1
+                    shl_reg_byte_player1:                  ; div ------------------------
+                        shl Player2_Data_Register[bx],cl
+                        jmp far ptr end_shl_reg_player1
+                    shr_reg_byte_player1:                  ; mul ------------------------
+                        shr Player2_Data_Register[bx],cl
+                        jmp far ptr end_shl_reg_player1
+                    ror_reg_byte_player1:                  ; idiv ------------------------
+                        ror Player2_Data_Register[bx],cl
+                        jmp far ptr end_shl_reg_player1 
+                    rol_reg_byte_player1:                  ; imul ------------------------
+                        rol Player2_Data_Register[bx],cl
+                        jmp far ptr end_shl_reg_player1
+                    sal_reg_byte_player1:                  ; inc ------------------------
+                        sal Player2_Data_Register[bx],cl
+                        jmp far ptr end_shl_reg_player1
+                    sar_reg_byte_player1:                  ; dec ------------------------
+                        sar Player2_Data_Register[bx],cl
+                        jmp far ptr end_shl_reg_player1 
+            word_shl_reg_player1:
+                    mov bh,0   
+                    mov bl,dest_index_val
+                    mov cl,Player2_Data_Register[bx]
+                    mov bl,src_index_val
+                    mov ah,Player2_Data_Register[bx]
+                    mov al,Player2_Data_Register[bx+1]
+                                  
+                    cmp instruction_index,10
+                    jz shl_reg_word_player1
+                    cmp instruction_index,9
+                    jz shr_reg_word_player1
+                    cmp instruction_index,11
+                    jz ror_reg_word_player1 
+                    cmp instruction_index,12
+                    jz rol_reg_word_player1
+                    cmp instruction_index,8
+                    jz sal_reg_word_player1
+                    cmp instruction_index,13
+                    jz sar_reg_word_player1 
+                    shl_reg_word_player1:              ; div ------------------------
+                        shl ax,cl
+                        mov Player2_Data_Register[bx],ah
+                        mov Player2_Data_Register[bx+1],al
+                        jmp far ptr end_shl_reg_player1
+                    shr_reg_word_player1:                  ; mul ------------------------
+                        shr ax,cl
+                        mov Player2_Data_Register[bx],ah
+                        mov Player2_Data_Register[bx+1],al
+                        jmp far ptr end_shl_reg_player1 
+                    ror_reg_word_player1:                  ; idiv ------------------------
+                        ror ax,cl
+                        mov Player2_Data_Register[bx],ah
+                        mov Player2_Data_Register[bx+1],al
+                        jmp far ptr end_shl_reg_player1 
+                    rol_reg_word_player1:                  ; imul ------------------------
+                        rol ax,cl
+                        mov Player2_Data_Register[bx],ah
+                        mov Player2_Data_Register[bx+1],al
+                        jmp far ptr end_shl_reg_player1
+                    sal_reg_word_player1:                  ; inc ------------------------
+                        sal ax,cl
+                        mov Player2_Data_Register[bx],ah
+                        mov Player2_Data_Register[bx+1],al
+                        jmp far ptr end_shl_reg_player1
+                    sar_reg_word_player1:                  ; dec ------------------------
+                        sar ax,cl
+                        mov Player2_Data_Register[bx],ah
+                        mov Player2_Data_Register[bx+1],al
+                        jmp far ptr end_shl_reg_player1
+    
+    end_shl_reg_player1:
+     
+    ret 
+    shl_shr_ror_rol_register_player1 endp
+;---------------------------------------------------  shl to datasegment  -----------------------------------------------------------------
+shl_shr_ror_rol_address_player1  proc near
+    
+        check_forbidden Forbidden_instruction_2,instruction_index                   
+            mov bl,src_index_reg
+            mov bh,0     
+            ; check if is forbidden or not 
+            ; check if src_index_reg is value or register
+            ;cmp bl,17                        ; index to value
+            cmp bl , 18                      ; index to address value -> choose which value ?!
+            jz check_forbidden_digit_address_shl 
+            jnz check_forbidden_regsiter_address_shl 
+            check_forbidden_digit_address_shl:
+                ; macro needed to check if value has a forbidden digit or not
+                mov bh,0
+                mov bl,src_index_val
+                mov ah,Player2_Data_Register[bx]
+                mov al,Player2_Data_Register[bx+1]
+                ; call macro that check if value in ax is correct 
+                
+                check_word_valid ax, Forbidden_digits_2 
+                ;check_forbidden Forbidden_digits_2,0    <----------- not working should be removed later
+                mov al,losepoint 
+                mov losepoint_player1,al 
+                cmp losepoint_player1,1
+                jz  lose_point_1_shl_address_player1
+                jmp cont_address_mode_shl 
+                lose_point_1_shl_address_player1:
+                ;jmp far ptr lose_point_player1
+                jmp far ptr end_shl_address_player1
+        ; destination now is correct  value ------------------------------------------------------------------------------                 
+                jmp cont_address_mode_shl 
+           check_forbidden_regsiter_address_shl:
+                check_forbidden Forbidden_Registers_2,bl
+                ; need macro to check if this register is not bx or di or si to make later -> should jmp lose_point
+                mov al,losepoint 
+                mov losepoint_player1,al 
+                cmp losepoint_player1,1
+                jz   lose_point_2_shl_address_player1 
+                jmp cont_address_mode_shl 
+                lose_point_2_shl_address_player1:
+                jmp far ptr lose_point_shl_address_player1                 
+         cont_address_mode_shl:
+            ;check if value in ax is less than f
+            mov bh,0
+            mov bl,src_index_val
+            mov ah,Player2_Data_Register[bx]
+            mov al,Player2_Data_Register[bx+1] 
+            cmp ax,000fh
+            JA lose_point_3_shl_address_player1  ; out of index of data segment -> should be error 
+            jmp cont_address_mode_shl2 
+            lose_point_3_shl_address_player1:
+            jmp far ptr lose_point_shl_address_player1 
+            
+            cont_address_mode_shl2:
+            ; if lotfy didnt handle it 
+            ; check for value or register cl or lose point
+            final_address_mode_shl:
+                    mov bh,0
+                    mov bl,src_index_val
+                    mov ch,Player2_Data_Register[bx]
+                    mov cl,Player2_Data_Register[bx+1]
+                    mov si,cx 
+                    mov bl, dest_index_val  
+                    mov cl, Player2_Data_Register[bx]
+                    mov ch,0            
+                    cmp instruction_index,10
+                    jz shl_address_byte_player1
+                    cmp instruction_index,9
+                    jz shr_address_byte_player1
+                    cmp instruction_index,11
+                    jz ror_address_byte_player1 
+                    cmp instruction_index,12
+                    jz rol_address_byte_player1
+                    cmp instruction_index,8
+                    jz sal_address_byte_player1
+                    cmp instruction_index,13
+                    jz sar_address_byte_player1
+                    shl_address_byte_player1:                  ; div ------------------------
+                        shl data_segment_2[si],cl
+                        jmp far ptr end_shl_address_player1
+                    shr_address_byte_player1:                  ; mul ------------------------
+                        shr data_segment_2[si],cl
+                        jmp far ptr end_shl_address_player1
+                    ror_address_byte_player1:                  ; idiv ------------------------
+                        ror data_segment_2[si],cl
+                        jmp far ptr end_shl_address_player1 
+                    rol_address_byte_player1:                  ; imul ------------------------
+                        rol data_segment_2[si],cl
+                        jmp far ptr end_shl_address_player1
+                    sal_address_byte_player1:                  ; inc ------------------------
+                        sal data_segment_2[si],cl
+                        jmp far ptr end_shl_address_player1
+                    sar_address_byte_player1:                  ; dec ------------------------
+                        sar data_segment_2[si],cl
+                        jmp far ptr end_shl_address_player1 
+
+            
+              
+    lose_point_shl_address_player1:
+        dec intial_points_player1
+        mov losepoint_player1,0 
+        mov losepoint,0
+    
+    end_shl_address_player1:
+    
+    ret
+    shl_shr_ror_rol_address_player1 endp 
+    
+   
    
    
    
