@@ -204,6 +204,61 @@ set_forbidden_player2 proc near   ; player2 setforbidden for player1
         jnz loop_set2_registers         
     ret
     set_forbidden_player2 endp
+
+set_zero_forbidden_player1 proc near  
+    
+     mov cx,12
+     mov si,0
+     loop_set_zero_player1_reg:
+     
+     mov Forbidden_Registers_2[si],0
+         inc si
+         dec cx
+     jnz  loop_set_zero_player1_reg
+     mov cx,16
+     mov si,0
+     loop_set_zero_player1_digits:    
+         mov Forbidden_digits_2[si],0
+         inc si
+         dec cx
+     jnz  loop_set_zero_player1_digits
+     mov cx,16
+     mov si,0    
+     loop_set_zero_player1_instructions:
+         mov Forbidden_instruction_2[si],0
+         inc si
+         dec cx 
+     jnz  loop_set_zero_player1_instructions    
+    
+     ret
+     set_zero_forbidden_player1 endp
+set_zero_forbidden_player2 proc near  
+    
+     mov cx,12
+     mov si,0
+     loop_set_zero_player2_reg:
+     
+     mov Forbidden_Registers_1[si],0
+         inc si
+         dec cx
+     jnz  loop_set_zero_player2_reg
+     mov cx,16
+     mov si,0
+     loop_set_zero_player2_digits:    
+         mov Forbidden_digits_1[si],0
+         inc si
+         dec cx
+     jnz  loop_set_zero_player2_digits
+     mov cx,16
+     mov si,0    
+     loop_set_zero_player2_instructions:
+         mov Forbidden_instruction_1[si],0
+         inc si
+         dec cx 
+     jnz  loop_set_zero_player2_instructions    
+    
+     ret
+     set_zero_forbidden_player2 endp
 main proc far
     mov ax,@data
     mov ds,ax     
@@ -216,7 +271,7 @@ main proc far
     
        call set_forbidden_player2
     
-    
+        call   set_zero_forbidden_player2
     
     
     
