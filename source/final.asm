@@ -240,7 +240,7 @@ main proc far
     Idiv_instruction:
             ; call drawing and clicking procedure --------------------------------
             ; set variable to number then compare
-            mov instruction_index,15
+            mov instruction_index,14
             mov al,address_mode
             cmp al,1
             jz address_mode_idiv1
@@ -255,7 +255,7 @@ main proc far
     Imul_instruction:
             ; call drawing and clicking procedure --------------------------------
             ; set variable to number then compare
-            mov instruction_index,16
+            mov instruction_index,15
             mov al,address_mode
             cmp al,1
             jz address_mode_imul1
@@ -270,7 +270,7 @@ main proc far
     INC_instruction:
             ; call drawing and clicking procedure --------------------------------
             ; set variable to number then compare
-            mov instruction_index,6
+            mov instruction_index,5
             mov al,address_mode
             cmp al,1
             jz address_mode_inc1
@@ -285,7 +285,7 @@ main proc far
     DEC_instruction:
             ; call drawing and clicking procedure --------------------------------
             ; set variable to number then compare
-            mov instruction_index,7
+            mov instruction_index,6
             mov al,address_mode
             cmp al,1
             jz address_mode_dec1
@@ -819,13 +819,13 @@ div_mul_inc_dec_register_player1 proc near
                     jz div_reg_byte_player1
                     cmp instruction_index,3
                     jz mul_reg_byte_player1
-                    cmp instruction_index,15
+                    cmp instruction_index,14
                     jz idiv_reg_byte_player1 
-                    cmp instruction_index,16
+                    cmp instruction_index,15
                     jz imul_reg_byte_player1
-                    cmp instruction_index,6
+                    cmp instruction_index,5
                     jz inc_reg_byte_player1
-                    cmp instruction_index,7
+                    cmp instruction_index,6
                     jz dec_reg_byte_player1
                     div_reg_byte_player1:                  ; div ------------------------
                         div cx
@@ -868,13 +868,13 @@ div_mul_inc_dec_register_player1 proc near
                     jz div_reg_word_player1
                     cmp instruction_index,3
                     jz mul_reg_word_player1
-                    cmp instruction_index,15
+                    cmp instruction_index,14
                     jz idiv_reg_word_player1 
-                    cmp instruction_index,16
+                    cmp instruction_index,15
                     jz imul_reg_word_player1
-                    cmp instruction_index,6
+                    cmp instruction_index,5
                     jz inc_reg_word_player1
-                    cmp instruction_index,7
+                    cmp instruction_index,6
                     jz dec_reg_word_player1
                     div_reg_word_player1:                  ; div ------------------------
                         div cx
@@ -986,13 +986,13 @@ div_mul_inc_dec_address_player1  proc near
                     jz div_address_byte_player1
                     cmp instruction_index,3
                     jz mul_address_byte_player1
-                    cmp instruction_index,15
+                    cmp instruction_index,14
                     jz idiv_address_byte_player1 
-                    cmp instruction_index,16
+                    cmp instruction_index,15
                     jz imul_address_byte_player1
-                    cmp instruction_index,6
+                    cmp instruction_index,5
                     jz inc_address_byte_player1
-                    cmp instruction_index,7
+                    cmp instruction_index,6
                     jz dec_address_byte_player1
                     div_address_byte_player1:                  ; div ------------------------
                         div cx
