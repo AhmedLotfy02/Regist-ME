@@ -5,6 +5,9 @@
     x2 dw ?
     y1 dw ?
     y2 dw ?
+    VALUE DB 'VALUE','$'
+    REGISTER DB 'REGISTER','$'
+    ADDRESS DB 'ADDRESS','$'
     P1Name db 'Asaad', '$'
     P2Name db 'Nabil', '$'
     chara db 'c'
@@ -198,18 +201,22 @@ snakeY DW SnakSize dup(300)
 
 
 
-    DrawRegisterNAME macro Stringo
+    DrawButtonMessage macro String
         local loop4
         pusha
 
-        mov di,0    
-        mov cx,3
+        mov di,0   
+        mov bh, '$' 
         loop4:
-            printCharacter Stringo[di]
+            printCharacter String[di]
             inc di
-        loop loop4
-        POPA
-    endm
+            mov bl, String[di]
+            cmp bl, bh
+        jne loop4
+
+        popa
+    ENDM
+
     movCursor MACRO x, y
         ; Push all used regeister in stack to get their original value after the operation
         push ax
@@ -342,59 +349,56 @@ mov y1, 540
 mov x2, 45
 mov y2, 570 
 movCursor 68,2 
-mov di,0 
-mov cx,2 
-DrawRegisterNAME mess 
+
+DrawButtonMessage mess 
 DrawRec x1,y1,x2,y2
 movCursor 68,4 
 
 add x1, 32
 add x2, 32
 
-mov di,0 
-mov cx,2 
-DrawRegisterNAME mess1 
+
+DrawButtonMessage mess1 
 DrawRec x1,y1,x2,y2
  
 movCursor 68,6 
 
 add x1, 32
 add x2, 32
-mov di,0 
-mov cx,2 
-DrawRegisterNAME mess2 
+
+DrawButtonMessage mess2 
 DrawRec x1, y1, x2,y2
 
 add x1, 32
 add x2, 32
 movCursor 68,8 
-DrawRegisterNAME mess3 
+DrawButtonMessage mess3 
 DrawRec x1, y1, x2,y2
 
 
 add x1, 32
 add x2, 32
 movCursor 68,10 
-DrawRegisterNAME mess4 
+DrawButtonMessage mess4 
 DrawRec x1, y1, x2,y2
 
 add x1, 32
 add x2, 32
 movCursor 68,12
-DrawRegisterNAME mess5 
+DrawButtonMessage mess5 
 DrawRec x1, y1, x2,y2
 
 
 add x1, 32
 add x2, 32
 movCursor 68,14
-DrawRegisterNAME mess6 
+DrawButtonMessage mess6 
 DrawRec x1, y1, x2,y2
 
 add x1, 32
 add x2, 32
 movCursor 68,16
-DrawRegisterNAME mess7 
+DrawButtonMessage mess7 
 DrawRec x1, y1, x2,y2
 
 
@@ -412,59 +416,56 @@ mov y1, 410
 mov x2, 45
 mov y2, 440 
 movCursor 52,2 
-mov di,0 
-mov cx,2 
-DrawRegisterNAME mess 
+ 
+DrawButtonMessage mess 
 DrawRec x1,y1,x2,y2
 movCursor 52,4 
 
 add x1, 32
 add x2, 32
 
-mov di,0 
-mov cx,2 
-DrawRegisterNAME mess1 
+
+DrawButtonMessage mess1 
 DrawRec x1,y1,x2,y2
  
 movCursor 52,6 
 
 add x1, 32
 add x2, 32
-mov di,0 
-mov cx,2 
-DrawRegisterNAME mess2 
+
+DrawButtonMessage mess2 
 DrawRec x1, y1, x2,y2
  
 add x1, 32
 add x2, 32
 movCursor 52,8 
-DrawRegisterNAME mess3 
+DrawButtonMessage mess3 
 DrawRec x1, y1, x2,y2
 
 
 add x1, 32
 add x2, 32
 movCursor 52,10 
-DrawRegisterNAME mess4 
+DrawButtonMessage mess4 
 DrawRec x1, y1, x2,y2
 
 add x1, 32
 add x2, 32
 movCursor 52,12
-DrawRegisterNAME mess5 
+DrawButtonMessage mess5 
 DrawRec x1, y1, x2,y2
 
 
 add x1, 32
 add x2, 32
 movCursor 52,14
-DrawRegisterNAME mess6 
+DrawButtonMessage mess6 
 DrawRec x1, y1, x2,y2
 
 add x1, 32
 add x2, 32
 movCursor 52,16
-DrawRegisterNAME mess7 
+DrawButtonMessage mess7 
 DrawRec x1, y1, x2,y2
 
 
@@ -863,53 +864,39 @@ FIXED proc far
     DrawRec 30, 405, 280,510
     CALL SHOW_CHAT
     RET
-FIXED endp
-
-DrawSnak PROC 
-mov SI,offset snakeX
-mov DI,offset snakeY
-mov Bl,SnakSize
-
-mov al,color ;Pixel color
-mov ah,0ch ;Draw Pixel Command
-backn: 
-mov cx,[SI] ;Column
-mov dx,[DI] ;Row      
-int 10h
-add SI,2
-add DI,2
-dec bl
-jnz backn 
-ret
-DrawSnak ENDP
-
-ShiftSnak proc 
-    push AX
-    mov SI,offset snakeX
-    mov DI,offset snakeY  
+FIXED endp   
+=======
+FIRSTSCREEN PROC FAR
+    CALL FIXED
+    movCursor 14,9
+    DrawRec 130,90,170,190
+    DrawButtonMessage ADDRESS
     
-    mov al,0 ;Pixel color
-    mov ah,0ch ;Draw Pixel Command 
-    mov cx,[SI+SnakSize*2-2] ;Column
-    mov dx,[DI+SnakSize*2-2] ;Row      
-    int 10h
+
+    movCursor 14,14
+    DrawRec 210,90,250,190
+    DrawButtonMessage REGISTER
+    RET
+FIRSTSCREEN ENDP
+
+;THE SECOND SCREEN WILL MAKE THE USER CHOOSE BETWEEN REGISTER AND VALUE AND ADRESS
+SECONDSCREEN PROC FAR
+    CALL FIXED
+    movCursor 14,9
+    DrawButtonMessage VALUE
+    DrawRec 130,90,170,190
     
-    add SI,SnakSize*2-2
-    add DI,SnakSize*2-2
-    mov cx,SnakSize-1
- shft:    
-         mov bx,[SI-2] 
-         mov dx,[DI-2] 
-         mov [SI],bx 
-         mov [DI],dx 
-         SUB SI,2
-         SUB DI,2      
-         loop shft 
-mov SI,offset snakeX
-mov DI,offset snakeY
-pop AX 
-ret        
-ShiftSnak endp    
+    movCursor 14,14
+    DrawButtonMessage REGISTER
+    DrawRec 210,90,250,190
+
+    movCursor 14,19
+    DrawButtonMessage ADDRESS
+    DrawRec 290,90,330,190
+
+    RET
+SECONDSCREEN ENDP
+>>>>>>> 98a6ef2e95e57a58214a2aa2762ecad72662e211
 MAIN PROC FAR
     MOV AX,@DATA
     MOV DS,AX

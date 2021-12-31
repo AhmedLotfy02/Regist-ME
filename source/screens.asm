@@ -23,54 +23,61 @@ ClearScreen MACRO beginCol,beginRow,endCol,endRow
 ENDM
 
 printCharacter macro Char    
-    PUSHA                                 ;Takes a character and displays it
+    PUSH dx
+    push ax                                 ;Takes a character and displays it
+
     mov dl,  Char
     mov ah,  2h
     int 21h
-    POPA
+
+    POP ax
+    pop dx
 endm
 
-DrawRec Macro Xb,Yb,Xen,Yen  
-    local back1, back2, back3, back4 
-    PUSHA
-    mov cx,Yb ;Column 
-    mov dx,Xb ;Row 
-    mov al,5 ;Pixel color 
-    mov ah,0ch ;Draw Pixel Command 
-    
-    
-    
-    back1: int 10h 
-    inc cx 
-    cmp cx,Yen 
-    jnz back1  
-    
-    mov cx,Yb ;Column 
-    mov dx,Xen ;Row 
-    
-    back2: int 10h 
-    inc cx 
-    cmp cx,Yen 
-    jnz back2  
-    
-    mov cx,Yb ;Column 
-    mov dx,Xb ;Row 
-            
-    back3: int 10h 
-    inc dx 
-    cmp dx,xen 
-    jnz back3 
-    
-    mov cx,Yen ;Column 
-    mov dx,Xb ;Row 
-            
+DrawRec Macro Xb,Yb,Xen,Yen 
+    local back1, back2, back3, back4
+    PUSH AX
+    PUSH DX
+    PUSH CX
+    mov cx,Yb ;Column
+    mov dx,Xb ;Row
+    mov al,5 ;Pixel color
+    mov ah,0ch ;Draw Pixel Command
 
-    back4: int 10h 
-    inc dx 
-    cmp dx,xen 
-    jnz back4 
-    POPA 
-ENDM 
+    back1: int 10h
+    inc cx
+    cmp cx,Yen
+    jnz back1 
+
+    mov cx,Yb ;Column
+    mov dx,Xen ;Row
+
+    back2: int 10h
+    inc cx
+    cmp cx,Yen
+    jnz back2 
+
+    mov cx,Yb ;Column
+    mov dx,Xb ;Row
+            
+    back3: int 10h
+    inc dx
+    cmp dx,xen
+    jnz back3
+
+    mov cx,Yen ;Column
+    mov dx,Xb ;Row
+            
+    back4: int 10h
+    inc dx
+    cmp dx,xen
+    jnz back4
+
+    POP CX 
+    POP DX
+    POP AX
+
+ENDM
 Print macro Stringo   
     PUSHA                                          ;Takes a string and prints it 
     mov AH, 09h 
@@ -78,71 +85,77 @@ Print macro Stringo
     int 21h 
     POPA    
 endm Print
-DrawRegisterNAME macro Stringo
-        local loop4,ENDED
-        PUSHA
-        mov di,0    
-        mov cL,'$'
+DrawButtonMessage macro String
+        local loop4
+        pusha
+
+        mov di,0   
+        mov bh, '$' 
         loop4:
-            CMP CL,STRINGO[DI]
-            JZ ENDED
-            printCharacter Stringo[di]
+            printCharacter String[di]
             inc di
-            JMP LOOP4
-        ENDED:
-        POPA
+            mov bl, String[di]
+            cmp bl, bh
+        jne loop4
+
+        popa
 ENDM
 movCursor MACRO x, y
-        ; Push all used regeister in stack to get their original value after the operation
-        PUSHA
-        
-        ; Intrrupt to mov the cursor to determined position
-        mov ah, 2h
-        mov dl, x
-        mov dh, y
-        int 10h
-        
-        POPA
+    ; Push all used regeister in stack to get their original value after the operation
+    push ax
+    push dx
+    
+    ; Intrrupt to mov the cursor to determined position
+    mov ah, 2
+    mov dl, x
+    mov dh, y
+    int 10h
+    
+    pop dx
+    pop ax
         
 ENDM movCursor
 
 ;description:
 ; the first screen will make the user choose between register
-firstScreen MACRO
-    ;ClearScreen 0,0,50,20
-    MOVCURSOR 14,9
-    DRAWREGISTERNAME address
-    DrawRec 130,90,170,160
+FIRSTSCREEN PROC FAR
+    movCursor 14,9
+    DrawRec 130,90,170,190
+    DrawButtonMessage ADDRESS
+    
 
     movCursor 14,14
-    DRAWREGISTERNAME REGISTER
-    DRAWREC 210,90,250,160
-ENDM
+    DrawRec 210,90,250,190
+    DrawButtonMessage REGISTER
+    RET
+FIRSTSCREEN ENDP
 
 ;THE SECOND SCREEN WILL MAKE THE USER CHOOSE BETWEEN REGISTER AND VALUE AND ADRESS
-SECONDSCREEN MACRO
-    MOVCURSOR 14,9
-    DRAWREGISTERNAME VALUE
-    DrawRec 130,90,170,160
+SECONDSCREEN PROC FAR
+    movCursor 14,9
+    DrawButtonMessage VALUE
+    DrawRec 130,90,170,190
     
     movCursor 14,14
-    DRAWREGISTERNAME REGISTER
-    DRAWREC 210,90,250,160
+    DrawButtonMessage REGISTER
+    DrawRec 210,90,250,190
 
     movCursor 14,19
-    DRAWREGISTERNAME ADDRESS
-    DRAWREC 290,90,330,160
+    DrawButtonMessage ADDRESS
+    DrawRec 290,90,330,190
 
-ENDM
+    RET
+SECONDSCREEN ENDP
 
 MAIN PROC
     MOV AX,@DATA 
     MOV DS,AX 
     
-    ; AH=0h: Set video mode 
+    ;AH=0h: Set video mode 
     mov al, 12h ; Video mode number 
     mov ah, 0h 
     int 10h 
-    firstscreen
+    CALL SECONDSCREEN
+    RET    
 MAIN ENDP
 END MAIN
