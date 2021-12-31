@@ -228,6 +228,7 @@ main proc far
                         jmp reg_mode_mov1                
                     address_mode_mov1:  
                         call  mov_address_player1
+                        jmp far ptr end_instruction_player1
                     reg_mode_mov1:
                         call  mov_register_player1 
                 jmp far ptr end_instruction_player1   
@@ -273,6 +274,7 @@ main proc far
                         jmp reg_mode_add1                 
                     address_mode_add1:  
                         call  mov_address_player1
+                        jmp far ptr end_instruction_player1
                     reg_mode_add1:      
                         call  mov_register_player1    
                   jmp far ptr end_instruction_player1 
@@ -316,9 +318,10 @@ main proc far
                         jmp reg_mode_sub1        
                         ; address mode processing ---------------------------------------------------------         
                     address_mode_sub1:  
-                        ;call  mov_address_player1
+                        call  mov_address_player1
+                        jmp far ptr end_instruction_player1
                     reg_mode_sub1:                
-                        ;call  mov_register_player1    
+                        call  mov_register_player1    
                   jmp far ptr end_instruction_player1 
     MUL_instruction_player1:                               
         ; call drawing and clicking procedure --------------------------------
@@ -361,6 +364,7 @@ main proc far
                     ; address mode processing ---------------------------------------------------------         
                 address_mode_mul1:  
                     call  div_mul_inc_dec_address_player1
+                    jmp far ptr end_instruction_player1
                 reg_mode_mul1:
                     call  div_mul_inc_dec_register_player1 
               jmp far ptr end_instruction_player1                
@@ -405,7 +409,8 @@ main proc far
                         jmp reg_mode_div1        
                         ; address mode processing ---------------------------------------------------------         
                     address_mode_div1:  
-                        call  div_mul_inc_dec_address_player1
+                        call  div_mul_inc_dec_address_player1 
+                        jmp far ptr end_instruction_player1
                     reg_mode_div1:
                         call  div_mul_inc_dec_register_player1 
                   jmp far ptr end_instruction_player1
@@ -451,7 +456,8 @@ main proc far
                     jmp reg_mode_idiv1        
                     ; address mode processing ---------------------------------------------------------         
                 address_mode_idiv1:  
-                    call  div_mul_inc_dec_address_player1
+                    call  div_mul_inc_dec_address_player1 
+                    jmp far ptr end_instruction_player1
                 reg_mode_idiv1:
                     call  div_mul_inc_dec_register_player1 
               jmp far ptr end_instruction_player1 
@@ -497,6 +503,7 @@ main proc far
                     ; address mode processing ---------------------------------------------------------         
                 address_mode_imul1:  
                     call  div_mul_inc_dec_address_player1
+                    jmp far ptr end_instruction_player1
                 reg_mode_imul1:
                     call  div_mul_inc_dec_register_player1 
               jmp far ptr end_instruction_player1 
@@ -544,6 +551,7 @@ main proc far
             ; address mode processing ---------------------------------------------------------         
         address_mode_inc1:  
             call  div_mul_inc_dec_address_player1
+            jmp far ptr end_instruction_player1
         reg_mode_inc1:
             call  div_mul_inc_dec_register_player1 
       jmp far ptr end_instruction_player1 
@@ -591,6 +599,7 @@ main proc far
             ; address mode processing ---------------------------------------------------------         
         address_mode_dec1:  
             call  div_mul_inc_dec_address_player1
+            jmp far ptr end_instruction_player1
         reg_mode_dec1:
             call  div_mul_inc_dec_register_player1 
       jmp far ptr end_instruction_player1 
@@ -641,6 +650,7 @@ main proc far
             ; address mode processing ---------------------------------------------------------         
         address_mode_sar1:  
             call  shl_shr_ror_rol_address_player1
+            jmp far ptr end_instruction_player1
         reg_mode_sar1:
             call  shl_shr_ror_rol_register_player1 
       jmp far ptr end_instruction_player1
@@ -687,6 +697,7 @@ main proc far
             ; address mode processing ---------------------------------------------------------         
         address_mode_sal1:  
             call  shl_shr_ror_rol_address_player1
+            jmp far ptr end_instruction_player1
         reg_mode_sal1:
             call  shl_shr_ror_rol_register_player1 
       jmp far ptr end_instruction_player1
@@ -732,7 +743,8 @@ main proc far
             jmp reg_mode_shr1        
             ; address mode processing ---------------------------------------------------------         
         address_mode_shr1:  
-            call  shl_shr_ror_rol_address_player1
+            call  shl_shr_ror_rol_address_player1 
+            jmp far ptr end_instruction_player1
         reg_mode_shr1:
             call  shl_shr_ror_rol_register_player1 
       jmp far ptr end_instruction_player1 
@@ -778,6 +790,7 @@ main proc far
                     ; address mode processing ---------------------------------------------------------         
                 address_mode_shl1:  
                     call  shl_shr_ror_rol_address_player1
+                    jmp far ptr end_instruction_player1
                 reg_mode_shl1:
                     call  shl_shr_ror_rol_register_player1 
               jmp far ptr end_instruction_player1
@@ -823,7 +836,8 @@ main proc far
             jmp reg_mode_ror1        
             ; address mode processing ---------------------------------------------------------         
         address_mode_ror1:  
-            call  shl_shr_ror_rol_address_player1
+            call  shl_shr_ror_rol_address_player1 
+            jmp far ptr end_instruction_player1
         reg_mode_ror1:
             call  shl_shr_ror_rol_register_player1 
       jmp far ptr end_instruction_player1
@@ -870,6 +884,7 @@ main proc far
             ; address mode processing ---------------------------------------------------------         
         address_mode_rol1:  
             call  shl_shr_ror_rol_address_player1
+            jmp far ptr end_instruction_player1
         reg_mode_rol1:
             call  shl_shr_ror_rol_register_player1 
       jmp far ptr end_instruction_player1    
@@ -929,7 +944,7 @@ mov_reg_des_player1 proc near
                 mov losepoint_player1,al 
                 cmp losepoint_player1,1
                 jz   lose_point_2_player1_dest 
-                jmp final_address_mode_mov_dest 
+                jmp cont_address_dest_mode_mov2 
                 lose_point_2_player1_dest:
                 jmp far ptr lose_point_dest_player11_mov                 
          cont_address_dest_mode_mov2:
@@ -1271,6 +1286,8 @@ mov_address_player1  proc near
                 ; call macro that check if value in ax is correct 
                 
                 check_word_valid ax, Forbidden_digits_2 ;<----------- working should be uncomment when we solve jump problem
+                mov Player1_Data_Register[bx+1],al
+                mov Player1_Data_Register[bx],ah 
                 ;check_forbidden Forbidden_digits_2,0   ;<----------- not working should be removed later
                 mov al,losepoint 
                 mov losepoint_player1,al 
@@ -1282,7 +1299,7 @@ mov_address_player1  proc near
                 jmp far ptr end_mov_address_player1
         ; destination now is correct  value ------------------------------------------------------------------------------                 
                 jmp cont_address_mode_mov 
-                check_forbidden_regsiter_mov:
+            check_forbidden_regsiter_mov:
                 check_forbidden Forbidden_Registers_2,bl
                 ; need macro to check if this register is not bx or di or si to make later -> should jmp lose_point
                 mov al,losepoint 
@@ -1293,16 +1310,32 @@ mov_address_player1  proc near
                 lose_point_2_player1:
                 jmp far ptr lose_point_player1                 
          cont_address_mode_mov:
-            ;check if value in ax is less than f
+            ;check if value in ax is less than f for two turns player1_turn & player2_turn
             mov bh,0
             mov bl,src_index_val
+            cmp player_turn1,1              ;-> player1 turn 
+            jz player1_check_address_mov
+            jmp cont_check_address_mode_mov2
+            player1_check_address_mov:
             mov ah,Player2_Data_Register[bx]
             mov al,Player2_Data_Register[bx+1] 
             cmp ax,000fh
             JA lose_point_3_player1  ; out of index of data segment -> should be error 
-            jmp cont_address_mode_mov2 
+            jmp cont_check_address_mode_mov2 
             lose_point_3_player1:
-            jmp far ptr lose_point_player1 
+            jmp far ptr lose_point_player1
+            cont_check_address_mode_mov2:
+            cmp player_turn2,1              ;-> player1 turn 
+            jz player2_check_address_mov
+            jmp cont_address_mode_mov2
+            player2_check_address_mov:
+            mov ah,Player1_Data_Register[bx]
+            mov al,Player1_Data_Register[bx+1] 
+            cmp ax,000fh  
+            JA lose_point_4_player1  ; out of index of data segment -> should be error 
+            jmp cont_address_mode_mov2 
+            lose_point_4_player1:
+            jmp far ptr lose_point_player1
             ; check other operand------------------ 
             cont_address_mode_mov2:
             ; call lotfy code to get second operand 
@@ -1398,12 +1431,6 @@ mov_address_player1  proc near
                             mov bl,src_index_val 
                             mov ah,Player1_Data_Register[bx]
                             mov al,Player1_Data_Register[bx+1]
-                            cmp ax,000fh
-                            JA lose_point_address2_player1_mov  ; out of index of data segment -> should be error 
-                            jmp cont_final_address_mode_mov 
-                            lose_point_address2_player1_mov:
-                            jmp far ptr lose_point_player1
-                        cont_final_address_mode_mov:
                             mov si,ax
                             mov bl,dest_index_val
                             cmp instruction_index,0
@@ -1434,6 +1461,7 @@ mov_address_player1  proc near
     
     ret
     mov_address_player1 endp 
+
 ;----------------------------div mul inc dec imul idiv reg ---------------------------------------------------
 div_mul_inc_dec_register_player1 proc near
     
@@ -1485,6 +1513,12 @@ div_mul_inc_dec_register_player1 proc near
                         cmp instruction_index,6
                         jz dec_reg_byte_player1
                         div_reg_byte_player1:                  ; div ------------------------
+                            cmp cx,0
+                            jz div_zero_byte_reg_p1
+                            jmp not_div_zero_byte_reg_p1
+                            div_zero_byte_reg_p1:
+                            jmp far ptr lose_point_div_player1
+                            not_div_zero_byte_reg_p1:
                             div cx
                             mov Player2_Data_Register[0],dl
                             mov Player2_Data_Register[1],al
@@ -1495,6 +1529,12 @@ div_mul_inc_dec_register_player1 proc near
                             mov Player2_Data_Register[1],al 
                             jmp far ptr player1_div_byte_no_turn
                         idiv_reg_byte_player1:                  ; idiv ------------------------
+                            cmp cx,0
+                            jz idiv_zero_byte_reg_p1
+                            jmp not_idiv_zero_byte_reg_p1
+                            idiv_zero_byte_reg_p1:
+                            jmp far ptr lose_point_div_player1
+                            not_idiv_zero_byte_reg_p1:
                             idiv cx
                             mov Player2_Data_Register[0],dl
                             mov Player2_Data_Register[1],al
@@ -1534,6 +1574,12 @@ div_mul_inc_dec_register_player1 proc near
                         cmp instruction_index,6
                         jz dec_reg_byte_player2
                         div_reg_byte_player2:                  ; div ------------------------
+                            cmp cx,0
+                            jz div_zero_byte_reg_p2
+                            jmp not_div_zero_byte_reg_p2
+                            div_zero_byte_reg_p2:
+                            jmp far ptr lose_point_div_player1
+                            not_div_zero_byte_reg_p2:
                             div cx
                             mov Player1_Data_Register[0],dl
                             mov Player1_Data_Register[1],al
@@ -1544,6 +1590,12 @@ div_mul_inc_dec_register_player1 proc near
                             mov Player1_Data_Register[1],al 
                             jmp far ptr end_div_reg_player1
                         idiv_reg_byte_player2:                  ; idiv ------------------------
+                            cmp cx,0
+                            jz idiv_zero_byte_reg_p2
+                            jmp not_idiv_zero_byte_reg_p2
+                            idiv_zero_byte_reg_p2:
+                            jmp far ptr lose_point_div_player1
+                            not_idiv_zero_byte_reg_p2:
                             idiv cx
                             mov Player1_Data_Register[0],dl
                             mov Player1_Data_Register[1],al
@@ -1589,43 +1641,55 @@ div_mul_inc_dec_register_player1 proc near
                         cmp instruction_index,6
                         jz dec_reg_word_player1
                         div_reg_word_player1:                  ; div ------------------------
+                            cmp cx,0
+                            jz div_zero_word_reg_p1
+                            jmp not_div_zero_word_reg_p1
+                            div_zero_word_reg_p1:
+                            jmp far ptr lose_point_div_player1
+                            not_div_zero_word_reg_p1:
                             div cx
                             mov Player2_Data_Register[0],ah
                             mov Player2_Data_Register[1],al
                             mov Player2_Data_Register[6],dh
                             mov Player2_Data_Register[7],dl
-                            jmp far ptr end_div_reg_player1
+                            jmp far ptr player1_div_word_no_turn
                         mul_reg_word_player1:                  ; mul ------------------------
                             mul cx
                             mov Player2_Data_Register[0],ah
                             mov Player2_Data_Register[1],al
                             mov Player2_Data_Register[6],dh
                             mov Player2_Data_Register[7],dl
-                            jmp far ptr end_div_reg_player1 
+                            jmp far ptr player1_div_word_no_turn 
                         idiv_reg_word_player1:                  ; idiv ------------------------
+                            cmp cx,0
+                            jz idiv_zero_word_reg_p1
+                            jmp not_idiv_zero_word_reg_p1
+                            idiv_zero_word_reg_p1:
+                            jmp far ptr lose_point_div_player1
+                            not_idiv_zero_word_reg_p1:
                             idiv cx
                             mov Player2_Data_Register[0],ah
                             mov Player2_Data_Register[1],al 
                             mov Player2_Data_Register[6],dh
                             mov Player2_Data_Register[7],dl
-                            jmp far ptr end_div_reg_player1 
+                            jmp far ptr player1_div_word_no_turn 
                         imul_reg_word_player1:                  ; imul ------------------------
                             imul cx
                             mov Player2_Data_Register[0],ah
                             mov Player2_Data_Register[1],al
                             mov Player2_Data_Register[6],dh
                             mov Player2_Data_Register[7],dl
-                            jmp far ptr end_div_reg_player1
+                            jmp far ptr player1_div_word_no_turn
                         inc_reg_word_player1:                  ; inc ------------------------
                             inc cx
                             mov Player2_Data_Register[bx],ch
                             mov Player2_Data_Register[bx+1],cl
-                            jmp far ptr end_div_reg_player1
+                            jmp far ptr player1_div_word_no_turn
                         dec_reg_word_player1:                  ; dec ------------------------
                             dec cx
                             mov Player2_Data_Register[bx],ch
                             mov Player2_Data_Register[bx+1],cl
-                            jmp far ptr end_div_reg_player1 
+                            jmp far ptr player1_div_word_no_turn 
                     
                     ; add player turn here 
                     player1_div_word_no_turn:
@@ -1653,6 +1717,12 @@ div_mul_inc_dec_register_player1 proc near
                         cmp instruction_index,6
                         jz dec_reg_word_player2
                         div_reg_word_player2:                  ; div ------------------------
+                            cmp cx,0
+                            jz div_zero_word_reg_p2
+                            jmp not_div_zero_word_reg_p2
+                            div_zero_word_reg_p2:
+                            jmp far ptr lose_point_div_player1
+                            not_div_zero_word_reg_p2:
                             div cx
                             mov Player1_Data_Register[0],ah
                             mov Player1_Data_Register[1],al
@@ -1667,6 +1737,12 @@ div_mul_inc_dec_register_player1 proc near
                             mov Player1_Data_Register[7],dl
                             jmp far ptr end_div_reg_player1 
                         idiv_reg_word_player2:                  ; idiv ------------------------
+                            cmp cx,0
+                            jz idiv_zero_word_reg_p2
+                            jmp not_idiv_zero_word_reg_p2
+                            idiv_zero_word_reg_p2:
+                            jmp far ptr lose_point_div_player1
+                            not_idiv_zero_word_reg_p2:
                             idiv cx
                             mov Player1_Data_Register[0],ah
                             mov Player1_Data_Register[1],al 
@@ -1691,7 +1767,11 @@ div_mul_inc_dec_register_player1 proc near
                             mov Player1_Data_Register[bx+1],cl
                             jmp far ptr end_div_reg_player1 
                     
-                    
+    
+   lose_point_div_player1:
+        dec intial_points_player1
+        mov losepoint_player1,0 
+        mov losepoint,0                
     end_div_reg_player1:
      
     ret 
@@ -1741,14 +1821,30 @@ div_mul_inc_dec_address_player1  proc near
          cont_address_mode_div:
             ;check if value in ax is less than f
             mov bh,0
-            mov bl,src_index_val
+            mov bl,src_index_val 
+            cmp player_turn1,1              ;-> player1 turn 
+            jz player1_check_address_div
+            jmp cont_check_address_mode_div2
+            player1_check_address_div:
             mov ah,Player2_Data_Register[bx]
             mov al,Player2_Data_Register[bx+1] 
             cmp ax,000fh
             JA lose_point_3_div_address_player1  ; out of index of data segment -> should be error 
-            jmp final_address_mode_div 
+            jmp cont_check_address_mode_div2 
             lose_point_3_div_address_player1:
-            jmp far ptr lose_point_div_address_player1 
+            jmp far ptr lose_point_div_address_player1
+            cont_check_address_mode_div2:
+            cmp player_turn2,1              ;-> player1 turn 
+            jz player2_check_address_div
+            jmp final_address_mode_div
+            player2_check_address_div:
+            mov ah,Player1_Data_Register[bx]
+            mov al,Player1_Data_Register[bx+1] 
+            cmp ax,000fh  
+            JA lose_point_4_div_address_player1  ; out of index of data segment -> should be error 
+            jmp final_address_mode_div 
+            lose_point_4_div_address_player1:
+            jmp far ptr lose_point_div_address_player1
             final_address_mode_div:
                     mov bh,0
                     mov bl,src_index_val
@@ -1778,6 +1874,12 @@ div_mul_inc_dec_address_player1  proc near
                         cmp instruction_index,6
                         jz dec_address_byte_player1
                         div_address_byte_player1:                  ; div ------------------------
+                            cmp cx,0
+                            jz div_zero_address_reg_p1
+                            jmp not_div_zero_address_reg_p1
+                            div_zero_address_reg_p1:
+                            jmp far ptr lose_point_div_player1
+                            not_div_zero_address_reg_p1:
                             div cx
                             mov Player2_Data_Register[0],dh
                             mov Player2_Data_Register[1],al
@@ -1788,6 +1890,12 @@ div_mul_inc_dec_address_player1  proc near
                             mov Player2_Data_Register[1],al 
                             jmp far ptr player1_div_address_byte_no_turn
                         idiv_address_byte_player1:                  ; idiv ------------------------
+                            cmp cx,0
+                            jz idiv_zero_address_reg_p1
+                            jmp not_idiv_zero_address_reg_p1
+                            idiv_zero_address_reg_p1:
+                            jmp far ptr lose_point_div_player1
+                            not_idiv_zero_address_reg_p1:
                             idiv cx
                             mov Player2_Data_Register[0],dh
                             mov Player2_Data_Register[1],al
@@ -1832,6 +1940,12 @@ div_mul_inc_dec_address_player1  proc near
                             cmp instruction_index,6
                             jz dec_address_byte_player2
                             div_address_byte_player2:                  ; div ------------------------
+                                cmp cx,0
+                                jz div_zero_address_reg_p2
+                                jmp not_div_zero_address_reg_p2
+                                div_zero_address_reg_p2:
+                                jmp far ptr lose_point_div_player1
+                                not_div_zero_address_reg_p2:
                                 div cx
                                 mov Player1_Data_Register[0],dh
                                 mov Player1_Data_Register[1],al
@@ -1842,6 +1956,12 @@ div_mul_inc_dec_address_player1  proc near
                                 mov Player1_Data_Register[1],al 
                                 jmp far ptr end_div_address_player1
                             idiv_address_byte_player2:                  ; idiv ------------------------
+                                cmp cx,0
+                                jz idiv_zero_address_reg_p2
+                                jmp not_idiv_zero_address_reg_p2
+                                idiv_zero_address_reg_p2:
+                                jmp far ptr lose_point_div_player1
+                                not_idiv_zero_address_reg_p2:
                                 idiv cx
                                 mov Player1_Data_Register[0],dh
                                 mov Player1_Data_Register[1],al
@@ -1869,7 +1989,7 @@ div_mul_inc_dec_address_player1  proc near
     end_div_address_player1:
     
     ret
-    div_mul_inc_dec_address_player1 endp 
+    div_mul_inc_dec_address_player1 endp
     
 ;----------------------------shl  reg ---------------------------------------------------
 shl_shr_ror_rol_register_player1 proc near
