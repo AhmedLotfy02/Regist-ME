@@ -1336,7 +1336,10 @@ mov_address_player1  proc near
                 mov losepoint_player1,al  
                 cmp losepoint_player1,1
                 ;jz  lose_point_player1   
-                jz end_mov_address_player1
+                jz temp_end_mov_address_player1   ; -> jump far here
+                jmp  final_address_mode_mov
+                temp_end_mov_address_player1:
+                jmp far ptr end_mov_address_player1
                 ;mov bh,0
                 ;mov bl,dest_index_val
                 ;mov ah,Player2_Data_Register[bx]
@@ -1355,8 +1358,12 @@ mov_address_player1  proc near
             mov dl,count_bit_2
             mov dh,0
             cmp dl,2
-            jz lose_point_player1       ;-> should jmp far
-            ; paste here
+            jz lose_point_plyer1       ;-> should jmp far
+            jmp not_lose_point_plyer1
+            lose_point_plyer1:
+            jmp far ptr lose_point_player1
+            ; paste here  
+            not_lose_point_plyer1:
                     cmp player_turn1,1              ;-> player1 turn 
                     jz player1_mov_address_byte_turn
                     jmp player1_mov_address_byte_no_turn 

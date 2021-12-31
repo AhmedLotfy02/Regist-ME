@@ -70,9 +70,9 @@ main proc far
     jnz doesnt_win_player1
     
     wins_player1:
-        mov ah,9
-        lea dx,mes_win1
-        int 21h 
+        ;mov ah,9
+        ;lea dx,mes_win1
+        ;int 21h 
         ;jmp endgame
     
     doesnt_win_player1:
@@ -83,9 +83,9 @@ main proc far
     jnz doesnt_win_player2
     
     wins_player2:
-        mov ah,9
-        lea dx,mes_win2
-        int 21h 
+        ;mov ah,9
+        ;lea dx,mes_win2
+        ;int 21h 
         jmp endgame
     
     doesnt_win_player2:
@@ -163,5 +163,25 @@ Reach_target_player1 proc near
     ret
     Reach_target_player1 endp
 
+zero_points_player1 proc near
+    
+    cmp intial_points_player1,0
+    jz player1_lose_zeropoints
+    jmp player1_not_lose_zeropoints
+    player1_lose_zeropoints:
+        mov win_player2,1
+    player1_not_lose_zeropoints: 
+    ret
+    zero_points_player1 endp 
 
+zero_points_player2 proc near
+    
+    cmp intial_points_player2,0
+    jz player2_lose_zeropoints
+    jmp player2_not_lose_zeropoints
+    player2_lose_zeropoints:
+        mov win_player1,1
+    player2_not_lose_zeropoints: 
+    ret
+    zero_points_player2 endp
 end main
