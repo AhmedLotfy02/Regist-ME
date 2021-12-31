@@ -66,6 +66,12 @@
     PLAYER_ONE_TITLE DB 'PLAYER ONE:','$'
     PLAYER_TWO_TITLE DB 'PLAYER TWO:','$'
 
+
+
+Color equ 0fh                      
+SnakSize equ 100
+snakeX DW SnakSize dup(100)                   
+snakeY DW SnakSize dup(300)
     ;;tests
     x DW ?
     y dw ?
@@ -858,8 +864,8 @@ FIXED proc far
     DrawRec 30, 405, 280,510
     CALL SHOW_CHAT
     RET
-FIXED endp
-
+FIXED endp   
+=======
 FIRSTSCREEN PROC FAR
     CALL FIXED
     movCursor 14,9
@@ -890,6 +896,7 @@ SECONDSCREEN PROC FAR
 
     RET
 SECONDSCREEN ENDP
+>>>>>>> 98a6ef2e95e57a58214a2aa2762ecad72662e211
 MAIN PROC FAR
     MOV AX,@DATA
     MOV DS,AX
@@ -900,18 +907,18 @@ MAIN PROC FAR
     int 10h
 
     ; AH=2h: Set cursor position
-    mov dl, 2 ; Column
-    mov dh, 3 ; Row
-    mov bx, 0 ; Page number, 0 for graphics modes
-    mov ah, 2h
-    int 10h
-
+   ; mov dl, 2 ; Column
+    ;mov dh, 3 ; Row
+    ;mov bx, 0 ; Page number, 0 for graphics modes
+    ;mov ah, 2h
+    ;int 10h
+    ;call DrawSnak
     ;CALL DRAW_REGISTER_NAMES
     ;CALL SHOW_POWER_UP
     ;CALL SHOW_INSTRUCTION_BUTTON
     ;CALL SHOW_INSTRUCTIONS
     ;CALL HIDE_POWER_UP
-    CALL BEGIN_GAME
+    ;CALL BEGIN_GAME
     ;CALL SHOW_AFTER_INSTRUCTION
     ;CALL SHOW_2ND_OPERAND
     ;CALL SHOW_REGISTERS_CHOICE
@@ -920,36 +927,104 @@ MAIN PROC FAR
     ;CALL SHOW_PLAYER_TWO_NAME
     ;CALL SHOW_CHAT
 
+mov CX,0
+mov BX,0
+fill:
+add snakeX[BX],CX
+add BX,2         
+inc cx
+cmp cx,SnakSize-1
+jnz fill
+
+call DrawSnak
+
+CHECK: mov ah,1
+int 16h          
+jz CHECK  
+
+call ShiftSnak
+
+cmp ah,72
+jz MoveUp
+
+cmp ah,80
+jz MoveDown
+
+cmp ah,75
+jz MoveLeft
+
+cmp ah,77
+jz MoveRight
+
+ReadKey:
+mov ah,0
+int 16h  
+call DrawSnak
+jmp CHECK
+
+MoveUp:  
+mov BX,[SI+2]
+mov [SI],BX
+mov BX,[DI+2]
+dec BX
+mov [DI],BX
+jmp ReadKey
+
+MoveDown:
+mov BX,[SI+2]
+mov [SI],BX
+mov BX,[DI+2]
+inc BX
+mov [DI],BX
+jmp ReadKey
+
+MoveLeft:
+mov BX,[SI+2]
+dec BX
+mov [SI],BX
+mov BX,[DI+2]
+mov [DI],BX
+jmp ReadKey
+
+MoveRight:
+mov BX,[SI+2]
+inc BX
+mov [SI],BX
+mov BX,[DI+2]
+mov [DI],BX
+jmp ReadKey
+
+ 
 
     ;;ASAAD'S TEST OF MOUSE CLICKS
-    Again: getMousePosition x, y
-        cmp y, 20
-        jb Again
-        cmp y, 60
-        ja Again
+;     Again: getMousePosition x, y
+;         cmp y, 20
+;         jb Again
+;         cmp y, 60
+;         ja Again
 
-        cmp x, 30
-        jb Again
-        cmp x, 140
-        ja Again
-        ;blankScreen 05h,0,100
-        ;ClearScreen 0, 0, 25, 80
-    CALL CLR
-    CALL SHOW_INSTRUCTIONS
-    Show_mouse
-    ;;;;;;
-    ;CALL SHOW_AFTER_INSTRUCTION
-    ;CALL SHOW_2ND_OPERAND
-    ;CALL SHOW_REGISTERS_CHOICE
-    ;CALL SHOW_POWER_UPS_CHOICE
-    ;CALL SHOW_PLAYER_ONE_NAME
-    ;CALL SHOW_PLAYER_TWO_NAME
-    ;CALL SHOW_CHAT
+;         cmp x, 30
+;         jb Again
+;         cmp x, 140
+;         ja Again
+;         ;blankScreen 05h,0,100
+;         ;ClearScreen 0, 0, 25, 80
+;    ; CALL CLR
+;     ;CALL SHOW_INSTRUCTIONS
+;     Show_mouse
+;     ;;;;;;
+;     ;CALL SHOW_AFTER_INSTRUCTION
+;     ;CALL SHOW_2ND_OPERAND
+;     ;CALL SHOW_REGISTERS_CHOICE
+;     ;CALL SHOW_POWER_UPS_CHOICE
+;     ;CALL SHOW_PLAYER_ONE_NAME
+;     ;CALL SHOW_PLAYER_TWO_NAME
+;     ;CALL SHOW_CHAT
 
-    ; loop1:
+;     ; loop1:
 
-    ; jmp loop1
-    ; hlt
+;     ; jmp loop1
+;     ; hlt
 MAIN endp
 
 END MAIN
