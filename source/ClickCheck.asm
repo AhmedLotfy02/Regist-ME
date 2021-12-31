@@ -341,7 +341,7 @@ ENDP
 
 
 ;------------------------------------------ Macros for clicking an icon on the GUI of player 2 -----------------------------------------------
-moveToRightLabelofPalyer1 PROC near
+moveToRightLabelofPalyer2 PROC near
     ; local notmov,movlabel,notADD,ADDabel,notADC,ADCLabel,notSUB,SUBLabel,notSBB,SBBlabel,notXOR,XORlabel,notAND,ANDlabel,notOR,ORlabel,notNOP,NOPlabel,notSHR,SHRlabel,notSHL,SHLlabel,notSAR,SARlabel,notCLC,CLClabel,notROR,RORlabel,notROL,ROLlabel,notRCL,RCLlabel,notRCR,RCRlabel,notPUSH,PUSHlabel,notPOP,POPlabel,notINC,INClabel,notDEC,DEClabel,notDiv,Divlabel,notIDiv,IDivlabel,notMUL,MULlabel,notIMUL,IMULlabel
     ; PUSH AX
     ; PUSH BX
