@@ -102,6 +102,9 @@ MOUSEPOSITION_Y dw ?
         ;;tests
         x DW ?
         y dw ?
+        message1 db 'to start game prress f1$'
+        message2 db 'to start chat prress f2$'
+        message3 db 'to end game prress esc$'
         ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     
@@ -719,29 +722,29 @@ moveToRightLabelofPlayer2 proc FAR
     mov ax,x
     mov bx,y
     CMP Ax,word ptr MOVCORDINATES[0]
-    jb notmov
+    jb notmov2
     cmp AX,word ptr MOVCORDINATES[4]
-    ja notmov
+    ja notmov2
     cmp BX,word ptr MOVCORDINATES[2]
-    jb notmov
+    jb notmov2
     cmp BX,word ptr MOVCORDINATES[6]
-    ja notmov
+    ja notmov2
     print message
     ;jmp movlabelOfplayer2
-    notmov:
+    notmov2:
 
 
     
     CMP AX,word ptr ADDCORDINATES[0]
-    jl notADD
+    jl notADD2
     cmp AX,word ptr ADDCORDINATES[4]
-    jg notADD
+    jg notADD2
     cmp bx,word ptr ADDCORDINATES[2]
-    jl notADD
+    jl notADD2
     cmp bx,word ptr ADDCORDINATES[6]
-    jg noTADD
+    jg noTADD2
     ;jmp ADDlabelOfPlayer2
-    notADD:
+    notADD2:
 
 
 
@@ -760,15 +763,15 @@ moveToRightLabelofPlayer2 proc FAR
 
 
     CMP AX,word ptr SUBCORDINATES[0]
-    jl notSUB
+    jl notSUB2
     cmp AX,word ptr SUBCORDINATES[4]
-    jg notSUB
+    jg notSUB2
     cmp bx,word ptr SUBCORDINATES[2]
-    jl notSUB
+    jl notSUB2
     cmp bx,word ptr SUBCORDINATES[6]
-    jg notSUB
+    jg notSUB2
     ;jmp SUBLabelOfPlayer2
-    notSUB:
+    notSUB2:
 
 
 
@@ -788,79 +791,79 @@ moveToRightLabelofPlayer2 proc FAR
 
 
     CMP AX,word ptr XORCORDINATES[0]
-    jl notXOR
+    jl notXOR2
     cmp AX,word ptr XORCORDINATES[4]
-    jg notXOR
+    jg notXOR2
     cmp bx,word ptr XORCORDINATES[2]
-    jl noTXOR
+    jl noTXOR2
     cmp bx,word ptr XORCORDINATES[6]
-    jg notXOR
+    jg notXOR2
     ;jmp XORlabelOfPlayer2
-    notXOR:
+    notXOR2:
 
 
 
     CMP AX,word ptr ANDCORDINATES[0]
-    jb notAND
+    jb notAND2
     cmp AX,word ptr ANDCORDINATES[4]
-    ja notAND
+    ja notAND2
     cmp bx,word ptr ANDCORDINATES[2]
-    jb notAND
+    jb notAND2
     cmp bx,word ptr ANDCORDINATES[6]
-    ja notAND
+    ja notAND2
     ;jmp ANDlabelOfPlayer2
     print message
-    notAND:
+    notAND2:
 
 
     CMP AX,word ptr ORCORDINATES[0]
-    jl notOR
+    jl notOR2
     cmp AX,word ptr ORCORDINATES[4]
-    jg notOR
+    jg notOR2
     cmp bx,word ptr ORCORDINATES[2]
-    jl notOR
+    jl notOR2
     cmp bx,word ptr ORCORDINATES[6]
-    jg notOR
+    jg notOR2
     ;jmp ORlabelOfPlayer2
-    notOR:
+    notOR2:
 
 
 
     CMP AX,word ptr NOPCORDINATES[0]
-    jl notNOP
+    jl notNOP2
     cmp AX,word ptr NOPCORDINATES[4]
-    jg notNOP
+    jg notNOP2
     cmp bx,word ptr NOPCORDINATES[2]
-    jl notNOP
+    jl notNOP2
     cmp bx,word ptr NOPCORDINATES[6]
-    jg notNOP
+    jg notNOP2
     ;jmp NOPlabelOfPlayer2
-    noTNOP:
+    noTNOP2:
 
 
 
     CMP AX,word ptr SHRCORDINATES[0]
-    jl notSHR
+    jl notSHR2
     cmp AX,word ptr SHRCORDINATES[4]
-    jg notSHR
+    jg notSHR2
     cmp bx,word ptr SHRCORDINATES[2]
-    jl notSHR
+    jl notSHR2
     cmp bx,word ptr SHRCORDINATES[6]
-    jg notSHR
+    jg notSHR2
     ;jmp SHRlabelOfPlayer2
-    noTSHR:
+    noTSHR2:
 
 
     CMP AX,word ptr SHLCORDINATES[0]
-    jl notSHL
+    jl notSHL2
     cmp AX,word ptr SHLCORDINATES[4]
-    jg notSHL
+    jg notSHL2
     cmp bx,word ptr SHLCORDINATES[2]
-    jl notSHL
+    jl notSHL2
     cmp bx,word ptr SHLCORDINATES[6]
-    jg notSHL
+    jg notSHL2
     ;jmp SHLlabelOfPlayer2
-    noTSHL:
+    noTSHL2:
 
 
 
@@ -891,26 +894,26 @@ moveToRightLabelofPlayer2 proc FAR
 
 
 CMP AX,word ptr RORCORDINATES[0]
-    jl notROR
+    jl notROR2
     cmp AX,word ptr RORCORDINATES[4]
-    jg notROR
+    jg notROR2
     cmp bx,word ptr RORCORDINATES[2]
-    jl notROR
+    jl notROR2
     cmp bx,word ptr RORCORDINATES[6]
-    jg notROR
+    jg notROR2
     ;jmp RORlabelOfPlayer2
-    noTROR:
+    noTROR2:
 
 CMP AX,word ptr ROLCORDINATES[0]
-    jl notROL
+    jl notROL2
     cmp AX,word ptr ROLCORDINATES[4]
-    jg notROL
+    jg notROL2
     cmp bx,word ptr ROLCORDINATES[2]
-    jl notROL
+    jl notROL2
     cmp bx,word ptr ROLCORDINATES[6]
-    jg notROL
+    jg notROL2
     ;jmp ROLlabelOfPlayer2
-    noTROL:
+    noTROL2:
 
 
 ; CMP AX,word ptr RCLCORDINATES[0]
@@ -964,50 +967,50 @@ CMP AX,word ptr ROLCORDINATES[0]
 
 
 CMP AX,word ptr INCCORDINATES[0]
-    jl notINC
+    jl notINC2
     cmp AX,word ptr INCCORDINATES[4]
-    jg notINC
+    jg notINC2
     cmp bx,word ptr INCCORDINATES[2]
-    jl notINC
+    jl notINC2
     cmp bx,word ptr INCCORDINATES[6]
-    jg notINC
+    jg notINC2
     ;jmp INClabelOfPlayer2
-    noTINC:
+    noTINC2:
 
 
 CMP AX,word ptr DECCORDINATES[0]
-    jl notDEC
+    jl notDEC2
     cmp AX,word ptr DECCORDINATES[4]
-    jg notDEC
+    jg notDEC2
     cmp bx,word ptr DECCORDINATES[2]
-    jl notDEC
+    jl notDEC2
     cmp bx,word ptr DECCORDINATES[6]
-    jg notDEC
+    jg notDEC2
     ;jmp DEClabelOfPlayer2
-    noTDEC:
+    noTDEC2:
 
 
 CMP AX,word ptr DivCORDINATES[0]
-    jl notDiv
+    jl notDiv2
     cmp AX,word ptr DivCORDINATES[4]
-    jg notDiv
+    jg notDiv2
     cmp bx,word ptr DivCORDINATES[2]
-    jl notDiv
+    jl notDiv2
     cmp bx,word ptr DivCORDINATES[6]
-    jg notDiv
+    jg notDiv2
     ;jmp DivlabelOfPlayer2
-    noTDiv:
+    noTDiv2:
 
 CMP AX,word ptr IDivCORDINATES[0]
-    jl notIDiv
+    jl notIDiv2
     cmp AX,word ptr IDivCORDINATES[4]
-    jg notIDiv
+    jg notIDiv2
     cmp bx,word ptr IDivCORDINATES[2]
-    jl notIDiv
+    jl notIDiv2
     cmp bx,word ptr IDivCORDINATES[6]
-    jg notIDiv
+    jg notIDiv2
     ;jmp IDivlabelOfPlayer2
-    noTIDiv:
+    noTIDiv2:
 
     ; CMP AX,word ptr MULCORDINATES[0]
     ; jl notMUL
@@ -1021,15 +1024,15 @@ CMP AX,word ptr IDivCORDINATES[0]
     ; noTMUL:
 
     CMP AX,word ptr IMULCORDINATES[0]
-    jl notIMUL
+    jl notIMUL2
     cmp AX,word ptr IMULCORDINATES[4]
-    jg notIMUL
+    jg notIMUL2
     cmp bx,word ptr IMULCORDINATES[2]
-    jl notIMUL
+    jl notIMUL2
     cmp bx,word ptr IMULCORDINATES[6]
-    jg notIMUL
+    jg notIMUL2
     ;jmp IMULlabelOfPlayer2
-    noTIMUL:
+    noTIMUL2:
 
     ; POP DX
     ; POP CX
@@ -1593,11 +1596,40 @@ moveToRightLabelofPlayer2 ENDP
 
         RET
     SECONDSCREEN ENDP
-
+    getKeyPressed macro 
+        mov ah,0
+        int 16h
+    endm getKeyPressed
+    
     MAIN PROC near
         MOV AX,@DATA
         MOV DS,AX
+        mov ax,@data
+        mov ds,ax
+        call CLR
+        movCursor 25,7
+        print message1 
+        movCursor 25,12
+        print message2
+        movCursor 25,17
+        print message3
+        loo:
+        getKeyPressed
+        cmp ah,1
+        jne notscape
+        jmp finish
+        notscape:
+        cmp ah,59
+        jne notf1
+        jmp begin
+        notf1:
+        cmp ah,60
+        jne loo   
+        ;jmp chat
+        jmp loo
 
+
+        begin:
         ; AH=0h: Set video mode
         mov al, 12h ; Video mode number
         mov ah, 0h
@@ -1699,7 +1731,7 @@ moveToRightLabelofPlayer2 ENDP
         ; jmp loop1
         ; hlt
     MAIN endp
-        
+        finish :
     END MAIN
 
 CickedRegister MACRO Name,value,NumberOfBytes
