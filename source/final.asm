@@ -1643,16 +1643,16 @@ div_mul_inc_dec_register_player1 proc near
                         div_reg_word_player1:                  ; div ------------------------
                             cmp cx,0
                             jz div_zero_word_reg_p1
-                            jmp not_div_zero_word_reg_p1
-                            div_zero_word_reg_p1:
-                            jmp far ptr lose_point_div_player1
-                            not_div_zero_word_reg_p1:
                             div cx
                             mov Player2_Data_Register[0],ah
                             mov Player2_Data_Register[1],al
                             mov Player2_Data_Register[6],dh
                             mov Player2_Data_Register[7],dl
                             jmp far ptr player1_div_word_no_turn
+                            div_zero_word_reg_p1:
+                            jmp far ptr lose_point_div_player1
+                            not_div_zero_word_reg_p1:
+
                         mul_reg_word_player1:                  ; mul ------------------------
                             mul cx
                             mov Player2_Data_Register[0],ah
@@ -1719,16 +1719,15 @@ div_mul_inc_dec_register_player1 proc near
                         div_reg_word_player2:                  ; div ------------------------
                             cmp cx,0
                             jz div_zero_word_reg_p2
-                            jmp not_div_zero_word_reg_p2
-                            div_zero_word_reg_p2:
-                            jmp far ptr lose_point_div_player1
-                            not_div_zero_word_reg_p2:
                             div cx
                             mov Player1_Data_Register[0],ah
                             mov Player1_Data_Register[1],al
                             mov Player1_Data_Register[6],dh
                             mov Player1_Data_Register[7],dl
                             jmp far ptr end_div_reg_player1
+                            div_zero_word_reg_p2:
+                            jmp far ptr lose_point_div_player1
+
                         mul_reg_word_player2:                  ; mul ------------------------
                             mul cx
                             mov Player1_Data_Register[0],ah
@@ -2086,22 +2085,22 @@ shl_shr_ror_rol_register_player1 proc near
                         jz sar_reg_byte_player2
                         shl_reg_byte_player2:                  ; div ------------------------
                             shl Player1_Data_Register[bx],cl
-                            jmp far ptr player1_shl_byte_no_turn
+                            jmp far ptr end_shl_reg_player1
                         shr_reg_byte_player2:                  ; mul ------------------------
                             shr Player1_Data_Register[bx],cl
-                            jmp far ptr player1_shl_byte_no_turn
+                            jmp far ptr end_shl_reg_player1
                         ror_reg_byte_player2:                  ; idiv ------------------------
                             ror Player1_Data_Register[bx],cl
-                            jmp far ptr player1_shl_byte_no_turn 
+                            jmp far ptr end_shl_reg_player1 
                         rol_reg_byte_player2:                  ; imul ------------------------
                             rol Player1_Data_Register[bx],cl
-                            jmp far ptr player1_shl_byte_no_turn
+                            jmp far ptr end_shl_reg_player1
                         sal_reg_byte_player2:                  ; inc ------------------------
                             sal Player1_Data_Register[bx],cl
-                            jmp far ptr player1_shl_byte_no_turn
+                            jmp far ptr end_shl_reg_player1
                         sar_reg_byte_player2:                  ; dec ------------------------
                             sar Player1_Data_Register[bx],cl
-                            jmp far ptr player1_shl_byte_no_turn
+                            jmp far ptr end_shl_reg_player1
                          
                          
             word_shl_reg_player1:
@@ -2228,7 +2227,7 @@ shl_shr_ror_rol_address_player1  proc near
             ; check if is forbidden or not 
             ; check if src_index_reg is value or register
             ;cmp bl,17                        ; index to value
-            cmp bl , 18                      ; index to address value -> choose which value ?!
+            cmp bl , 17                      ; index to address value -> choose which value ?!
             jz forbidden_digit_address_shl 
             jnz forbidden_regsiter_address_shl 
             forbidden_digit_address_shl:
@@ -2375,7 +2374,10 @@ shl_shr_ror_rol_address_player1  proc near
     
     ret
     shl_shr_ror_rol_address_player1 endp 
+     
     
+;----------------------------shl  reg ---------------------------------------------------
+
 
 
 
