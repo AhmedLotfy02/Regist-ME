@@ -168,7 +168,7 @@ main proc far
                                                                                               
                                                                                                                
         
-        jmp Mov_instruction_player1    
+        jmp Mov_instruction_player2    
     
     ; power_up_1 
     ; call player1_turn 
@@ -187,51 +187,51 @@ main proc far
     ;
     ;3) player2 perform instruction on player2 data ---> copy player2 data into temp
     ;4) player2 perform power up on player1 data    ---> copy player1 data into temp
-    Mov_instruction_player1: 
+    Mov_instruction_player2: 
             
             ; call draw function or proc of player1
             
-            cmp power_up_player1,1
-            jz mov_power_up1_player1
-            cmp power_up_player1,2
-            jz mov_power_up2_player1
+            cmp power_up_player2,1
+            jz mov_power_up1_player2
+            cmp power_up_player2,2
+            jz mov_power_up2_player2
                 mov player_turn1,1
                 mov player_turn2,0
-                jmp perform_mov_player1 
-            mov_power_up1_player1: 
-                cmp intial_points_player1,5
-                JB nopoints_mov_powerup1_p1 ;-> end instruction of this player because of no points enough
-                jmp can_perform_mov_powerup1_p1 
-                nopoints_mov_powerup1_p1:
-                jmp far ptr end_instruction_player1
-                can_perform_mov_powerup1_p1:
+                jmp perform_mov_player2 
+            mov_power_up1_player2: 
+                cmp intial_points_player2,5
+                JB nopoints_mov_powerup1_p2 ;-> end instruction of this player because of no points enough
+                jmp can_perform_mov_powerup1_p2 
+                nopoints_mov_powerup1_p2:
+                jmp far ptr end_instruction_player2
+                can_perform_mov_powerup1_p2:
                     mov player_turn1,0
                     mov player_turn2,1 
                     sub intial_points_player1,5
-                    jmp perform_mov_player1 
-            mov_power_up2_player1:
-                cmp intial_points_player1,3
-                JB nopoints_mov_powerup2_p1 ;-> end instruction of this player because of no points enough
-                jmp can_perform_mov_powerup2_p1 
-                nopoints_mov_powerup2_p1:
-                jmp far ptr end_instruction_player1
-                can_perform_mov_powerup2_p1:
+                    jmp perform_mov_player2 
+            mov_power_up2_player2:
+                cmp intial_points_player2,3
+                JB nopoints_mov_powerup2_p2 ;-> end instruction of this player because of no points enough
+                jmp can_perform_mov_powerup2_p2 
+                nopoints_mov_powerup2_p2:
+                jmp far ptr end_instruction_player2
+                can_perform_mov_powerup2_p2:
                     mov player_turn1,1
                     mov player_turn2,1
-                    sub intial_points_player1,3
-                    jmp perform_mov_player1
-                perform_mov_player1:
+                    sub intial_points_player2,3
+                    jmp perform_mov_player2
+                perform_mov_player2:
                         mov instruction_index,0
                         mov al,address_mode
                         cmp al,1
-                        jz address_mode_mov1
-                        jmp reg_mode_mov1                
-                    address_mode_mov1:  
-                        call  mov_address_player1
-                        jmp far ptr end_instruction_player1
-                    reg_mode_mov1:
-                        call  mov_register_player1 
-                jmp far ptr end_instruction_player1   
+                        jz address_mode_mov2
+                        jmp reg_mode_mov2                
+                    address_mode_mov2:  
+                        call  mov_address_player2
+                        jmp far ptr end_instruction_player2
+                    reg_mode_mov2:
+                        call  mov_register_player2 
+                jmp far ptr end_instruction_player2   
 
     ADD_instruction_player1:
         ; call drawing and clicking procedure --------------------------------
@@ -273,10 +273,10 @@ main proc far
                         jz address_mode_add1
                         jmp reg_mode_add1                 
                     address_mode_add1:  
-                        call  mov_address_player1
+                        call  mov_address_player2
                         jmp far ptr end_instruction_player1
                     reg_mode_add1:      
-                        call  mov_register_player1    
+                        call  mov_register_player2    
                   jmp far ptr end_instruction_player1 
     Sub_instruction_player1: 
                                   
@@ -318,10 +318,10 @@ main proc far
                         jmp reg_mode_sub1        
                         ; address mode processing ---------------------------------------------------------         
                     address_mode_sub1:  
-                        call  mov_address_player1
+                        call  mov_address_player2
                         jmp far ptr end_instruction_player1
                     reg_mode_sub1:                
-                        call  mov_register_player1    
+                        call  mov_register_player2    
                   jmp far ptr end_instruction_player1 
     MUL_instruction_player1:                               
         ; call drawing and clicking procedure --------------------------------
@@ -890,7 +890,7 @@ main proc far
       jmp far ptr end_instruction_player1    
 
     
-             
+    end_instruction_player2:             
     end_instruction_player1:
             mov power_up_player1,0             
 
@@ -902,138 +902,138 @@ main proc far
 
 
 ;-------------------------------------mov instruction -----------------------------------------------------------
-mov_reg_des_player1 proc near
+mov_reg_des_player2 proc near
             
             cmp count_bit_1,2
-            jz dest_lose_point_player1_mov
-            jmp here_dest_player1
-            dest_lose_point_player1_mov:
-            jmp far ptr  lose_point_dest_player11_mov
-            here_dest_player1:
+            jz dest_lose_point_player2_mov
+            jmp here_dest_player2
+            dest_lose_point_player2_mov:
+            jmp far ptr  lose_point_dest_player22_mov
+            here_dest_player2:
             mov bl,dest_index_reg
             mov bh,0     
             ; check if is forbidden or not 
             ; check if dest_index_reg is value or register
             ;cmp bl,17                        ; index to value
             cmp bl , 17                      ; index to address value -> choose which value ?!
-            jz check_forbidden_digit_mov_add2 
-            jnz check_forbidden_regsiter_mov_add2 
-            check_forbidden_digit_mov_add2:
+            jz check_forbidden_digit_mov_add22 
+            jnz check_forbidden_regsiter_mov_add22 
+            check_forbidden_digit_mov_add22:
                 ; macro needed to check if value has a forbidden digit or not
                 mov bh,0
                 mov bl,dest_index_val
-                mov ah,Player2_Data_Register[bx]
-                mov al,Player2_Data_Register[bx+1]
+                mov ah,Player1_Data_Register[bx]
+                mov al,Player1_Data_Register[bx+1]
                 
                 ; call macro that check if value in ax is correct 
                 
-                check_word_valid ax, Forbidden_digits_1 ;<----------- working should be uncomment when we solve jump problem
+                check_word_valid ax, Forbidden_digits_2 ;<----------- working should be uncomment when we solve jump problem
                 ;check_forbidden Forbidden_digits_2,0    <----------- not working should be removed later
                 mov al,losepoint 
-                mov losepoint_player1,al 
-                cmp losepoint_player1,1
-                jz  lose_point_1_player1_dest
-                jmp cont_address_dest_mode_mov2 
-                lose_point_1_player1_dest:
-                jmp far ptr lose_point_dest_player11_mov
+                mov losepoint_player2,al 
+                cmp losepoint_player2,1
+                jz  lose_point_1_player2_dest
+                jmp cont_address_dest_mode_mov22 
+                lose_point_1_player2_dest:
+                jmp far ptr lose_point_dest_player22_mov
         ; destination now is correct  value ------------------------------------------------------------------------------                 
-                jmp final_address_mode_mov_dest 
-          check_forbidden_regsiter_mov_add2:
-                check_forbidden Forbidden_Registers_1,bl
+                jmp final_address_mode_mov2_dest 
+          check_forbidden_regsiter_mov_add22:
+                check_forbidden Forbidden_Registers_2,bl
                 ; need macro to check if this register is not bx or di or si to make later -> should jmp lose_point
                 mov al,losepoint 
-                mov losepoint_player1,al 
-                cmp losepoint_player1,1
-                jz   lose_point_2_player1_dest 
-                jmp cont_address_dest_mode_mov2 
-                lose_point_2_player1_dest:
-                jmp far ptr lose_point_dest_player11_mov                 
-         cont_address_dest_mode_mov2:
+                mov losepoint_player2,al 
+                cmp losepoint_player2,1
+                jz   lose_point_2_player2_dest 
+                jmp cont_address_dest_mode_mov22 
+                lose_point_2_player2_dest:
+                jmp far ptr lose_point_dest_player22_mov                 
+         cont_address_dest_mode_mov22:
             ;check if value in ax is less than f
             mov bh,0
             mov bl,dest_index_val
-            mov ah,Player2_Data_Register[bx]
-            mov al,Player2_Data_Register[bx+1] 
+            mov ah,Player1_Data_Register[bx]
+            mov al,Player1_Data_Register[bx+1] 
             cmp ax,000fh
-            JA lose_point_dest_player1_mov  ; out of index of data segment -> should be error 
-            jmp final_address_mode_mov_dest 
-            lose_point_dest_player1_mov:
-            jmp far ptr lose_point_dest_player11_mov 
+            JA lose_point_dest_player2_mov  ; out of index of data segment -> should be error 
+            jmp final_address_mode_mov2_dest 
+            lose_point_dest_player2_mov:
+            jmp far ptr lose_point_dest_player22_mov 
             ;----------------------------------- 
             ; now its valid instruction ----------------------------------
-       final_address_mode_mov_dest:
+       final_address_mode_mov2_dest:
             mov bh,0
             mov bl,dest_index_val 
-            mov ah,Player2_Data_Register[bx]
-            mov al,Player2_Data_Register[bx+1]
+            mov ah,Player1_Data_Register[bx]
+            mov al,Player1_Data_Register[bx+1]
             mov si,ax
             mov bl,src_index_val
             ;mov cx,Player2_Data_Register[bx]  
             ; check if its two byte or not
-                    cmp player_turn1,1
-                    jz player1_mov_byte_dest_turn
-                    jmp far ptr player1_mov_byte_dest_no_turn
-                    player1_mov_byte_dest_turn:
-                        cmp instruction_index,0
-                        jz mov_address_byte_player1_dest
-                        cmp instruction_index,1
-                        jz add_address_byte_player1_dest
-                        cmp instruction_index,2
-                        jz sub_address_byte_player1_dest
-                        mov_address_byte_player1_dest: 
-                            mov cl,data_segment_2[si] 
-                            mov Player2_Data_Register[bx],cl                 ; mov ------------------------
-                            ;mov Player2_Data_Register[bx],ah
-                            jmp far ptr player1_mov_byte_dest_no_turn
-                        add_address_byte_player1_dest:                  ; add ------------------------
-                            mov cl,data_segment_2[si] 
-                            add Player2_Data_Register[bx],cl 
-                            ;add Player2_Data_Register[bx],ah
-                            jmp far ptr player1_mov_byte_dest_no_turn
-                        sub_address_byte_player1_dest:                  ; sub ------------------------
-                            mov cl,data_segment_2[si] 
-                            sub Player2_Data_Register[bx],cl 
-                            ;sub Player2_Data_Register[bx],ah
-                            jmp far ptr player1_mov_byte_dest_no_turn
-                   player1_mov_byte_dest_no_turn:
                     cmp player_turn2,1
-                    jz player2_mov_byte_dest_turn
-                    jmp far ptr end_dest_mov_player1 
-                    player2_mov_byte_dest_turn:
-                        mov bl,dest_index_val 
-                        mov ah,Player1_Data_Register[bx]
-                        mov al,Player1_Data_Register[bx+1]
-                        cmp ax,000fh
-                            JA lose_point_dest2_player1_mov  ; out of index of data segment -> should be error 
-                            jmp cont_final_address_mode_mov_dest 
-                            lose_point_dest2_player1_mov:
-                            jmp far ptr lose_point_dest_player11_mov
-                        cont_final_address_mode_mov_dest:
-                        mov si,ax
-                        mov bl,src_index_val
+                    jz player22_mov_byte_dest_turn
+                    jmp far ptr player22_mov_byte_dest_no_turn
+                    player22_mov_byte_dest_turn:
                         cmp instruction_index,0
-                        jz mov_address_byte_player2_dest
+                        jz mov_address_byte_player22_dest
                         cmp instruction_index,1
-                        jz add_address_byte_player2_dest
+                        jz add_address_byte_player22_dest
                         cmp instruction_index,2
-                        jz sub_address_byte_player2_dest
-                        mov_address_byte_player2_dest: 
+                        jz sub_address_byte_player22_dest
+                        mov_address_byte_player22_dest: 
                             mov cl,data_segment_1[si] 
                             mov Player1_Data_Register[bx],cl                 ; mov ------------------------
                             ;mov Player2_Data_Register[bx],ah
-                            jmp far ptr end_dest_mov_player1
-                        add_address_byte_player2_dest:                  ; add ------------------------
+                            jmp far ptr player22_mov_byte_dest_no_turn
+                        add_address_byte_player22_dest:                  ; add ------------------------
                             mov cl,data_segment_1[si] 
                             add Player1_Data_Register[bx],cl 
                             ;add Player2_Data_Register[bx],ah
-                            jmp far ptr end_dest_mov_player1
-                        sub_address_byte_player2_dest:                  ; sub ------------------------
+                            jmp far ptr player22_mov_byte_dest_no_turn
+                        sub_address_byte_player22_dest:                  ; sub ------------------------
                             mov cl,data_segment_1[si] 
                             sub Player1_Data_Register[bx],cl 
                             ;sub Player2_Data_Register[bx],ah
-                            jmp far ptr end_dest_mov_player1
+                            jmp far ptr player22_mov_byte_dest_no_turn
+                   player22_mov_byte_dest_no_turn:
+                    cmp player_turn1,1
+                    jz player11_mov_byte_dest_turn
+                    jmp far ptr end_dest_mov_player2 
+                    player11_mov_byte_dest_turn:
+                        mov bl,dest_index_val 
+                        mov ah,Player2_Data_Register[bx]
+                        mov al,Player2_Data_Register[bx+1]
+                        cmp ax,000fh
+                            JA lose_point_dest2_player22_mov  ; out of index of data segment -> should be error 
+                            jmp cont_final_address_mode_mov2_dest 
+                            lose_point_dest2_player22_mov:
+                            jmp far ptr lose_point_dest_player22_mov
+                        cont_final_address_mode_mov2_dest:
+                        mov si,ax
+                        mov bl,src_index_val
+                        cmp instruction_index,0
+                        jz mov_address_byte_player11_dest
+                        cmp instruction_index,1
+                        jz add_address_byte_player11_dest
+                        cmp instruction_index,2
+                        jz sub_address_byte_player11_dest
+                        mov_address_byte_player11_dest: 
+                            mov cl,data_segment_2[si] 
+                            mov Player2_Data_Register[bx],cl                 ; mov ------------------------
+                            ;mov Player2_Data_Register[bx],ah
+                            jmp far ptr end_dest_mov_player2
+                        add_address_byte_player11_dest:                  ; add ------------------------
+                            mov cl,data_segment_2[si] 
+                            add Player2_Data_Register[bx],cl 
+                            ;add Player2_Data_Register[bx],ah
+                            jmp far ptr end_dest_mov_player2
+                        sub_address_byte_player11_dest:                  ; sub ------------------------
+                            mov cl,data_segment_2[si] 
+                            sub Player2_Data_Register[bx],cl 
+                            ;sub Player2_Data_Register[bx],ah
+                            jmp far ptr end_dest_mov_player2
 
-    lose_point_dest_player11_mov:
+    lose_point_dest_player22_mov:
         ;cmp player_turn ,1
         ;jz player1_lose_mov_dest_reg 
         ;dec intial_points_player2
@@ -1041,37 +1041,37 @@ mov_reg_des_player1 proc near
         ;mov losepoint,0
         ;jmp end_dest_mov_player1
         ;player1_lose_mov_dest_reg:
-        dec intial_points_player1
-        mov losepoint_player1,0 
+        dec intial_points_player2
+        mov losepoint_player2,0 
         mov losepoint,0
     
-    end_dest_mov_player1:
+    end_dest_mov_player2:
     
     ret
-    mov_reg_des_player1 endp
+    mov_reg_des_player2 endp
 ;----------------------------mov to a register ---------------------------------------------------
-mov_register_player1 proc near
+mov_register_player2 proc near
     
-    check_forbidden Forbidden_instruction_1,instruction_index       
+    check_forbidden Forbidden_instruction_2,instruction_index       
              
             mov bl,src_index_reg
             mov bh,0 
                 
-            check_forbidden Forbidden_Registers_1,bl
+            check_forbidden Forbidden_Registers_2,bl
 
             mov al,losepoint 
-            mov losepoint_player1,al 
-            cmp losepoint_player1,1
-            jz   lose_point_2_reg_player1 
-            jmp cont_reg_mode_mov 
-            lose_point_2_reg_player1:
-            jmp far ptr lose_point_reg_mov_player1                 
-         cont_reg_mode_mov:
+            mov losepoint_player2,al 
+            cmp losepoint_player2,1
+            jz   lose_point_2_reg_player2 
+            jmp cont_reg2_mode_mov 
+            lose_point_2_reg_player2:
+            jmp far ptr lose_point_reg_mov_player2                 
+         cont_reg2_mode_mov:
             ;check if value in ax is less than f
             mov bh,0
             mov bl,src_index_val
-            mov ah,Player2_Data_Register[bx]
-            mov al,Player2_Data_Register[bx+1] 
+            mov ah,Player1_Data_Register[bx]
+            mov al,Player1_Data_Register[bx+1] 
             
             ; check other operand------------------ 
 
@@ -1079,175 +1079,175 @@ mov_register_player1 proc near
             mov ah,count_bit_2
             mov al,count_bit_1
             cmp ah,al ;---------------------------------------------------
-            jnz lose_point_reg_mov_player1_temp 
-            jmp to_this_mov_player1
-            lose_point_reg_mov_player1_temp:
-            jmp far ptr lose_point_reg_mov_player1
-            to_this_mov_player1:
+            jnz lose_point_reg_mov_player2_temp 
+            jmp to_this_mov_player2
+            lose_point_reg_mov_player2_temp:
+            jmp far ptr lose_point_reg_mov_player2
+            to_this_mov_player2:
             cmp address_mode2,1 
             
-            jz address_mode_mov_des_player1
-            jmp  address_mode_mov_des_no_player1
-            address_mode_mov_des_player1:
-                call mov_reg_des_player1
-            jmp far ptr end_mov_reg_player1
+            jz address_mode_mov_des_player2
+            jmp  address_mode_mov_des_no_player2
+            address_mode_mov_des_player2:
+                call mov_reg_des_player2
+            jmp far ptr end_mov_reg_player2
             
-            address_mode_mov_des_no_player1:
+            address_mode_mov_des_no_player2:
             mov bl,dest_index_reg
             mov bh,0
             cmp bl,16                        ; index to value
-            jz check_forbidden_digit_reg_mov2 
-            jnz check_forbidden_regsiter_reg_mov2
-            check_forbidden_digit_reg_mov2:
+            jz check_forbidden_digit_reg_mov22 
+            jnz check_forbidden_regsiter_reg_mov22
+            check_forbidden_digit_reg_mov22:
                 ; macro needed to check if value has a forbidden digit or not
                 
                 mov bh,0
                 mov bl,dest_index_val
-                mov ah,Player2_Data_Register[bx]
-                mov al,Player2_Data_Register[bx+1] 
+                mov ah,Player1_Data_Register[bx]
+                mov al,Player1_Data_Register[bx+1] 
                 ; call macro that check if value in ax is correct
                 ; check if value is 2 bytes or 1 byte so that can call its function
-                check_byte_valid al, Forbidden_digits_1 
+                check_byte_valid al, Forbidden_digits_2 
                 mov al,losepoint 
-                mov losepoint_player1,al  
-                cmp losepoint_player1,1 
+                mov losepoint_player2,al  
+                cmp losepoint_player2,1 
                 
-                jz  forbidden_digit_mov_player1 
-                jmp final_reg_mode_mov
-                forbidden_digit_mov_player1:
-                    jmp far ptr end_mov_reg_player1 
-            check_forbidden_regsiter_reg_mov2:        
+                jz  forbidden_digit_mov_player2 
+                jmp final_reg_mode_mov2
+                forbidden_digit_mov_player2:
+                    jmp far ptr end_mov_reg_player2 
+            check_forbidden_regsiter_reg_mov22:        
             
-                check_forbidden Forbidden_Registers_1,bl
+                check_forbidden Forbidden_Registers_2,bl
                 mov al,losepoint 
-                mov losepoint_player1,al  
-                cmp losepoint_player1,1
-                jz  forbidden_reg_mov_player1
-                jmp final_reg_mode_mov
-                forbidden_reg_mov_player1:
-                    jmp far ptr end_mov_reg_player1   
+                mov losepoint_player2,al  
+                cmp losepoint_player2,1
+                jz  forbidden_reg_mov_player2
+                jmp final_reg_mode_mov2
+                forbidden_reg_mov_player2:
+                    jmp far ptr end_mov_reg_player2   
               
                                 
 
             ; now its valid instruction ----------------------------------
-            final_reg_mode_mov:
+            final_reg_mode_mov2:
             
                 ;mov cx,Player2_Data_Register[bx]  
                 ; check if its two byte or not
                 mov bh,0
                 mov bl,dest_index_val
-                mov ah,Player2_Data_Register[bx]
-                mov al,Player2_Data_Register[bx+1]
+                mov ah,Player1_Data_Register[bx]
+                mov al,Player1_Data_Register[bx+1]
                 mov bl,src_index_val  
                 mov dl,count_bit_2
                 mov dh,0
                 cmp dl,2
-                jz word_mov_reg_Temp_player1
-                jmp byte_mov_reg_temp_player1
-                word_mov_reg_Temp_player1:
-                jmp far ptr word_mov_reg_player1
-                byte_mov_reg_temp_player1: 
-                    cmp player_turn1,1
-                    jz player1_mov_byte_turn
-                    jmp player1_mov_byte_no_turn 
-                    player1_mov_byte_turn:
+                jz word_mov_reg_Temp_player2
+                jmp byte_mov_reg_temp_player2
+                word_mov_reg_Temp_player2:
+                jmp far ptr word_mov_reg_player2
+                byte_mov_reg_temp_player2: 
+                    cmp player_turn2,1
+                    jz player22_mov_byte_turn
+                    jmp player22_mov_byte_no_turn 
+                    player22_mov_byte_turn:
                         mov bl,src_index_val 
                         cmp instruction_index,0
-                        jz mov_reg_byte_player1
+                        jz mov_reg_byte_player22
                         cmp instruction_index,1
-                        jz add_reg_byte_player1
+                        jz add_reg_byte_player22
                         cmp instruction_index,2
-                        jz sub_reg_byte_player1
-                        mov_reg_byte_player1:                  ; mov ------------------------
-                            mov Player2_Data_Register[bx],ah
-                            jmp far ptr player1_mov_byte_no_turn
-                        add_reg_byte_player1:                  ; add ------------------------
-                            add Player2_Data_Register[bx],ah
-                            jmp far ptr player1_mov_byte_no_turn
-                        sub_reg_byte_player1:                  ; sub ------------------------
-                            sub Player2_Data_Register[bx],ah
-                            jmp far ptr player1_mov_byte_no_turn
-                    player1_mov_byte_no_turn:
-                        cmp player_turn2,1
-                        jz player2_mov_byte_turn
-                        jmp far ptr end_mov_reg_player1
-                        player2_mov_byte_turn:
+                        jz sub_reg_byte_player22
+                        mov_reg_byte_player22:                  ; mov ------------------------
+                            mov Player1_Data_Register[bx],ah
+                            jmp far ptr player22_mov_byte_no_turn
+                        add_reg_byte_player22:                  ; add ------------------------
+                            add Player1_Data_Register[bx],ah
+                            jmp far ptr player22_mov_byte_no_turn
+                        sub_reg_byte_player22:                  ; sub ------------------------
+                            sub Player1_Data_Register[bx],ah
+                            jmp far ptr player22_mov_byte_no_turn
+                    player22_mov_byte_no_turn:
+                        cmp player_turn1,1
+                        jz player11_mov_byte_turn
+                        jmp far ptr end_mov_reg_player2
+                        player11_mov_byte_turn:
                             mov bl,dest_index_val 
-                            mov ah,Player1_Data_Register[bx]
-                            mov al,Player1_Data_Register[bx+1]
+                            mov ah,Player2_Data_Register[bx]
+                            mov al,Player2_Data_Register[bx+1]
                             mov bl,src_index_val  
                             cmp instruction_index,0
-                            jz mov_reg_byte_player2
+                            jz mov_reg_byte_player11
                             cmp instruction_index,1
-                            jz add_reg_byte_player2
+                            jz add_reg_byte_player11
                             cmp instruction_index,2
-                            jz sub_reg_byte_player2
-                            mov_reg_byte_player2:                  ; mov ------------------------
-                                mov Player1_Data_Register[bx],ah
-                                jmp far ptr end_mov_reg_player1
-                            add_reg_byte_player2:                  ; add ------------------------
-                                add Player1_Data_Register[bx],ah
-                                jmp far ptr end_mov_reg_player1
-                            sub_reg_byte_player2:                  ; sub ------------------------
-                                sub Player1_Data_Register[bx],ah
-                                jmp far ptr end_mov_reg_player1
+                            jz sub_reg_byte_player11
+                            mov_reg_byte_player11:                  ; mov ------------------------
+                                mov Player2_Data_Register[bx],ah
+                                jmp far ptr end_mov_reg_player2
+                            add_reg_byte_player11:                  ; add ------------------------
+                                add Player2_Data_Register[bx],ah
+                                jmp far ptr end_mov_reg_player2
+                            sub_reg_byte_player11:                  ; sub ------------------------
+                                sub Player2_Data_Register[bx],ah
+                                jmp far ptr end_mov_reg_player2
                                                         
-                word_mov_reg_player1:
-                    cmp player_turn1,1
-                    jz player1_mov_word_turn
-                    jmp player1_mov_word_no_turn 
-                    player1_mov_word_turn:
+                word_mov_reg_player2:
+                    cmp player_turn2,1
+                    jz player22_mov_word_turn
+                    jmp player22_mov_word_no_turn 
+                    player22_mov_word_turn:
                     
                         cmp instruction_index,0
-                        jz mov_reg_word_player1
+                        jz mov_reg_word_player22
                         cmp instruction_index,1
-                        jz add_reg_word_player1
+                        jz add_reg_word_player22
                         cmp instruction_index,2
-                        jz sub_reg_word_player1
-                        mov_reg_word_player1:                  ; mov ------------------------
-                            mov Player2_Data_Register[bx+1],al
-                            mov Player2_Data_Register[bx],ah
-                            jmp far ptr player1_mov_word_no_turn
-                        add_reg_word_player1:                  ; add ------------------------
-                            add Player2_Data_Register[bx+1],al
-                            adc Player2_Data_Register[bx],ah
-                            jmp far ptr player1_mov_word_no_turn
-                        sub_reg_word_player1:                  ; sub ------------------------
-                            sub Player2_Data_Register[bx+1],al
-                            sbb Player2_Data_Register[bx],ah
-                            jmp far ptr player1_mov_word_no_turn             
-                                                            ; lose point because of invalid instruction
-    
-                    player1_mov_word_no_turn:
-                        cmp player_turn2,1
-                        jz player2_mov_word_turn
-                        jmp far ptr end_mov_reg_player1
-                        player2_mov_word_turn:
-                        mov bl,dest_index_val 
-                        mov ah,Player1_Data_Register[bx]
-                        mov al,Player1_Data_Register[bx+1]
-                        mov bl,src_index_val
-                        cmp instruction_index,0
-                        jz mov_reg_word_player2
-                        cmp instruction_index,1
-                        jz add_reg_word_player2
-                        cmp instruction_index,2
-                        jz sub_reg_word_player2
-                        mov_reg_word_player2:                  ; mov ------------------------
+                        jz sub_reg_word_player22
+                        mov_reg_word_player22:                  ; mov ------------------------
                             mov Player1_Data_Register[bx+1],al
                             mov Player1_Data_Register[bx],ah
-                            jmp far ptr end_mov_reg_player1
-                        add_reg_word_player2:                  ; add ------------------------
+                            jmp far ptr player22_mov_word_no_turn
+                        add_reg_word_player22:                  ; add ------------------------
                             add Player1_Data_Register[bx+1],al
                             adc Player1_Data_Register[bx],ah
-                            jmp far ptr end_mov_reg_player1
-                        sub_reg_word_player2:                  ; sub ------------------------
+                            jmp far ptr player22_mov_word_no_turn
+                        sub_reg_word_player22:                  ; sub ------------------------
                             sub Player1_Data_Register[bx+1],al
                             sbb Player1_Data_Register[bx],ah
-                            jmp far ptr end_mov_reg_player1 
+                            jmp far ptr player22_mov_word_no_turn             
+                                                            ; lose point because of invalid instruction
+    
+                    player22_mov_word_no_turn:
+                        cmp player_turn1,1
+                        jz player11_mov_word_turn
+                        jmp far ptr end_mov_reg_player2
+                        player11_mov_word_turn:
+                        mov bl,dest_index_val 
+                        mov ah,Player2_Data_Register[bx]
+                        mov al,Player2_Data_Register[bx+1]
+                        mov bl,src_index_val
+                        cmp instruction_index,0
+                        jz mov_reg_word_player11
+                        cmp instruction_index,1
+                        jz add_reg_word_player11
+                        cmp instruction_index,2
+                        jz sub_reg_word_player11
+                        mov_reg_word_player11:                  ; mov ------------------------
+                            mov Player2_Data_Register[bx+1],al
+                            mov Player2_Data_Register[bx],ah
+                            jmp far ptr end_mov_reg_player2
+                        add_reg_word_player11:                  ; add ------------------------
+                            add Player2_Data_Register[bx+1],al
+                            adc Player2_Data_Register[bx],ah
+                            jmp far ptr end_mov_reg_player2
+                        sub_reg_word_player11:                  ; sub ------------------------
+                            sub Player2_Data_Register[bx+1],al
+                            sbb Player2_Data_Register[bx],ah
+                            jmp far ptr end_mov_reg_player2 
     
     
-    lose_point_reg_mov_player1:
+    lose_point_reg_mov_player2:
         ;cmp player_turn ,1
         ;jz player1_lose_mov_reg 
         ;dec intial_points_player2
@@ -1255,18 +1255,18 @@ mov_register_player1 proc near
         ;mov losepoint,0
         ;jmp end_mov_reg_player1
         ;player1_lose_mov_reg:
-        dec intial_points_player1
-        mov losepoint_player1,0 
+        dec intial_points_player2
+        mov losepoint_player2,0 
         mov losepoint,0
     
-    end_mov_reg_player1:
+    end_mov_reg_player2:
      
     ret 
-    mov_register_player1 endp
+    mov_register_player2 endp
 ;---------------------------------------------------  mov to datasegment  -----------------------------------------------------------------
-mov_address_player1  proc near
+mov_address_player2  proc near
     
-        check_forbidden Forbidden_instruction_1,instruction_index       
+        check_forbidden Forbidden_instruction_2,instruction_index       
 ;-----------------------------i have all indexes-------------------------------------------- 
 ; ---------------------------- assume bolbol will send byte indicate if its address or not (two address modes for destination & source)
             
@@ -1276,115 +1276,115 @@ mov_address_player1  proc near
             ; check if src_index_reg is value or register
             ;cmp bl,17                        ; index to value
             cmp bl , 18                      ; index to address value -> choose which value ?!
-            jz check_forbidden_digit_mov 
-            jnz check_forbidden_regsiter_mov 
-            check_forbidden_digit_mov:
+            jz check2_forbidden_digit_mov 
+            jnz check2_forbidden_regsiter_mov 
+            check2_forbidden_digit_mov:
                 ; macro needed to check if value has a forbidden digit or not
                 mov bh,0
                 mov bl,src_index_val
-                mov ah,Player2_Data_Register[bx]
-                mov al,Player2_Data_Register[bx+1]
+                mov ah,Player1_Data_Register[bx]
+                mov al,Player1_Data_Register[bx+1]
                 ; call macro that check if value in ax is correct 
                 
-                check_word_valid ax, Forbidden_digits_1 ;<----------- working should be uncomment when we solve jump problem
-                mov Player1_Data_Register[bx+1],al
-                mov Player1_Data_Register[bx],ah 
+                check_word_valid ax, Forbidden_digits_2 ;<----------- working should be uncomment when we solve jump problem
+                mov Player2_Data_Register[bx+1],al
+                mov Player2_Data_Register[bx],ah 
                 ;check_forbidden Forbidden_digits_2,0   ;<----------- not working should be removed later
                 mov al,losepoint 
-                mov losepoint_player1,al 
-                cmp losepoint_player1,1
-                jz  lose_point_1_player1
-                jmp cont_address_mode_mov 
-                lose_point_1_player1:
+                mov losepoint_player2,al 
+                cmp losepoint_player2,1
+                jz  lose_point_1_player2
+                jmp cont2_address_mode_mov 
+                lose_point_1_player2:
                 ;jmp far ptr lose_point_player1
-                jmp far ptr end_mov_address_player1
+                jmp far ptr end_mov_address_player2
         ; destination now is correct  value ------------------------------------------------------------------------------                 
-                jmp cont_address_mode_mov 
-            check_forbidden_regsiter_mov:
-                check_forbidden Forbidden_Registers_1,bl
+                jmp cont2_address_mode_mov 
+            check2_forbidden_regsiter_mov:
+                check_forbidden Forbidden_Registers_2,bl
                 ; need macro to check if this register is not bx or di or si to make later -> should jmp lose_point
                 mov al,losepoint 
-                mov losepoint_player1,al 
-                cmp losepoint_player1,1
-                jz   lose_point_2_player1 
-                jmp cont_address_mode_mov 
-                lose_point_2_player1:
-                jmp far ptr lose_point_player1                 
-         cont_address_mode_mov:
+                mov losepoint_player2,al 
+                cmp losepoint_player2,1
+                jz   lose_point_2_player2 
+                jmp cont2_address_mode_mov 
+                lose_point_2_player2:
+                jmp far ptr lose_point_player2                 
+         cont2_address_mode_mov:
             ;check if value in ax is less than f for two turns player1_turn & player2_turn
             mov bh,0
             mov bl,src_index_val
-            cmp player_turn1,1              ;-> player1 turn 
-            jz player1_check_address_mov
-            jmp cont_check_address_mode_mov2
-            player1_check_address_mov:
-            mov ah,Player2_Data_Register[bx]
-            mov al,Player2_Data_Register[bx+1] 
-            cmp ax,000fh
-            JA lose_point_3_player1  ; out of index of data segment -> should be error 
-            jmp cont_check_address_mode_mov2 
-            lose_point_3_player1:
-            jmp far ptr lose_point_player1
-            cont_check_address_mode_mov2:
             cmp player_turn2,1              ;-> player1 turn 
-            jz player2_check_address_mov
-            jmp cont_address_mode_mov2
-            player2_check_address_mov:
+            jz player22_check_address_mov
+            jmp cont_check_address_mode_mov22
+            player22_check_address_mov:
             mov ah,Player1_Data_Register[bx]
             mov al,Player1_Data_Register[bx+1] 
+            cmp ax,000fh
+            JA lose_point_3_player22  ; out of index of data segment -> should be error 
+            jmp cont_check_address_mode_mov22 
+            lose_point_3_player22:
+            jmp far ptr lose_point_player2
+            cont_check_address_mode_mov22:
+            cmp player_turn1,1              ;-> player1 turn 
+            jz player11_check_address_mov
+            jmp cont_address_mode_mov22
+            player11_check_address_mov:
+            mov ah,Player2_Data_Register[bx]
+            mov al,Player2_Data_Register[bx+1] 
             cmp ax,000fh  
-            JA lose_point_4_player1  ; out of index of data segment -> should be error 
-            jmp cont_address_mode_mov2 
-            lose_point_4_player1:
-            jmp far ptr lose_point_player1
+            JA lose_point_4_player22  ; out of index of data segment -> should be error 
+            jmp cont_address_mode_mov22 
+            lose_point_4_player22:
+            jmp far ptr lose_point_player2
             ; check other operand------------------ 
-            cont_address_mode_mov2:
+            cont_address_mode_mov22:
             ; call lotfy code to get second operand 
             mov bl,dest_index_reg
             mov bh,0
             cmp bl,16                        ; index to value
-            jz check_forbidden_digit_mov2 
-            jnz check_forbidden_regsiter_mov2
-            check_forbidden_digit_mov2:
+            jz check_forbidden_digit_mov22 
+            jnz check_forbidden_regsiter_mov22
+            check_forbidden_digit_mov22:
                 ; macro needed to check if value has a forbidden digit or not
                 mov bh,0
                 mov bl,dest_index_val
-                mov ah,Player2_Data_Register[bx]
-                mov al,Player2_Data_Register[bx+1] 
+                mov ah,Player1_Data_Register[bx]
+                mov al,Player1_Data_Register[bx+1] 
                 ; call macro that check if value in ax is correct
-                check_word_valid ax, Forbidden_digits_1 
+                check_word_valid ax, Forbidden_digits_2 
                 mov al,losepoint 
-                mov losepoint_player1,al  
-                cmp losepoint_player1,1
+                mov losepoint_player2,al  
+                cmp losepoint_player2,1
   
-                jz  forbidden_address_mov_player1
-                jmp final_address_mode_mov
-                forbidden_address_mov_player1:
-                    jmp far ptr end_mov_address_player1  
+                jz  forbidden_address_mov_player2
+                jmp final_address_mode_mov2
+                forbidden_address_mov_player2:
+                    jmp far ptr end_mov_address_player2  
             
-            check_forbidden_regsiter_mov2:        
+            check_forbidden_regsiter_mov22:        
             
-                check_forbidden Forbidden_Registers_1,bl
+                check_forbidden Forbidden_Registers_2,bl
                  
                 mov al,losepoint 
-                mov losepoint_player1,al  
-                cmp losepoint_player1,1
+                mov losepoint_player2,al  
+                cmp losepoint_player2,1
                 ;jz  lose_point_player1   
-                jz temp_end_mov_address_player1   ; -> jump far here
-                jmp  final_address_mode_mov
-                temp_end_mov_address_player1:
-                jmp far ptr end_mov_address_player1
+                jz temp_end_mov_address_player2   ; -> jump far here
+                jmp  final_address_mode_mov2
+                temp_end_mov_address_player2:
+                jmp far ptr end_mov_address_player2
                 ;mov bh,0
                 ;mov bl,dest_index_val
                 ;mov ah,Player2_Data_Register[bx]
                 ;mov al,Player2_Data_Register[bx+1]
 
             ; now its valid instruction ----------------------------------
-            final_address_mode_mov:
+            final_address_mode_mov2:
             mov bh,0
             mov bl,src_index_val 
-            mov ah,Player2_Data_Register[bx]
-            mov al,Player2_Data_Register[bx+1]
+            mov ah,Player1_Data_Register[bx]
+            mov al,Player1_Data_Register[bx+1]
             mov si,ax
             mov bl,dest_index_val
             ;mov cx,Player2_Data_Register[bx]  
@@ -1392,86 +1392,86 @@ mov_address_player1  proc near
             mov dl,count_bit_2
             mov dh,0
             cmp dl,2
-            jz lose_point_plyer1       ;-> should jmp far
-            jmp not_lose_point_plyer1
-            lose_point_plyer1:
-            jmp far ptr lose_point_player1
+            jz lose_point_plyer2       ;-> should jmp far
+            jmp not_lose_point_plyer2
+            lose_point_plyer2:
+            jmp far ptr lose_point_player2
             ; paste here  
-            not_lose_point_plyer1:
-                    cmp player_turn1,1              ;-> player1 turn 
-                    jz player1_mov_address_byte_turn
-                    jmp player1_mov_address_byte_no_turn 
-                    player1_mov_address_byte_turn:      
+            not_lose_point_plyer2:
+                    cmp player_turn2,1              ;-> player1 turn 
+                    jz player22_mov_address_byte_turn
+                    jmp player22_mov_address_byte_no_turn 
+                    player22_mov_address_byte_turn:      
                         cmp instruction_index,0
-                        jz mov_address_byte_player1
+                        jz mov_address_byte_player22
                         cmp instruction_index,1
-                        jz add_address_byte_player1
+                        jz add_address_byte_player22
                         cmp instruction_index,2
-                        jz sub_address_byte_player1
-                        mov_address_byte_player1:                  ; mov ------------------------
-                            mov cl,Player2_Data_Register[bx]
-                            mov data_segment_2[si],cl
+                        jz sub_address_byte_player22
+                        mov_address_byte_player22:                  ; mov ------------------------
+                            mov cl,Player1_Data_Register[bx]
+                            mov data_segment_1[si],cl
                             ;mov Player2_Data_Register[bx],ah
-                            jmp far ptr player1_mov_address_byte_no_turn
-                        add_address_byte_player1:                  ; add ------------------------
-                            mov cl,Player2_Data_Register[bx]
-                            add data_segment_2[si],cl
+                            jmp far ptr player22_mov_address_byte_no_turn
+                        add_address_byte_player22:                  ; add ------------------------
+                            mov cl,Player1_Data_Register[bx]
+                            add data_segment_1[si],cl
                             ;add Player2_Data_Register[bx],ah
-                            jmp far ptr player1_mov_address_byte_no_turn
-                        sub_address_byte_player1:                  ; sub ------------------------
-                            mov cl,Player2_Data_Register[bx]
-                            sub data_segment_2[si],cl
+                            jmp far ptr player22_mov_address_byte_no_turn
+                        sub_address_byte_player22:                  ; sub ------------------------
+                            mov cl,Player1_Data_Register[bx]
+                            sub data_segment_1[si],cl
                             ;sub Player2_Data_Register[bx],ah
-                            jmp far ptr player1_mov_address_byte_no_turn
+                            jmp far ptr player22_mov_address_byte_no_turn
                             
-                     player1_mov_address_byte_no_turn:
-                        cmp player_turn2,1
-                        jz player2_mov_address_byte_turn
-                        jmp far ptr end_mov_address_player1
-                        player2_mov_address_byte_turn:
+                     player22_mov_address_byte_no_turn:
+                        cmp player_turn1,1
+                        jz player11_mov_address_byte_turn
+                        jmp far ptr end_mov_address_player2
+                        player11_mov_address_byte_turn:
                             mov bl,src_index_val 
-                            mov ah,Player1_Data_Register[bx]
-                            mov al,Player1_Data_Register[bx+1]
+                            mov ah,Player2_Data_Register[bx]
+                            mov al,Player2_Data_Register[bx+1]
                             mov si,ax
                             mov bl,dest_index_val
                             cmp instruction_index,0
-                            jz mov_address_byte_player2
+                            jz mov_address_byte_player11
                             cmp instruction_index,1
-                            jz add_address_byte_player2
+                            jz add_address_byte_player11
                             cmp instruction_index,2
-                            jz sub_address_byte_player2
-                            mov_address_byte_player2:                  ; mov ------------------------
-                                mov cl,Player1_Data_Register[bx]
-                                mov data_segment_1[si],cl
-                                jmp far ptr end_mov_address_player1
-                            add_address_byte_player2:                  ; add ------------------------
-                                mov cl,Player1_Data_Register[bx]
-                                add data_segment_1[si],cl
-                                jmp far ptr end_mov_address_player1
-                            sub_address_byte_player2:                  ; sub ------------------------
-                                mov cl,Player1_Data_Register[bx]
-                                sub data_segment_1[si],cl
-                                jmp far ptr end_mov_address_player1                                    
+                            jz sub_address_byte_player11
+                            mov_address_byte_player11:                  ; mov ------------------------
+                                mov cl,Player2_Data_Register[bx]
+                                mov data_segment_2[si],cl
+                                jmp far ptr end_mov_address_player2
+                            add_address_byte_player11:                  ; add ------------------------
+                                mov cl,Player2_Data_Register[bx]
+                                add data_segment_2[si],cl
+                                jmp far ptr end_mov_address_player2
+                            sub_address_byte_player11:                  ; sub ------------------------
+                                mov cl,Player2_Data_Register[bx]
+                                sub data_segment_2[si],cl
+                                jmp far ptr end_mov_address_player2                                    
               
-    lose_point_player1:
-        dec intial_points_player1
+    lose_point_player2:
+        dec intial_points_player2
         mov losepoint_player1,0 
         mov losepoint,0
     
-    end_mov_address_player1:
+    end_mov_address_player2:
     
     ret
-    mov_address_player1 endp 
+    mov_address_player2 endp 
 
 ;----------------------------div mul inc dec imul idiv reg ---------------------------------------------------
 div_mul_inc_dec_register_player1 proc near
     
-    check_forbidden Forbidden_instruction_1,instruction_index       
+    check_forbidden Forbidden_instruction_2,instruction_index       
              
             mov bl,src_index_reg
             mov bh,0 
                 
-            check_forbidden Forbidden_Registers_1,bl
+            check_forbidden Forbidden_Registers_2,bl
 
             mov al,losepoint 
             mov losepoint_player1,al 
@@ -1779,7 +1779,7 @@ div_mul_inc_dec_register_player1 proc near
 ;---------------------------------------------------  mov to datasegment  -----------------------------------------------------------------
 div_mul_inc_dec_address_player1  proc near
     
-        check_forbidden Forbidden_instruction_1,instruction_index                   
+        check_forbidden Forbidden_instruction_2,instruction_index                   
             mov bl,src_index_reg
             mov bh,0     
             ; check if is forbidden or not 
@@ -1796,7 +1796,7 @@ div_mul_inc_dec_address_player1  proc near
                 mov al,Player2_Data_Register[bx+1]
                 ; call macro that check if value in ax is correct 
                 
-                check_word_valid ax, Forbidden_digits_1 
+                check_word_valid ax, Forbidden_digits_2 
                 ;check_forbidden Forbidden_digits_2,0    <----------- not working should be removed later
                 mov al,losepoint 
                 mov losepoint_player1,al 
@@ -1809,7 +1809,7 @@ div_mul_inc_dec_address_player1  proc near
         ; destination now is correct  value ------------------------------------------------------------------------------                 
                 jmp cont_address_mode_div 
            forbidden_regsiter_address_div:
-                check_forbidden Forbidden_Registers_1,bl
+                check_forbidden Forbidden_Registers_2,bl
                 ; need macro to check if this register is not bx or di or si to make later -> should jmp lose_point
                 mov al,losepoint 
                 mov losepoint_player1,al 
@@ -1994,12 +1994,12 @@ div_mul_inc_dec_address_player1  proc near
 ;----------------------------shl  reg ---------------------------------------------------
 shl_shr_ror_rol_register_player1 proc near
     
-    check_forbidden Forbidden_instruction_1,instruction_index       
+    check_forbidden Forbidden_instruction_2,instruction_index       
              
             mov bl,src_index_reg
             mov bh,0 
                 
-            check_forbidden Forbidden_Registers_1,bl
+            check_forbidden Forbidden_Registers_2,bl
 
             mov al,losepoint 
             mov losepoint_player1,al 
@@ -2025,7 +2025,7 @@ shl_shr_ror_rol_register_player1 proc near
                 mov Player1_Data_Register[bx],ah
  
                 ; call macro that check if value in ax is correct
-                check_byte_valid ah, Forbidden_digits_1 
+                check_byte_valid ah, Forbidden_digits_2 
                 mov al,losepoint 
                 mov losepoint_player1,al  
                 cmp losepoint_player1,1
@@ -2038,7 +2038,7 @@ shl_shr_ror_rol_register_player1 proc near
                 
                 cmp bl,7
                 jnz lose_point_not_reg_cl_p1
-                check_forbidden Forbidden_Registers_1,bl                 
+                check_forbidden Forbidden_Registers_2,bl                 
                 mov al,losepoint 
                 mov losepoint_player1,al  
                 cmp losepoint_player1,1   
@@ -2262,7 +2262,7 @@ shl_shr_ror_rol_register_player1 proc near
 ;---------------------------------------------------  shl to datasegment  -----------------------------------------------------------------
 shl_shr_ror_rol_address_player1  proc near
     
-        check_forbidden Forbidden_instruction_1,instruction_index                   
+        check_forbidden Forbidden_instruction_2,instruction_index                   
             mov bl,src_index_reg
             mov bh,0     
             ; check if is forbidden or not 
@@ -2279,7 +2279,7 @@ shl_shr_ror_rol_address_player1  proc near
                 mov al,Player2_Data_Register[bx+1]
                 ; call macro that check if value in ax is correct 
                 
-                check_word_valid ax, Forbidden_digits_1 
+                check_word_valid ax, Forbidden_digits_2 
                 ;check_forbidden Forbidden_digits_2,0    <----------- not working should be removed later
                 mov al,losepoint 
                 mov losepoint_player1,al 
@@ -2292,7 +2292,7 @@ shl_shr_ror_rol_address_player1  proc near
         ; destination now is correct  value ------------------------------------------------------------------------------                 
                 jmp cont_address_mode_shl 
            forbidden_regsiter_address_shl:
-                check_forbidden Forbidden_Registers_1,bl
+                check_forbidden Forbidden_Registers_2,bl
                 ; need macro to check if this register is not bx or di or si to make later -> should jmp lose_point
                 mov al,losepoint 
                 mov losepoint_player1,al 
@@ -2329,7 +2329,7 @@ shl_shr_ror_rol_address_player1  proc near
                 mov Player1_Data_Register[bx],ah
  
                 ; call macro that check if value in ax is correct
-                check_byte_valid ah, Forbidden_digits_1 
+                check_byte_valid ah, Forbidden_digits_2 
                 mov al,losepoint 
                 mov losepoint_player1,al  
                 cmp losepoint_player1,1
@@ -2342,7 +2342,7 @@ shl_shr_ror_rol_address_player1  proc near
                 
                 cmp bl,7
                 jnz lose_point_not_address_cl_p1
-                check_forbidden Forbidden_Registers_1,bl                 
+                check_forbidden Forbidden_Registers_2,bl                 
                 mov al,losepoint 
                 mov losepoint_player1,al  
                 cmp losepoint_player1,1
