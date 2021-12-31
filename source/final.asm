@@ -2166,36 +2166,83 @@ shl_shr_ror_rol_address_player1  proc near
                     mov cl, Player2_Data_Register[bx]
                     mov ch,0            
                     
-                        cmp instruction_index,10
-                        jz shl_address_byte_player1
-                        cmp instruction_index,9
-                        jz shr_address_byte_player1
-                        cmp instruction_index,11
-                        jz ror_address_byte_player1 
-                        cmp instruction_index,12
-                        jz rol_address_byte_player1
-                        cmp instruction_index,8
-                        jz sal_address_byte_player1
-                        cmp instruction_index,13
-                        jz sar_address_byte_player1
-                        shl_address_byte_player1:                  ; div ------------------------
-                            shl data_segment_2[si],cl
-                            jmp far ptr end_shl_address_player1
-                        shr_address_byte_player1:                  ; mul ------------------------
-                            shr data_segment_2[si],cl
-                            jmp far ptr end_shl_address_player1
-                        ror_address_byte_player1:                  ; idiv ------------------------
-                            ror data_segment_2[si],cl
-                            jmp far ptr end_shl_address_player1 
-                        rol_address_byte_player1:                  ; imul ------------------------
-                            rol data_segment_2[si],cl
-                            jmp far ptr end_shl_address_player1
-                        sal_address_byte_player1:                  ; inc ------------------------
-                            sal data_segment_2[si],cl
-                            jmp far ptr end_shl_address_player1
-                        sar_address_byte_player1:                  ; dec ------------------------
-                            sar data_segment_2[si],cl
-                            jmp far ptr end_shl_address_player1 
+                    cmp player_turn1,1              ;-> player1 turn 
+                    jz player1_shl_address_byte_turn
+                    jmp player1_shl_address_byte_no_turn 
+                    player1_shl_address_byte_turn:       
+                            cmp instruction_index,10
+                            jz shl_address_byte_player1
+                            cmp instruction_index,9
+                            jz shr_address_byte_player1
+                            cmp instruction_index,11
+                            jz ror_address_byte_player1 
+                            cmp instruction_index,12
+                            jz rol_address_byte_player1
+                            cmp instruction_index,8
+                            jz sal_address_byte_player1
+                            cmp instruction_index,13
+                            jz sar_address_byte_player1
+                            shl_address_byte_player1:                  ; div ------------------------
+                                shl data_segment_2[si],cl
+                                jmp far ptr player1_shl_address_byte_no_turn
+                            shr_address_byte_player1:                  ; mul ------------------------
+                                shr data_segment_2[si],cl
+                                jmp far ptr player1_shl_address_byte_no_turn
+                            ror_address_byte_player1:                  ; idiv ------------------------
+                                ror data_segment_2[si],cl
+                                jmp far ptr player1_shl_address_byte_no_turn 
+                            rol_address_byte_player1:                  ; imul ------------------------
+                                rol data_segment_2[si],cl
+                                jmp far ptr player1_shl_address_byte_no_turn
+                            sal_address_byte_player1:                  ; inc ------------------------
+                                sal data_segment_2[si],cl
+                                jmp far ptr player1_shl_address_byte_no_turn
+                            sar_address_byte_player1:                  ; dec ------------------------
+                                sar data_segment_2[si],cl
+                                jmp far ptr player1_shl_address_byte_no_turn  
+                    player1_shl_address_byte_no_turn:
+                        cmp player_turn2,1
+                        jz player2_shl_address_byte_turn
+                        jmp far ptr end_shl_address_player1
+                        player2_shl_address_byte_turn:     
+                            
+                            mov bl,src_index_val
+                            mov ch,Player1_Data_Register[bx]
+                            mov cl,Player1_Data_Register[bx+1]
+                            mov si,cx 
+                            mov bl, dest_index_val  
+                            mov cl, Player1_Data_Register[bx]
+                            mov ch,0                            
+                            cmp instruction_index,10
+                            jz shl_address_byte_player2
+                            cmp instruction_index,9
+                            jz shr_address_byte_player2
+                            cmp instruction_index,11
+                            jz ror_address_byte_player2 
+                            cmp instruction_index,12
+                            jz rol_address_byte_player2
+                            cmp instruction_index,8
+                            jz sal_address_byte_player2
+                            cmp instruction_index,13
+                            jz sar_address_byte_player2
+                            shl_address_byte_player2:                  ; div ------------------------
+                                shl data_segment_1[si],cl
+                                jmp far ptr end_shl_address_player1
+                            shr_address_byte_player2:                  ; mul ------------------------
+                                shr data_segment_1[si],cl
+                                jmp far ptr end_shl_address_player1
+                            ror_address_byte_player2:                  ; idiv ------------------------
+                                ror data_segment_1[si],cl
+                                jmp far ptr end_shl_address_player1 
+                            rol_address_byte_player2:                  ; imul ------------------------
+                                rol data_segment_1[si],cl
+                                jmp far ptr end_shl_address_player1
+                            sal_address_byte_player2:                  ; inc ------------------------
+                                sal data_segment_1[si],cl
+                                jmp far ptr end_shl_address_player1
+                            sar_address_byte_player2:                  ; dec ------------------------
+                                sar data_segment_1[si],cl
+                                jmp far ptr end_shl_address_player1  
 
             
               
