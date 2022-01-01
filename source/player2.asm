@@ -700,7 +700,7 @@ main proc far
             call  shl_shr_ror_rol_register_player2 
       jmp far ptr end_instruction_player2
     
-    SHR_instruction_player1:
+    SHR_instruction_player2:
                        ; call drawing and clicking procedure --------------------------------
             ; set variable to number then compare
             cmp power_up_player2,1
@@ -747,7 +747,7 @@ main proc far
             call  shl_shr_ror_rol_register_player2 
       jmp far ptr end_instruction_player2
      
-    SHL_instruction_player1: 
+    SHL_instruction_player2: 
                        ; call drawing and clicking procedure --------------------------------
             ; set variable to number then compare
             cmp power_up_player2,1
@@ -793,7 +793,7 @@ main proc far
         reg_mode_SHL2:
             call  shl_shr_ror_rol_register_player2 
       jmp far ptr end_instruction_player2
-    ROR_instruction_player1: 
+    ROR_instruction_player2: 
                        ; call drawing and clicking procedure --------------------------------
             ; set variable to number then compare
             cmp power_up_player2,1
@@ -839,7 +839,7 @@ main proc far
         reg_mode_ROR2:
             call  shl_shr_ror_rol_register_player2 
       jmp far ptr end_instruction_player2
-    ROL_instruction_player1: 
+    ROL_instruction_player2: 
                         ; call drawing and clicking procedure --------------------------------
             ; set variable to number then compare
             cmp power_up_player2,1
