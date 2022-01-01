@@ -17,10 +17,10 @@ src_index_reg db 0
 dest_index_reg db 17
 src_index_val db 0
 dest_index_val db 18 
-address_mode db 0 
-address_mode2 db 1  
-count_bit_1 db 1   
-count_bit_2 db 1
+address_mode db 0      ;first operand is address ----> set 1  ,if isn't address ---->set 0
+address_mode2 db 1     ;second operand is address ----> set 1 ,if isn't address ---->set 0
+count_bit_1 db 1       ; byte --> 1  , word ---> 2  first operand 
+count_bit_2 db 1       ; byte --> 1  , word ---> 2  second operand 
 player_turn db 1   ; player1-> 1 , player2-> 2 
 player_turn1 db 1   ; power up 2
 player_turn2 db 1   ; power up 2
