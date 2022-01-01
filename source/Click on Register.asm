@@ -5,235 +5,234 @@ CickedRegister MACRO Name,value,NumberOfBytes
     PUSH BX
     PUSH CX
     PUSH DX
-    GETMOUSEPOSITION MOUSEPOSITION_X,MOUSEPOSITION_Y
-    MOV AX,MOUSEPOSITION_X
-    MOV BX,MOUSEPOSITION_Y
-
+    GETMOUSEPOSITION y,x
+    mov ax,x
+    mov bx,y
 
     ;AX
-    CMP AX,AXCORDINATES[0]
+    CMP AX,word ptr AXCORDINATES[0]
     jl notAX
-    cmp AX,AXCORDINATES[2]
+    cmp AX,word ptr AXCORDINATES[4]
     jg notAX
-    cmp bx,AXCORDINATES[1]
+    cmp bx,word ptr AXCORDINATES[2]
     jl notAX
-    cmp bx,AXCORDINATES[3]
+    cmp bx,word ptr AXCORDINATES[6]
     jg notAX
-    Name=0
-    value=0
-    NumberOfBytes=2
+    mov Name,0
+    mov value,0
+    mov NumberOfBytes,2
     notAX:
 
 
     ;AL
-    CMP AX,ALCORDINATES[0]
+    CMP AX,word ptr ALCORDINATES[0]
     jl notAL
-    cmp AX,ALCORDINATES[2]
+    cmp AX,word ptr ALCORDINATES[4]
     jg notAL
-    cmp bx,ALCORDINATES[1]
+    cmp bx,word ptr ALCORDINATES[2]
     jl notAL
-    cmp bx,ALCORDINATES[3]
+    cmp bx,word ptr ALCORDINATES[6]
     jg notAL
-    Name=1
-    value=1
-    NumberOfBytes=1
+    mov Name,1
+    mov value,1
+    mov NumberOfBytes,1
     notAL:
 
     ;AH
-    CMP AX,AHCORDINATES[0]
+    CMP AX,word ptr AHCORDINATES[0]
     jl notAH
-    cmp AX,AHCORDINATES[2]
+    cmp AX,word ptr AHCORDINATES[4]
     jg notAH
-    cmp bx,AHCORDINATES[1]
+    cmp bx,word ptr AHCORDINATES[2]
     jl notAH
-    cmp bx,AHCORDINATES[3]
+    cmp bx,word ptr AHCORDINATES[6]
     jg notAH
-    Name=2
-    value=0
-    NumberOfBytes=1
+    mov Name,2
+    mov value,0
+    mov NumberOfBytes,1
     notAH:
 
     ;BX
-    CMP AX,BXCORDINATES[0]
+    CMP AX,word ptr BXCORDINATES[0]
     jl notBX 
-    cmp AX,BXCORDINATES[2]
+    cmp AX,word ptr BXCORDINATES[4]
     jg notBX 
-    cmp bx,BXCORDINATES[1]
+    cmp bx,word ptr BXCORDINATES[2]
     jl notBX
-    cmp bx,BXCORDINATES[3]
+    cmp bx,word ptr BXCORDINATES[6]
     jg notBX
-    Name=3
-    value=3
-    NumberOfBytes=2
+    mov Name,3
+    mov value,3
+    mov NumberOfBytes,2
     notBX:
 
     
     ;BL
-    CMP AX,BLCORDINATES[0]
+    CMP AX,word ptr BLCORDINATES[0]
     jl notBL
-    cmp AX,BLCORDINATES[2]
+    cmp AX,word ptr BLCORDINATES[4]
     jg notBL
-    cmp bx,BLCORDINATES[1]
+    cmp bx,word ptr BLCORDINATES[2]
     jl notBL
-    cmp bx,BLCORDINATES[3]
+    cmp bx,word ptr BLCORDINATES[6]
     jg notBL
-    Name=4
-    value=3
-    NumberOfBytes=1
+    mov Name,4
+    mov value,3
+    mov NumberOfBytes,1
     notBL:
 
     ;BH
-    CMP AX,BHCORDINATES[0]
+    CMP AX,word ptr BHCORDINATES[0]
     jl notBH
-    cmp AX,BHCORDINATES[2]
+    cmp AX,word ptr BHCORDINATES[4]
     jg notBH
-    cmp bx,BHCORDINATES[1]
+    cmp bx,word ptr BHCORDINATES[2]
     jl notBH
-    cmp bx,BHCORDINATES[3]
+    cmp bx,word ptr BHCORDINATES[6]
     jg notBH
-    Name=5
-    value=2
-    NumberOfBytes=1
+    mov Name,5
+    mov value,2
+    mov NumberOfBytes,1
     notBH:
 
     ;CX
-    CMP AX,CXCORDINATES[0]
+    CMP AX,word ptr CXCORDINATES[0]
     jl notCX
-    cmp AX,CXCORDINATES[2]
+    cmp AX,word ptr CXCORDINATES[4]
     jg notCX
-    cmp bx,CXCORDINATES[1]
+    cmp bx,word ptr CXCORDINATES[2]
     jl notCX
-    cmp bx,CXCORDINATES[3]
+    cmp bx,word ptr CXCORDINATES[6]
     jg notCX
-    Name=6
-    value=4
-    NumberOfBytes=2
+    mov Name,6
+    mov value,4
+    mov NumberOfBytes,2
     notCX:
 
     ;CL
-    CMP AX,CLCORDINATES[0]
+    CMP AX,word ptr CLCORDINATES[0]
     jl notCL
-    cmp AX,CLCORDINATES[2]
+    cmp AX,word ptr CLCORDINATES[4]
     jg notCL
-    cmp bx,AXCORDINATES[1]
+    cmp bx,word ptr CLCORDINATES[2]
     jl notCL
-    cmp bx,CLCORDINATES[3]
+    cmp bx,word ptr CLCORDINATES[6]
     jg notCL
-    Name=7
-    value=5
-    NumberOfBytes=1
+    mov Name,7
+    mov value,5
+    mov NumberOfBytes,1
     notCL:
 
     ;CH
-    CMP AX,CHCORDINATES[0]
+    CMP AX,word ptr CHCORDINATES[0]
     jl notCH
-    cmp AX,CHCORDINATES[2]
+    cmp AX,word ptr CHCORDINATES[4]
     jg notCH
-    cmp bx,CHCORDINATES[1]
+    cmp bx,word ptr CHCORDINATES[2]
     jl notCH
-    cmp bx,CHCORDINATES[3]
+    cmp bx,word ptr CHCORDINATES[6]
     jg notCH
-    Name=8
-    value=4
-    NumberOfBytes=1
+    mov Name,8
+    mov value,4
+    mov NumberOfBytes,1
     notCH:
 
     ;DX
-    CMP AX,DXCORDINATES[0]
+    CMP AX,word ptr DXCORDINATES[0]
     jl notDX
-    cmp AX,DXCORDINATES[2]
+    cmp AX,word ptr DXCORDINATES[4]
     jg notDX
-    cmp bx,DXCORDINATES[1]
+    cmp bx,word ptr DXCORDINATES[2]
     jl notDX
-    cmp bx,DXCORDINATES[3]
+    cmp bx,word ptr DXCORDINATES[6]
     jg notDX
-    Name=9
-    value=6
-    NumberOfBytes=2
+    mov Name,9
+    mov value,6
+    mov NumberOfBytes,2
     notDX:
 
     ;DL
-    CMP AX,DLCORDINATES[0]
+    CMP AX,word ptr DLCORDINATES[0]
     jl notDL
-    cmp AX,DLCORDINATES[2]
+    cmp AX,word ptr DLCORDINATES[4]
     jg notDL
-    cmp bx,DLCORDINATES[1]
+    cmp bx,word ptr DLCORDINATES[2]
     jl notDL
-    cmp bx,DLCORDINATES[3]
+    cmp bx,word ptr DLCORDINATES[6]
     jg notDL
-    Name=10
-    value=7
-    NumberOfBytes=1
+    mov Name,10
+    mov value,7
+    mov NumberOfBytes,1
     notDL:
 
     ;DH
-    CMP AX,DHCORDINATES[0]
+    CMP AX,word ptr DHCORDINATES[0]
     jl notDH
-    cmp AX,DHCORDINATES[2]
+    cmp AX,word ptr DHCORDINATES[4]
     jg notDH
-    cmp bx,DHCORDINATES[1]
+    cmp bx,word ptr DHCORDINATES[2]
     jl notDH
-    cmp bx,DHCORDINATES[3]
+    cmp bx,word ptr DHCORDINATES[6]
     jg notDH
-    Name=11
-    value=6
-    NumberOfBytes=1
+    mov Name,11
+    mov value,6
+    mov NumberOfBytes,1
     notDH:
 
     ;SI
-    CMP AX,SICORDINATES[0]
+    CMP AX,word ptr SICORDINATES[0]
     jl notSI
-    cmp AX,SICORDINATES[2]
+    cmp AX,word ptr SICORDINATES[4]
     jg notSI
-    cmp bx,SICORDINATES[1]
+    cmp bx,word ptr SICORDINATES[2]
     jl notSI
-    cmp bx,SICORDINATES[3]
+    cmp bx,word ptr SICORDINATES[6]
     jg notSI
-    Name=12
-    value=8
-    NumberOfBytes=2
+    mov Name,12
+    mov value,8
+    mov NumberOfBytes,2
     notSI:
 
     ;DI
-    CMP AX,DICORDINATES[0]
+    CMP AX,word ptr DICORDINATES[0]
     jl notDI
-    cmp AX,DICORDINATES[2]
+    cmp AX,word ptr DICORDINATES[4]
     jg notDI
-    cmp bx,DICORDINATES[1]
+    cmp bx,word ptr DICORDINATES[2]
     jl notDI
-    cmp bx,DICORDINATES[3]
+    cmp bx,word ptr DICORDINATES[6]
     jg notDI
-    Name=13
-    value=10
-    NumberOfBytes=2
+    mov Name,13
+    mov value,10
+    mov NumberOfBytes,2
     notDI:
 
     ;SP
-    CMP AX,SPCORDINATES[0]
+    CMP AX,word ptr SPCORDINATES[0]
     jl notSP
-    cmp AX,SPCORDINATES[2]
+    cmp AX,word ptr SPCORDINATES[4]
     jg notSP
-    cmp bx,SPCORDINATES[1]
+    cmp bx,word ptr SPCORDINATES[2]
     jl notSP
-    cmp bx,SPCORDINATES[3]
+    cmp bx,word ptr SPCORDINATES[6]
     jg notSP
-    Name=14
-    value=12
-    NumberOfBytes=2
+    mov Name,14
+    mov value,12
+    mov NumberOfBytes,2
     notSP:
 
     ;BP
-    CMP AX,BPCORDINATES[0]
+    CMP AX,word ptr BPCORDINATES[0]
     jl notBP
-    cmp AX,BPCORDINATES[2]
+    cmp AX,word ptr BPCORDINATES[4]
     jg notBP
-    cmp bx,BPCORDINATES[1]
+    cmp bx,word ptr BPCORDINATES[2]
     jl notBP
-    cmp bx,BPCORDINATES[3]
+    cmp bx,word ptr BPCORDINATES[6]
     jg notBP
-    Name=15
-    value=14
-    NumberOfBytes=2
+    mov Name,15
+    mov value,14
+    mov NumberOfBytes,2
     notBP:
 
 

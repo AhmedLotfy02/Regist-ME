@@ -65,13 +65,108 @@
     PLAYER_TWO_NAME DB 15,?,15 DUP('$')
     PLAYER_ONE_TITLE DB 'PLAYER ONE:','$'
     PLAYER_TWO_TITLE DB 'PLAYER TWO:','$'
-
+    INSTorPOWERUP DB ?
+    
+data_segment_1 db 01,0Ah,0AFH,73,66,0,0,0,0,0,0,0,0,0,0,0 
+Player1_Data_Register db 11h,22h,32h,44h,04h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,05h
+data_segment_2 db 01,22,44,0Ah,0AFh,9,0,0,0,0,0,0,0,0,0,0
+Player2_Data_Register db 03h,02h,08h,07h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,05h,05h,00h,05h
+Data_Segment_X db 27
+Data_Segment_Y db 1
+Counter db '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'
+Counter_Segment db 16
+Register_Values_X db 60
+Register_Values_Y db 2
+Outer_Counter_RV db 8
+Inner_Counter_RV db 2
+Temp_Data db ?
+P1 db 'P1'
+P2 db 'P2'
     ;;tests
     x DW ?
     y dw ?
     ;;;;
 
 .code
+DISPLAY_2_DIGITS_NEW    MACRO   NUMBER
+        PUSH AX
+        PUSH BX
+        PUSH DX
+        
+        MOV AH,0
+        MOV AL,NUMBER
+        MOV BL,10
+        DIV BL
+        
+        ADD AL,'0'
+        ADD AH,'0'
+        
+        MOV BL,AH
+        
+        MOV DL,AL
+        MOV AH,2
+        INT 21H
+        
+        MOV DL,BL
+        INT 21H
+
+        POP DX
+        POP BX
+        POP AX
+    ENDM
+
+print2Number MACRO num
+    local numerical,next,numerical2,next2
+    pusha
+    mov al,byte ptr num
+    mov ah,0
+    mov cl,10h
+    div cl
+    cmp al,0ah
+    jb numerical
+    add al,37h     
+    mov dl,  al 
+    push ax
+    mov ah,  2h
+    int 21h 
+    pop ax
+    jmp next
+    numerical:
+    add al,30h 
+   
+    mov dl,  al
+    push ax
+    mov ah,  2h
+    int 21h 
+    pop ax
+    next:
+    cmp ah,0ah
+    jb numerical2
+    add ah,37h     
+    mov dl,  ah 
+    push ax
+    mov ah,  2h
+    int 21h
+    pop ax 
+    jmp next2
+    numerical2:
+    add ah,30h 
+    mov dl,  ah
+    push ax
+    mov ah,  2h
+    int 21h
+    pop ax
+    next2:
+    
+    popa
+
+ENDM   
+
+print4number macro num
+    print2number num[1]
+    print2number num[0]
+endm
+
     drawFilledRec MACRO xb,yb,xen,yen,color
         local firstLoop,secondLoop  
         PUSH AX
@@ -156,6 +251,8 @@
     ENDM
 
 
+
+
     PRINT_STRING_2DIGIT MACRO Stringo
         local loop4
         mov di,0    
@@ -192,7 +289,7 @@
 
     ENDM
 
-
+        
 
 
     DrawButtonMessage macro String
@@ -405,6 +502,7 @@ ret
 DRAW_REGISTER_NAMES endp
 
 DRAW_REGISTER_NAMES2 proc far
+ 
 mov x1, 32
 mov y1, 410
 mov x2, 45
@@ -490,13 +588,13 @@ SHOW_POWER_UP proc far
 SHOW_POWER_UP endp
 
 SHOW_INSTRUCTION_BUTTON proc far
-
+    
     movCursor 5,2
     mov dx, offset INSTRUCTION_BUTTON
     mov ah, 9h
     int 21h
     DrawRec 20,30,60,140
-
+    
     ret
 SHOW_INSTRUCTION_BUTTON endp
 
@@ -587,15 +685,17 @@ SHOW_INSTRUCTIONS proc far
 
     ;;IDIV REC
     DrawRec 360,90,385,140
-
+    
     ret
 SHOW_INSTRUCTIONS endp
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 BEGIN_GAME proc far
+
     CALL SHOW_INSTRUCTION_BUTTON
     CALL SHOW_POWER_UP
     CALL FIXED
+    
     ret
 BEGIN_GAME endp
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -813,12 +913,203 @@ DRAW_VERTICAL_LINE proc far
     inc dx
     cmp dx, 400
     jne back0
+    
+    ;;;;;;;;Data Segment Vertical Lines
+    mov cx, 350;Column
+    mov dx,0 ;Row
+    mov si,400
+    mov al,0ah ;Pixel color
+    mov ah,0ch ;Draw Pixel Command
+    back01: int 10h
+    inc dx
+    cmp dx, 400
+    jne back01
+    ;;;;;;;;;;;;;;;;;;;;;
+    mov cx, 300;Column
+    mov dx,0 ;Row
+    mov si,400
+    mov al,0ah ;Pixel color
+    mov ah,0ch ;Draw Pixel Command
+    back02: int 10h
+    inc dx
+    cmp dx, 400
+    jne back02
+    ;;;;;;;;;;;;;;;;;;;
+     mov cx, 250;Column
+    mov dx,0 ;Row
+    mov si,400
+    mov al,0ah ;Pixel color
+    mov ah,0ch ;Draw Pixel Command
+    back03: int 10h
+    inc dx
+    cmp dx, 400
+    jne back03
+    ;;;;;;;;;;;;;;
+       mov cx, 200;Column
+    mov dx,0 ;Row
+    mov si,400
+    mov al,0ah ;Pixel color
+    mov ah,0ch ;Draw Pixel Command
+    back04: int 10h
+    inc dx
+    cmp dx, 400
+    jne back04
+
+
     pop si
     pop dx
     pop cx
     pop ax
     ret
 DRAW_VERTICAL_LINE endp
+
+
+DRAW_DATA_SEGMENT  PROC FAR
+
+    PUSH AX
+    PUSH BX
+    PUSH CX
+    PUSH DX
+
+ mov Data_Segment_X,27
+ mov Data_Segment_Y,1
+ mov di,0
+ mov Counter_Segment,16
+ loop1:
+
+  movCursor Data_Segment_X,Data_Segment_Y
+  mov ch ,data_segment_1[di]
+    print2Number  ch
+    add Data_Segment_Y,1
+    inc di
+    sub Counter_Segment,1
+    cmp Counter_Segment,0
+    jnz loop1
+
+mov Counter_Segment,16
+mov di,0
+mov Data_Segment_Y,1
+add Data_Segment_X,7
+    loop2:
+  movCursor Data_Segment_X,Data_Segment_Y
+    
+    printCharacter Counter[di]
+    add Data_Segment_Y,1
+    inc di
+    sub Counter_Segment,1
+    cmp Counter_Segment,0
+    jnz loop2
+
+mov Counter_Segment,16
+mov di,0
+
+mov Data_Segment_Y,1
+add Data_Segment_X,12
+    loop3:
+  movCursor Data_Segment_X,Data_Segment_Y
+    
+    printCharacter Counter[di]
+    add Data_Segment_Y,1
+    inc di
+    sub Counter_Segment,1
+    cmp Counter_Segment,0
+    jnz loop3
+
+
+mov Data_Segment_Y,1
+sub Data_Segment_X,5
+
+ mov Counter_Segment,16
+ mov di,0
+ loop4:
+
+  movCursor Data_Segment_X,Data_Segment_Y
+  mov ch ,data_segment_2[di]
+    print2Number  ch
+    add Data_Segment_Y,1
+    inc di
+    sub Counter_Segment,1
+    cmp Counter_Segment,0
+    jnz loop4
+
+
+    movCursor 27,20
+    PRINT_STRING_2DIGIT P1
+      movCursor 40,20
+    PRINT_STRING_2DIGIT P2
+    movCursor 51,1
+        PRINT_STRING_2DIGIT P1
+    
+       movCursor 67,1
+        PRINT_STRING_2DIGIT P2
+    POP DX
+    POP CX
+    POP BX
+    POP AX
+
+RET
+DRAW_DATA_SEGMENT ENDP
+
+SHOW_REGISTERS_VALUES PROC FAR
+
+
+
+;;;;;;;;;;;;;Player 1
+mov Register_Values_X,60
+mov Register_Values_Y,2
+mov Inner_Counter_RV,2
+mov Outer_Counter_RV,8
+movCursor Register_Values_X,Register_Values_Y
+mov di,0
+loop001:
+    
+        print2Number Player1_Data_Register[di]
+        
+        inc di
+        sub Register_Values_X,3
+        movCursor Register_Values_X,Register_Values_Y
+        print2Number Player1_Data_Register[di]
+        add Register_Values_X,3
+
+        inc di
+        add Register_Values_Y,2
+        movCursor Register_Values_X,Register_Values_Y     
+ sub Outer_Counter_RV,1        
+cmp Outer_Counter_RV,0
+jnz loop001
+
+;;;;;;;;;;;;;;;;;;;;Player 2
+mov Register_Values_X,75
+mov Register_Values_Y,2
+mov Inner_Counter_RV,2
+mov Outer_Counter_RV,8
+movCursor Register_Values_X,Register_Values_Y
+mov di,0
+loop002:
+    
+        print2Number Player2_Data_Register[di]
+        
+        inc di
+        sub Register_Values_X,3
+        movCursor Register_Values_X,Register_Values_Y
+        print2Number Player2_Data_Register[di]
+        add Register_Values_X,3
+
+        inc di
+        add Register_Values_Y,2
+        movCursor Register_Values_X,Register_Values_Y     
+ sub Outer_Counter_RV,1        
+cmp Outer_Counter_RV,0
+jnz loop002
+
+
+
+
+
+ret
+SHOW_REGISTERS_VALUES ENDP
+
+
 
 SHOW_PLAYERS_NAMES_ON_CHAT proc far
     movCursor 2,26
@@ -850,13 +1141,17 @@ CLR endp
 
 ;description: the fixed data of each screen, players' registers
 FIXED proc far
+     CALL DRAW_DATA_SEGMENT
+    CALL SHOW_REGISTERS_VALUES
     CALL DRAW_REGISTER_NAMES
     DrawRec 30, 535, 280, 639; draw rectangle around player1 registers
     call DRAW_VERTICAL_LINE
 
-    call DRAW_REGISTER_NAMES2
+   call DRAW_REGISTER_NAMES2
     DrawRec 30, 405, 280,510
     CALL SHOW_CHAT
+       
+
     RET
 FIXED endp
 
@@ -890,6 +1185,20 @@ SECONDSCREEN PROC FAR
 
     RET
 SECONDSCREEN ENDP
+
+
+CLEAR_SCREEN PROC NEAR
+			
+		 mov ax,0600h
+        mov bh, 00h  ;set the color for the background
+        mov cx,0
+        mov dx,184fh
+        int 10h
+			
+			RET
+CLEAR_SCREEN ENDP
+
+
 MAIN PROC FAR
     MOV AX,@DATA
     MOV DS,AX
@@ -912,32 +1221,75 @@ MAIN PROC FAR
     ;CALL SHOW_INSTRUCTIONS
     ;CALL HIDE_POWER_UP
     CALL BEGIN_GAME
+    ;CALL SHOW_REGISTERS_VALUES
+    ;CALL DRAW_DATA_SEGMENT
     ;CALL SHOW_AFTER_INSTRUCTION
     ;CALL SHOW_2ND_OPERAND
     ;CALL SHOW_REGISTERS_CHOICE
-    ;CALL SHOW_POWER_UPS_CHOICE
+    ; CALL SHOW_POWER_UPS_CHOICE
     ;CALL SHOW_PLAYER_ONE_NAME
     ;CALL SHOW_PLAYER_TWO_NAME
     ;CALL SHOW_CHAT
 
 
     ;;ASAAD'S TEST OF MOUSE CLICKS
-    Again: getMousePosition x, y
+    MainScreen: getMousePosition x, y
+        cmp x,150
+        jb CHOICE_INSTRUCTION
+        JMP CHOICE_POWERUPS
+
         cmp y, 20
-        jb Again
+        jb MainScreen
         cmp y, 60
-        ja Again
+        ja MainScreen
 
         cmp x, 30
-        jb Again
+        jb MainScreen
         cmp x, 140
-        ja Again
-        ;blankScreen 05h,0,100
-        ;ClearScreen 0, 0, 25, 80
-    CALL CLR
+        ja MainScreen
+        
+;DrawRec 280,515,310,600
+    CHOICE_INSTRUCTION:
+        cmp y, 20
+        jb MainScreen
+        cmp y, 60
+        ja MainScreen
+
+        cmp x, 30
+        jb MainScreen
+        cmp x, 140
+        ja MainScreen
+      
+        CALL CLR
+        MOV INSTorPOWERUP,1
     CALL SHOW_INSTRUCTIONS
+    JMP NEXT_CHOICE
+    CHOICE_POWERUPS:
+     cmp y, 280
+        jb MainScreen
+        cmp y, 310
+        ja MainScreen
+
+        cmp x, 515
+        jb MainScreen
+        cmp x, 600
+        ja MainScreen
+      
+        CALL CLR
+         MOV INSTorPOWERUP,0
+    CALL  SHOW_POWER_UPS_CHOICE
+
+    NEXT_CHOICE:
+        CMP INSTorPOWERUP,0
+        JZ POWERUPisCHOSEN
+        JNZ firstoperand
+
+            POWERUPisCHOSEN:
+            firstoperand:    
+
+
     Show_mouse
-    ;;;;;;
+    ;;;;;
     ;CALL SHOW_AFTER_INSTRUCTION
     ;CALL SHOW_2ND_OPERAND
     ;CALL SHOW_REGISTERS_CHOICE
