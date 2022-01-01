@@ -67,14 +67,21 @@
     PLAYER_TWO_TITLE DB 'PLAYER TWO:','$'
     INSTorPOWERUP DB ?
     
-data_segment_1 db 01,02,03,73,66,0,0,0,0,0,0,0,0,0,0,0 
-Player1_Data_Register db 11h,22h,33h,44h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,05h
+data_segment_1 db 01,0Ah,0AFH,73,66,0,0,0,0,0,0,0,0,0,0,0 
+Player1_Data_Register db 11h,22h,32h,44h,04h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,05h
 data_segment_2 db 01,22,44,0Ah,0AFh,9,0,0,0,0,0,0,0,0,0,0
 Player2_Data_Register db 03h,02h,08h,07h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,05h,05h,00h,05h
 Data_Segment_X db 27
 Data_Segment_Y db 1
 Counter db '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'
 Counter_Segment db 16
+Register_Values_X db 60
+Register_Values_Y db 2
+Outer_Counter_RV db 8
+Inner_Counter_RV db 2
+Temp_Data db ?
+P1 db 'P1'
+P2 db 'P2'
     ;;tests
     x DW ?
     y dw ?
@@ -972,7 +979,7 @@ DRAW_DATA_SEGMENT  PROC FAR
 
   movCursor Data_Segment_X,Data_Segment_Y
   mov ch ,data_segment_1[di]
-    DISPLAY_2_DIGITS_NEW  ch
+    print2Number  ch
     add Data_Segment_Y,1
     inc di
     sub Counter_Segment,1
@@ -1018,13 +1025,23 @@ sub Data_Segment_X,5
 
   movCursor Data_Segment_X,Data_Segment_Y
   mov ch ,data_segment_2[di]
-    DISPLAY_2_DIGITS_NEW  ch
+    print2Number  ch
     add Data_Segment_Y,1
     inc di
     sub Counter_Segment,1
     cmp Counter_Segment,0
     jnz loop4
 
+
+    movCursor 27,20
+    PRINT_STRING_2DIGIT P1
+      movCursor 40,20
+    PRINT_STRING_2DIGIT P2
+    movCursor 51,1
+        PRINT_STRING_2DIGIT P1
+    
+       movCursor 67,1
+        PRINT_STRING_2DIGIT P2
     POP DX
     POP CX
     POP BX
@@ -1033,7 +1050,64 @@ sub Data_Segment_X,5
 RET
 DRAW_DATA_SEGMENT ENDP
 
+SHOW_REGISTERS_VALUES PROC FAR
 
+
+
+;;;;;;;;;;;;;Player 1
+mov Register_Values_X,60
+mov Register_Values_Y,2
+mov Inner_Counter_RV,2
+mov Outer_Counter_RV,8
+movCursor Register_Values_X,Register_Values_Y
+mov di,0
+loop001:
+    
+        print2Number Player1_Data_Register[di]
+        
+        inc di
+        sub Register_Values_X,3
+        movCursor Register_Values_X,Register_Values_Y
+        print2Number Player1_Data_Register[di]
+        add Register_Values_X,3
+
+        inc di
+        add Register_Values_Y,2
+        movCursor Register_Values_X,Register_Values_Y     
+ sub Outer_Counter_RV,1        
+cmp Outer_Counter_RV,0
+jnz loop001
+
+;;;;;;;;;;;;;;;;;;;;Player 2
+mov Register_Values_X,75
+mov Register_Values_Y,2
+mov Inner_Counter_RV,2
+mov Outer_Counter_RV,8
+movCursor Register_Values_X,Register_Values_Y
+mov di,0
+loop002:
+    
+        print2Number Player2_Data_Register[di]
+        
+        inc di
+        sub Register_Values_X,3
+        movCursor Register_Values_X,Register_Values_Y
+        print2Number Player2_Data_Register[di]
+        add Register_Values_X,3
+
+        inc di
+        add Register_Values_Y,2
+        movCursor Register_Values_X,Register_Values_Y     
+ sub Outer_Counter_RV,1        
+cmp Outer_Counter_RV,0
+jnz loop002
+
+
+
+
+
+ret
+SHOW_REGISTERS_VALUES ENDP
 
 
 
@@ -1068,7 +1142,7 @@ CLR endp
 ;description: the fixed data of each screen, players' registers
 FIXED proc far
      CALL DRAW_DATA_SEGMENT
-
+    CALL SHOW_REGISTERS_VALUES
     CALL DRAW_REGISTER_NAMES
     DrawRec 30, 535, 280, 639; draw rectangle around player1 registers
     call DRAW_VERTICAL_LINE
@@ -1142,12 +1216,12 @@ MAIN PROC FAR
     int 10h
 
     ;CALL DRAW_REGISTER_NAMES
-    CALL SHOW_POWER_UP
+    ;CALL SHOW_POWER_UP
     ;CALL SHOW_INSTRUCTION_BUTTON
     ;CALL SHOW_INSTRUCTIONS
     ;CALL HIDE_POWER_UP
     CALL BEGIN_GAME
-  
+    ;CALL SHOW_REGISTERS_VALUES
     ;CALL DRAW_DATA_SEGMENT
     ;CALL SHOW_AFTER_INSTRUCTION
     ;CALL SHOW_2ND_OPERAND
