@@ -69,7 +69,7 @@
     
 data_segment_1 db 01,02,03,73,66,0,0,0,0,0,0,0,0,0,0,0 
 Player1_Data_Register db 11h,22h,33h,44h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,05h
-data_segment_2 db 01,22,44,0A,0AF,9,0,0,0,0,0,0,0,0,0,0
+data_segment_2 db 01,22,44,0Ah,0AFh,9,0,0,0,0,0,0,0,0,0,0
 Player2_Data_Register db 03h,02h,08h,07h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,05h,05h,00h,05h
 Data_Segment_X db 27
 Data_Segment_Y db 1
