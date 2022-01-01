@@ -69,11 +69,12 @@
     
 data_segment_1 db 01,02,03,73,66,0,0,0,0,0,0,0,0,0,0,0 
 Player1_Data_Register db 11h,22h,33h,44h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,05h
-data_segment_2 db 0,0,0,0,0,9,0,0,0,0,0,0,0,0,0,0
+data_segment_2 db 01,22,44,0A,0AF,9,0,0,0,0,0,0,0,0,0,0
 Player2_Data_Register db 03h,02h,08h,07h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,05h,05h,00h,05h
 Data_Segment_X db 27
 Data_Segment_Y db 1
 Counter db '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'
+Counter_Segment db 16
     ;;tests
     x DW ?
     y dw ?
@@ -443,6 +444,7 @@ ret
 DRAW_REGISTER_NAMES endp
 
 DRAW_REGISTER_NAMES2 proc far
+ 
 mov x1, 32
 mov y1, 410
 mov x2, 45
@@ -528,13 +530,13 @@ SHOW_POWER_UP proc far
 SHOW_POWER_UP endp
 
 SHOW_INSTRUCTION_BUTTON proc far
-
+    
     movCursor 5,2
     mov dx, offset INSTRUCTION_BUTTON
     mov ah, 9h
     int 21h
     DrawRec 20,30,60,140
-
+    
     ret
 SHOW_INSTRUCTION_BUTTON endp
 
@@ -625,15 +627,17 @@ SHOW_INSTRUCTIONS proc far
 
     ;;IDIV REC
     DrawRec 360,90,385,140
-
+    
     ret
 SHOW_INSTRUCTIONS endp
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 BEGIN_GAME proc far
+
     CALL SHOW_INSTRUCTION_BUTTON
     CALL SHOW_POWER_UP
     CALL FIXED
+    
     ret
 BEGIN_GAME endp
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -902,10 +906,17 @@ DRAW_VERTICAL_LINE proc far
 DRAW_VERTICAL_LINE endp
 
 
-DRAW_DATA_SEGMENT   PROC FAR
- 
- mov ah,16
+DRAW_DATA_SEGMENT  PROC FAR
+
+    PUSH AX
+    PUSH BX
+    PUSH CX
+    PUSH DX
+
+ mov Data_Segment_X,27
+ mov Data_Segment_Y,1
  mov di,0
+ mov Counter_Segment,16
  loop1:
 
   movCursor Data_Segment_X,Data_Segment_Y
@@ -913,13 +924,12 @@ DRAW_DATA_SEGMENT   PROC FAR
     DISPLAY_2_DIGITS_NEW  ch
     add Data_Segment_Y,1
     inc di
-    dec ah
-    cmp ah,0
+    sub Counter_Segment,1
+    cmp Counter_Segment,0
     jnz loop1
 
-mov ch,16
+mov Counter_Segment,16
 mov di,0
-
 mov Data_Segment_Y,1
 add Data_Segment_X,7
     loop2:
@@ -928,11 +938,11 @@ add Data_Segment_X,7
     printCharacter Counter[di]
     add Data_Segment_Y,1
     inc di
-    dec ch
-    cmp ch,0
+    sub Counter_Segment,1
+    cmp Counter_Segment,0
     jnz loop2
 
-mov ch,16
+mov Counter_Segment,16
 mov di,0
 
 mov Data_Segment_Y,1
@@ -943,15 +953,15 @@ add Data_Segment_X,12
     printCharacter Counter[di]
     add Data_Segment_Y,1
     inc di
-    dec ch
-    cmp ch,0
+    sub Counter_Segment,1
+    cmp Counter_Segment,0
     jnz loop3
 
 
 mov Data_Segment_Y,1
 sub Data_Segment_X,5
 
- mov ah,16
+ mov Counter_Segment,16
  mov di,0
  loop4:
 
@@ -960,11 +970,14 @@ sub Data_Segment_X,5
     DISPLAY_2_DIGITS_NEW  ch
     add Data_Segment_Y,1
     inc di
-    dec ah
-    cmp ah,0
+    sub Counter_Segment,1
+    cmp Counter_Segment,0
     jnz loop4
 
-
+    POP DX
+    POP CX
+    POP BX
+    POP AX
 
 RET
 DRAW_DATA_SEGMENT ENDP
@@ -1003,13 +1016,17 @@ CLR endp
 
 ;description: the fixed data of each screen, players' registers
 FIXED proc far
+     CALL DRAW_DATA_SEGMENT
+
     CALL DRAW_REGISTER_NAMES
     DrawRec 30, 535, 280, 639; draw rectangle around player1 registers
     call DRAW_VERTICAL_LINE
 
-    call DRAW_REGISTER_NAMES2
+   call DRAW_REGISTER_NAMES2
     DrawRec 30, 405, 280,510
     CALL SHOW_CHAT
+       
+
     RET
 FIXED endp
 
@@ -1044,6 +1061,19 @@ SECONDSCREEN PROC FAR
     RET
 SECONDSCREEN ENDP
 
+
+CLEAR_SCREEN PROC NEAR
+			
+		 mov ax,0600h
+        mov bh, 00h  ;set the color for the background
+        mov cx,0
+        mov dx,184fh
+        int 10h
+			
+			RET
+CLEAR_SCREEN ENDP
+
+
 MAIN PROC FAR
     MOV AX,@DATA
     MOV DS,AX
@@ -1066,7 +1096,8 @@ MAIN PROC FAR
     ;CALL SHOW_INSTRUCTIONS
     ;CALL HIDE_POWER_UP
     CALL BEGIN_GAME
-    CALL DRAW_DATA_SEGMENT
+  
+    ;CALL DRAW_DATA_SEGMENT
     ;CALL SHOW_AFTER_INSTRUCTION
     ;CALL SHOW_2ND_OPERAND
     ;CALL SHOW_REGISTERS_CHOICE
@@ -1082,15 +1113,15 @@ MAIN PROC FAR
         jb CHOICE_INSTRUCTION
         JMP CHOICE_POWERUPS
 
-        ; cmp y, 20
-        ; jb MainScreen
-        ; cmp y, 60
-        ; ja MainScreen
+        cmp y, 20
+        jb MainScreen
+        cmp y, 60
+        ja MainScreen
 
-        ; cmp x, 30
-        ; jb MainScreen
-        ; cmp x, 140
-        ; ja MainScreen
+        cmp x, 30
+        jb MainScreen
+        cmp x, 140
+        ja MainScreen
         
 ;DrawRec 280,515,310,600
     CHOICE_INSTRUCTION:
@@ -1103,6 +1134,7 @@ MAIN PROC FAR
         jb MainScreen
         cmp x, 140
         ja MainScreen
+      
         CALL CLR
         MOV INSTorPOWERUP,1
     CALL SHOW_INSTRUCTIONS
@@ -1117,6 +1149,7 @@ MAIN PROC FAR
         jb MainScreen
         cmp x, 600
         ja MainScreen
+      
         CALL CLR
          MOV INSTorPOWERUP,0
     CALL  SHOW_POWER_UPS_CHOICE
@@ -1131,7 +1164,7 @@ MAIN PROC FAR
 
 
     Show_mouse
-    ;;;;;;
+    ;;;;;
     ;CALL SHOW_AFTER_INSTRUCTION
     ;CALL SHOW_2ND_OPERAND
     ;CALL SHOW_REGISTERS_CHOICE
