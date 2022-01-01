@@ -195,8 +195,8 @@ main proc far
             jz mov_power_up1_player2
             cmp power_up_player2,2
             jz mov_power_up2_player2
-                mov player_turn1,1
-                mov player_turn2,0
+                mov player_turn1,0
+                mov player_turn2,1
                 jmp perform_mov_player2 
             mov_power_up1_player2: 
                 cmp intial_points_player2,5
@@ -205,8 +205,8 @@ main proc far
                 nopoints_mov_powerup1_p2:
                 jmp far ptr end_instruction_player2
                 can_perform_mov_powerup1_p2:
-                    mov player_turn1,0
-                    mov player_turn2,1 
+                    mov player_turn1,1
+                    mov player_turn2,0 
                     sub intial_points_player1,5
                     jmp perform_mov_player2 
             mov_power_up2_player2:
@@ -233,666 +233,662 @@ main proc far
                         call  mov_register_player2 
                 jmp far ptr end_instruction_player2   
 
-    ADD_instruction_player1:
+    ADD_instruction_player2:
         ; call drawing and clicking procedure --------------------------------
             ; set variable to number then compare
             
             cmp power_up_player1,1
-            jz add_power_up1_player1
+            jz add_power_up1_player2
             cmp power_up_player1,2
-            jz add_power_up2_player1
-                mov player_turn1,1
-                mov player_turn2,0
-                jmp perform_add_player1 
-            add_power_up1_player1: 
-                cmp intial_points_player1,5
-                JB nopoints_add_powerup1_p1 ;-> end instruction of this player because of no points enough
-                jmp can_perform_add_powerup1_p1 
-                nopoints_add_powerup1_p1:
-                jmp far ptr end_instruction_player1
-                can_perform_add_powerup1_p1:
-                    mov player_turn1,0
-                    mov player_turn2,1
-                    sub intial_points_player1,5
-                    jmp perform_add_player1 
-            add_power_up2_player1:  
-                cmp intial_points_player1,3
-                JB nopoints_add_powerup2_p1 ;-> end instruction of this player because of no points enough
-                jmp can_perform_add_powerup2_p1 
-                nopoints_add_powerup2_p1:
-                jmp far ptr end_instruction_player1
-                can_perform_add_powerup2_p1:
+            jz add_power_up2_player2
+                mov player_turn1,0
+                mov player_turn2,1
+                jmp perform_add_player2 
+            add_power_up1_player2: 
+                cmp intial_points_player2,5
+                JB nopoints_add_powerup1_p2 ;-> end instruction of this player because of no points enough
+                jmp can_perform_add_powerup1_p2 
+                nopoints_add_powerup1_p2:
+                jmp far ptr end_instruction_player2
+                can_perform_add_powerup1_p2:
+                    mov player_turn1,1
+                    mov player_turn2,0
+                    sub intial_points_player2,5
+                    jmp perform_add_player2 
+            add_power_up2_player2:  
+                cmp intial_points_player2,3
+                JB nopoints_add_powerup2_p2 ;-> end instruction of this player because of no points enough
+                jmp can_perform_add_powerup2_p2 
+                nopoints_add_powerup2_p2:
+                jmp far ptr end_instruction_player2
+                can_perform_add_powerup2_p2:
                     mov player_turn1,1
                     mov player_turn2,1 
-                    sub intial_points_player1,3
-                    jmp perform_add_player1
-                perform_add_player1:
+                    sub intial_points_player2,3
+                    jmp perform_add_player2
+                perform_add_player2:
                         mov instruction_index,1
                         mov al,address_mode
                         cmp al,1
-                        jz address_mode_add1
-                        jmp reg_mode_add1                 
-                    address_mode_add1:  
+                        jz address_mode_add2
+                        jmp reg_mode_add2                 
+                    address_mode_add2:  
                         call  mov_address_player2
-                        jmp far ptr end_instruction_player1
-                    reg_mode_add1:      
+                        jmp far ptr end_instruction_player2
+                    reg_mode_add2:      
                         call  mov_register_player2    
-                  jmp far ptr end_instruction_player1 
-    Sub_instruction_player1: 
+                  jmp far ptr end_instruction_player2 
+    Sub_instruction_player2: 
                                   
         ; call drawing and clicking procedure --------------------------------
-          cmp power_up_player1,1
-            jz sub_power_up1_player1
+          cmp power_up_player2,1
+            jz sub_power_up1_player2
             cmp power_up_player1,2
-            jz sub_power_up2_player1
-                mov player_turn1,1
-                mov player_turn2,0
-                jmp perform_sub_player1 
-            sub_power_up1_player1:
-                cmp intial_points_player1,5
-                JB nopoints_Sub_powerup1_p1 ;-> end instruction of this player because of no points enough
-                jmp can_perform_Sub_powerup1_p1 
-                nopoints_Sub_powerup1_p1:
-                jmp far ptr end_instruction_player1
-                can_perform_Sub_powerup1_p1:
-                    mov player_turn1,0
-                    mov player_turn2,1   
-                    sub intial_points_player1,5
-                    jmp perform_sub_player1 
-            sub_power_up2_player1:
-                cmp intial_points_player1,3
-                JB nopoints_Sub_powerup2_p1 ;-> end instruction of this player because of no points enough
-                jmp can_perform_Sub_powerup2_p1 
-                nopoints_Sub_powerup2_p1:
-                jmp far ptr end_instruction_player1
-                can_perform_Sub_powerup2_p1:
+            jz sub_power_up2_player2
+                mov player_turn1,0
+                mov player_turn2,1
+                jmp perform_sub_player2 
+            sub_power_up1_player2:
+                cmp intial_points_player2,5
+                JB nopoints_Sub_powerup1_p2 ;-> end instruction of this player because of no points enough
+                jmp can_perform_Sub_powerup1_p2 
+                nopoints_Sub_powerup1_p2:
+                jmp far ptr end_instruction_player2
+                can_perform_Sub_powerup1_p2:
+                    mov player_turn1,1
+                    mov player_turn2,0   
+                    sub intial_points_player2,5
+                    jmp perform_sub_player2 
+            sub_power_up2_player2:
+                cmp intial_points_player2,3
+                JB nopoints_Sub_powerup2_p2 ;-> end instruction of this player because of no points enough
+                jmp can_perform_Sub_powerup2_p2 
+                nopoints_Sub_powerup2_p2:
+                jmp far ptr end_instruction_player2
+                can_perform_Sub_powerup2_p2:
                     mov player_turn1,1
                     mov player_turn2,1 
-                    sub intial_points_player1,3
-                    jmp perform_sub_player1
-            perform_sub_player1:
+                    sub intial_points_player2,3
+                    jmp perform_sub_player2
+            perform_sub_player2:
                         mov instruction_index,2
                         mov al,address_mode
                         cmp al,1
-                        jz address_mode_sub1
-                        jmp reg_mode_sub1        
+                        jz address_mode_sub2
+                        jmp reg_mode_sub2        
                         ; address mode processing ---------------------------------------------------------         
-                    address_mode_sub1:  
+                    address_mode_sub2:  
                         call  mov_address_player2
-                        jmp far ptr end_instruction_player1
-                    reg_mode_sub1:                
+                        jmp far ptr end_instruction_player2
+                    reg_mode_sub2:                
                         call  mov_register_player2    
-                  jmp far ptr end_instruction_player1 
-    MUL_instruction_player1:                               
+                  jmp far ptr end_instruction_player2 
+    MUL_instruction_player2:                               
         ; call drawing and clicking procedure --------------------------------
             ; set variable to number then compare
-            cmp power_up_player1,1
-            jz mul_power_up1_player1
-            cmp power_up_player1,2
-            jz mul_power_up2_player1
-                mov player_turn1,1
-                mov player_turn2,0
-                jmp perform_mul_player1 
-            mul_power_up1_player1:
-                cmp intial_points_player1,5
-                JB nopoints_mul_powerup1_p1 ;-> end instruction of this player because of no points enough
-                jmp can_perform_mul_powerup1_p1 
-                nopoints_mul_powerup1_p1:
-                jmp far ptr end_instruction_player1
-                can_perform_mul_powerup1_p1:
-                    mov player_turn1,0
-                    mov player_turn2,1
-                    sub intial_points_player1,5
-                    jmp perform_mul_player1 
-            mul_power_up2_player1: 
-                cmp intial_points_player1,3
-                JB nopoints_mul_powerup2_p1 ;-> end instruction of this player because of no points enough
-                jmp can_perform_mul_powerup2_p1 
-                nopoints_mul_powerup2_p1:
-                jmp far ptr end_instruction_player1
-                can_perform_mul_powerup2_p1:
+            cmp power_up_player2,1
+            jz mul_power_up1_player2
+            cmp power_up_player2,2
+            jz mul_power_up2_player2
+                mov player_turn1,0
+                mov player_turn2,1
+                jmp perform_mul_player2 
+            mul_power_up1_player2:
+                cmp intial_points_player2,5
+                JB nopoints_mul_powerup1_p2 ;-> end instruction of this player because of no points enough
+                jmp can_perform_mul_powerup1_p2 
+                nopoints_mul_powerup1_p2:
+                jmp far ptr end_instruction_player2
+                can_perform_mul_powerup1_p2:
+                    mov player_turn1,1
+                    mov player_turn2,0 
+                    sub intial_points_player2,5
+                    jmp perform_mul_player2 
+            mul_power_up2_player2: 
+                cmp intial_points_player2,3
+                JB nopoints_mul_powerup2_p2 ;-> end instruction of this player because of no points enough
+                jmp can_perform_mul_powerup2_p2 
+                nopoints_mul_powerup2_p2:
+                jmp far ptr end_instruction_player2
+                can_perform_mul_powerup2_p2:
                     mov player_turn1,1
                     mov player_turn2,1
-                    sub intial_points_player1,3
-                    jmp perform_mul_player1
-            perform_mul_player1:
+                    sub intial_points_player2,3
+                    jmp perform_mul_player2
+            perform_mul_player2:
                     mov instruction_index,3
                     mov al,address_mode
                     cmp al,1
-                    jz address_mode_mul1
-                    jmp reg_mode_mul1        
+                    jz address_mode_mul2
+                    jmp reg_mode_mul2        
                     ; address mode processing ---------------------------------------------------------         
-                address_mode_mul1:  
-                    call  div_mul_inc_dec_address_player1
-                    jmp far ptr end_instruction_player1
-                reg_mode_mul1:
-                    call  div_mul_inc_dec_register_player1 
-              jmp far ptr end_instruction_player1                
+                address_mode_mul2:  
+                    call  div_mul_inc_dec_address_player2
+                    jmp far ptr end_instruction_player2
+                reg_mode_mul2:
+                    call  div_mul_inc_dec_register_player2 
+              jmp far ptr end_instruction_player2                
         
-    DIV_instruction_player1:                     
-            ; call drawing and clicking procedure --------------------------------
+    DIV_instruction_player2:                     
+         ; call drawing and clicking procedure --------------------------------
             ; set variable to number then compare
-            cmp power_up_player1,1
-            jz div_power_up1_player1
-            cmp power_up_player1,2
-            jz div_power_up2_player1
-                mov player_turn1,1
-                mov player_turn2,0
-                jmp perform_div_player1 
-            div_power_up1_player1: 
-                cmp intial_points_player1,5
-                JB nopoints_div_powerup1_p1 ;-> end instruction of this player because of no points enough
-                jmp can_perform_div_powerup1_p1 
-                nopoints_div_powerup1_p1:
-                jmp far ptr end_instruction_player1
-                can_perform_div_powerup1_p1:
-                    mov player_turn1,0
-                    mov player_turn2,1 
-                    sub intial_points_player1,5
-                    jmp perform_div_player1 
-            div_power_up2_player1:
-                cmp intial_points_player1,3
-                JB nopoints_div_powerup2_p1 ;-> end instruction of this player because of no points enough
-                jmp can_perform_div_powerup2_p1 
-                nopoints_div_powerup2_p1:
-                jmp far ptr end_instruction_player1
-                can_perform_div_powerup2_p1:
+            cmp power_up_player2,1
+            jz div_power_up1_player2
+            cmp power_up_player2,2
+            jz div_power_up2_player2
+                mov player_turn1,0
+                mov player_turn2,1
+                jmp perform_div_player2 
+            div_power_up1_player2:
+                cmp intial_points_player2,5
+                JB nopoints_div_powerup1_p2 ;-> end instruction of this player because of no points enough
+                jmp can_perform_div_powerup1_p2 
+                nopoints_div_powerup1_p2:
+                jmp far ptr end_instruction_player2
+                can_perform_div_powerup1_p2:
+                    mov player_turn1,1
+                    mov player_turn2,0 
+                    sub intial_points_player2,5
+                    jmp perform_div_player2 
+            div_power_up2_player2: 
+                cmp intial_points_player2,3
+                JB nopoints_div_powerup2_p2 ;-> end instruction of this player because of no points enough
+                jmp can_perform_div_powerup2_p2 
+                nopoints_div_powerup2_p2:
+                jmp far ptr end_instruction_player2
+                can_perform_div_powerup2_p2:
                     mov player_turn1,1
                     mov player_turn2,1
-                    sub intial_points_player1,3
-                    jmp perform_div_player1
-            perform_div_player1:           
-                        mov instruction_index,4
-                        mov al,address_mode
-                        cmp al,1
-                        jz address_mode_div1
-                        jmp reg_mode_div1        
-                        ; address mode processing ---------------------------------------------------------         
-                    address_mode_div1:  
-                        call  div_mul_inc_dec_address_player1 
-                        jmp far ptr end_instruction_player1
-                    reg_mode_div1:
-                        call  div_mul_inc_dec_register_player1 
-                  jmp far ptr end_instruction_player1
-     
-    Idiv_instruction_player1:
-            ; call drawing and clicking procedure --------------------------------
-            ; set variable to number then compare 
-            
-            cmp power_up_player1,1
-            jz idiv_power_up1_player1
-            cmp power_up_player1,2
-            jz idiv_power_up2_player1
-                mov player_turn1,1
-                mov player_turn2,0
-                jmp perform_idiv_player1 
-            idiv_power_up1_player1:
-                cmp intial_points_player1,3
-                JB nopoints_idiv_powerup1_p1 ;-> end instruction of this player because of no points enough
-                jmp can_perform_idiv_powerup1_p1 
-                nopoints_idiv_powerup1_p1:
-                jmp far ptr end_instruction_player1
-                can_perform_idiv_powerup1_p1:
-                    mov player_turn1,0
-                    mov player_turn2,1
-                    sub intial_points_player1,5
-                    jmp perform_idiv_player1 
-            idiv_power_up2_player1:                                                                      
-                cmp intial_points_player1,3
-                JB nopoints_idiv_powerup2_p1 ;-> end instruction of this player because of no points enough
-                jmp can_perform_idiv_powerup2_p1 
-                nopoints_idiv_powerup2_p1:
-                jmp far ptr end_instruction_player1
-                can_perform_idiv_powerup2_p1:
+                    sub intial_points_player2,3
+                    jmp perform_div_player2
+            perform_div_player2:
+                    mov instruction_index,4
+                    mov al,address_mode
+                    cmp al,1
+                    jz address_mode_div2
+                    jmp reg_mode_div2        
+                    ; address mode processing ---------------------------------------------------------         
+                address_mode_div2:  
+                    call  div_mul_inc_dec_address_player2
+                    jmp far ptr end_instruction_player2
+                reg_mode_div2:
+                    call  div_mul_inc_dec_register_player2 
+              jmp far ptr end_instruction_player2                             
+             
+    Idiv_instruction_player2:
+                    ; call drawing and clicking procedure --------------------------------
+            ; set variable to number then compare
+            cmp power_up_player2,1
+            jz Idiv_power_up1_player2
+            cmp power_up_player2,2
+            jz Idiv_power_up2_player2
+                mov player_turn1,0
+                mov player_turn2,1
+                jmp perform_Idiv_player2 
+            Idiv_power_up1_player2:
+                cmp intial_points_player2,5
+                JB nopoints_Idiv_powerup1_p2 ;-> end instruction of this player because of no points enough
+                jmp can_perform_Idiv_powerup1_p2 
+                nopoints_Idiv_powerup1_p2:
+                jmp far ptr end_instruction_player2
+                can_perform_Idiv_powerup1_p2:
                     mov player_turn1,1
-                    mov player_turn2,1 
-                    sub intial_points_player1,3
-                    jmp perform_idiv_player1
-            perform_idiv_player1:            
+                    mov player_turn2,0 
+                    sub intial_points_player2,5
+                    jmp perform_Idiv_player2 
+            Idiv_power_up2_player2: 
+                cmp intial_points_player2,3
+                JB nopoints_Idiv_powerup2_p2 ;-> end instruction of this player because of no points enough
+                jmp can_perform_Idiv_powerup2_p2 
+                nopoints_Idiv_powerup2_p2:
+                jmp far ptr end_instruction_player2
+                can_perform_Idiv_powerup2_p2:
+                    mov player_turn1,1
+                    mov player_turn2,1
+                    sub intial_points_player2,3
+                    jmp perform_Idiv_player2
+            perform_Idiv_player2:
                     mov instruction_index,14
                     mov al,address_mode
                     cmp al,1
-                    jz address_mode_idiv1
-                    jmp reg_mode_idiv1        
+                    jz address_mode_Idiv2
+                    jmp reg_mode_Idiv2        
                     ; address mode processing ---------------------------------------------------------         
-                address_mode_idiv1:  
-                    call  div_mul_inc_dec_address_player1 
-                    jmp far ptr end_instruction_player1
-                reg_mode_idiv1:
-                    call  div_mul_inc_dec_register_player1 
-              jmp far ptr end_instruction_player1 
+                address_mode_Idiv2:  
+                    call  div_mul_inc_dec_address_player2
+                    jmp far ptr end_instruction_player2
+                reg_mode_Idiv2:
+                    call  div_mul_inc_dec_register_player2 
+              jmp far ptr end_instruction_player2                
+         
      
-    Imul_instruction_player1:
-            ; call drawing and clicking procedure --------------------------------
+    Imul_instruction_player2:
+                    ; call drawing and clicking procedure --------------------------------
             ; set variable to number then compare
-            cmp power_up_player1,1
-            jz imul_power_up1_player1
-            cmp power_up_player1,2
-            jz imul_power_up2_player1
-                mov player_turn1,1
-                mov player_turn2,0
-                jmp perform_imul_player1 
-            imul_power_up1_player1:
-                cmp intial_points_player1,5
-                JB nopoints_Imul_powerup1_p1 ;-> end instruction of this player because of no points enough
-                jmp can_perform_Imul_powerup1_p1 
-                nopoints_Imul_powerup1_p1:
-                jmp far ptr end_instruction_player1
-                can_perform_Imul_powerup1_p1:
-                    mov player_turn1,0
-                    mov player_turn2,1 
-                    sub intial_points_player1,5
-                    jmp perform_imul_player1 
-            imul_power_up2_player1:
-                cmp intial_points_player1,3
-                JB nopoints_Imul_powerup2_p1 ;-> end instruction of this player because of no points enough
-                jmp can_perform_Imul_powerup2_p1 
-                nopoints_Imul_powerup2_p1:
-                jmp far ptr end_instruction_player1
-                can_perform_Imul_powerup2_p1:
+            cmp power_up_player2,1
+            jz imul_power_up1_player2
+            cmp power_up_player2,2
+            jz imul_power_up2_player2
+                mov player_turn1,0
+                mov player_turn2,1
+                jmp perform_imul_player2 
+            imul_power_up1_player2:
+                cmp intial_points_player2,5
+                JB nopoints_imul_powerup1_p2 ;-> end instruction of this player because of no points enough
+                jmp can_perform_imul_powerup1_p2 
+                nopoints_imul_powerup1_p2:
+                jmp far ptr end_instruction_player2
+                can_perform_imul_powerup1_p2:
+                    mov player_turn1,1
+                    mov player_turn2,0 
+                    sub intial_points_player2,5
+                    jmp perform_imul_player2 
+            imul_power_up2_player2: 
+                cmp intial_points_player2,3
+                JB nopoints_imul_powerup2_p2 ;-> end instruction of this player because of no points enough
+                jmp can_perform_imul_powerup2_p2 
+                nopoints_imul_powerup2_p2:
+                jmp far ptr end_instruction_player2
+                can_perform_imul_powerup2_p2:
                     mov player_turn1,1
                     mov player_turn2,1
-                    sub intial_points_player1,3
-                    jmp perform_imul_player1
-            perform_imul_player1:
+                    sub intial_points_player2,3
+                    jmp perform_imul_player2
+            perform_imul_player2:
                     mov instruction_index,15
                     mov al,address_mode
                     cmp al,1
-                    jz address_mode_imul1
-                    jmp reg_mode_imul1        
+                    jz address_mode_imul2
+                    jmp reg_mode_imul2        
                     ; address mode processing ---------------------------------------------------------         
-                address_mode_imul1:  
-                    call  div_mul_inc_dec_address_player1
-                    jmp far ptr end_instruction_player1
-                reg_mode_imul1:
-                    call  div_mul_inc_dec_register_player1 
-              jmp far ptr end_instruction_player1 
+                address_mode_imul2:  
+                    call  div_mul_inc_dec_address_player2
+                    jmp far ptr end_instruction_player2
+                reg_mode_imul2:
+                    call  div_mul_inc_dec_register_player2 
+              jmp far ptr end_instruction_player2                
+        
     
-    INC_instruction_player1:
-            ; call drawing and clicking procedure --------------------------------
+    INC_instruction_player2:
+                   ; call drawing and clicking procedure --------------------------------
             ; set variable to number then compare
-            
-            cmp power_up_player1,1
-            jz INC_power_up1_player1
-            cmp power_up_player1,2
-            jz INC_power_up2_player1
-                mov player_turn1,1
-                mov player_turn2,0
-                jmp perform_INC_player1 
-            INC_power_up1_player1:
-                cmp intial_points_player1,5
-                JB nopoints_INC_powerup1_p1 ;-> end instruction of this player because of no points enough
-                jmp can_perform_INC_powerup1_p1 
-                nopoints_INC_powerup1_p1:
-                jmp far ptr end_instruction_player1
-                can_perform_INC_powerup1_p1:
-                    mov player_turn1,0
-                    mov player_turn2,1
-                    sub intial_points_player1,5
-                    jmp perform_INC_player1 
-            INC_power_up2_player1:                           
-                cmp intial_points_player1,3
-                JB nopoints_INC_powerup2_p1 ;-> end instruction of this player because of no points enough
-                jmp can_perform_INC_powerup2_p1 
-                nopoints_INC_powerup2_p1:
-                jmp far ptr end_instruction_player1
-                can_perform_INC_powerup2_p1:
+            cmp power_up_player2,1
+            jz INC_power_up1_player2
+            cmp power_up_player2,2
+            jz INC_power_up2_player2
+                mov player_turn1,0
+                mov player_turn2,1
+                jmp perform_INC_player2 
+            INC_power_up1_player2:
+                cmp intial_points_player2,5
+                JB nopoints_INC_powerup1_p2 ;-> end instruction of this player because of no points enough
+                jmp can_perform_INC_powerup1_p2 
+                nopoints_INC_powerup1_p2:
+                jmp far ptr end_instruction_player2
+                can_perform_INC_powerup1_p2:
                     mov player_turn1,1
-                    mov player_turn2,1   
-                    sub intial_points_player1,3
-                    jmp perform_INC_player1
-            perform_INC_player1:
-            
-            mov instruction_index,5
-            mov al,address_mode
-            cmp al,1
-            jz address_mode_inc1
-            jmp reg_mode_inc1        
-            ; address mode processing ---------------------------------------------------------         
-        address_mode_inc1:  
-            call  div_mul_inc_dec_address_player1
-            jmp far ptr end_instruction_player1
-        reg_mode_inc1:
-            call  div_mul_inc_dec_register_player1 
-      jmp far ptr end_instruction_player1 
+                    mov player_turn2,0 
+                    sub intial_points_player2,5
+                    jmp perform_INC_player2 
+            INC_power_up2_player2: 
+                cmp intial_points_player2,3
+                JB nopoints_INC_powerup2_p2 ;-> end instruction of this player because of no points enough
+                jmp can_perform_INC_powerup2_p2 
+                nopoints_INC_powerup2_p2:
+                jmp far ptr end_instruction_player2
+                can_perform_INC_powerup2_p2:
+                    mov player_turn1,1
+                    mov player_turn2,1
+                    sub intial_points_player2,3
+                    jmp perform_INC_player2
+            perform_INC_player2:
+                    mov instruction_index,5
+                    mov al,address_mode
+                    cmp al,1
+                    jz address_mode_INC2
+                    jmp reg_mode_INC2        
+                    ; address mode processing ---------------------------------------------------------         
+                address_mode_INC2:  
+                    call  div_mul_inc_dec_address_player2
+                    jmp far ptr end_instruction_player2
+                reg_mode_INC2:
+                    call  div_mul_inc_dec_register_player2 
+              jmp far ptr end_instruction_player2                
+        
      
-    DEC_instruction_player1:
-            ; call drawing and clicking procedure --------------------------------
+    DEC_instruction_player2:
+                   ; call drawing and clicking procedure --------------------------------
             ; set variable to number then compare
-            
-            cmp power_up_player1,1
-            jz DEC_power_up1_player1
-            cmp power_up_player1,2
-            jz DEC_power_up2_player1
-                mov player_turn1,1
-                mov player_turn2,0
-                jmp perform_DEC_player1 
-            DEC_power_up1_player1:    
-                cmp intial_points_player1,5
-                JB nopoints_DEC_powerup1_p1 ;-> end instruction of this player because of no points enough
-                jmp can_perform_DEC_powerup1_p1 
-                nopoints_DEC_powerup1_p1:
-                jmp far ptr end_instruction_player1
-                can_perform_DEC_powerup1_p1:
-                    mov player_turn1,0
-                    mov player_turn2,1   
-                    sub intial_points_player1,5
-                    jmp perform_DEC_player1 
-            DEC_power_up2_player1:
-                cmp intial_points_player1,3
-                JB nopoints_DEC_powerup2_p1 ;-> end instruction of this player because of no points enough
-                jmp can_perform_DEC_powerup2_p1 
-                nopoints_DEC_powerup2_p1:
-                jmp far ptr end_instruction_player1
-                can_perform_DEC_powerup2_p1:
+            cmp power_up_player2,1
+            jz DEC_power_up1_player2
+            cmp power_up_player2,2
+            jz DEC_power_up2_player2
+                mov player_turn1,0
+                mov player_turn2,1
+                jmp perform_DEC_player2 
+            DEC_power_up1_player2:
+                cmp intial_points_player2,5
+                JB nopoints_DEC_powerup1_p2 ;-> end instruction of this player because of no points enough
+                jmp can_perform_DEC_powerup1_p2 
+                nopoints_DEC_powerup1_p2:
+                jmp far ptr end_instruction_player2
+                can_perform_DEC_powerup1_p2:
+                    mov player_turn1,1
+                    mov player_turn2,0 
+                    sub intial_points_player2,5
+                    jmp perform_DEC_player2 
+            DEC_power_up2_player2: 
+                cmp intial_points_player2,3
+                JB nopoints_DEC_powerup2_p2 ;-> end instruction of this player because of no points enough
+                jmp can_perform_DEC_powerup2_p2 
+                nopoints_DEC_powerup2_p2:
+                jmp far ptr end_instruction_player2
+                can_perform_DEC_powerup2_p2:
                     mov player_turn1,1
                     mov player_turn2,1
-                    sub intial_points_player1,3
-                    jmp perform_DEC_player1
-            perform_DEC_player1:
-            
-            mov instruction_index,6
-            mov al,address_mode
-            cmp al,1
-            jz address_mode_dec1
-            jmp reg_mode_dec1        
-            ; address mode processing ---------------------------------------------------------         
-        address_mode_dec1:  
-            call  div_mul_inc_dec_address_player1
-            jmp far ptr end_instruction_player1
-        reg_mode_dec1:
-            call  div_mul_inc_dec_register_player1 
-      jmp far ptr end_instruction_player1 
+                    sub intial_points_player2,3
+                    jmp perform_DEC_player2
+            perform_DEC_player2:
+                    mov instruction_index,6
+                    mov al,address_mode
+                    cmp al,1
+                    jz address_mode_DEC2
+                    jmp reg_mode_DEC2        
+                    ; address mode processing ---------------------------------------------------------         
+                address_mode_DEC2:  
+                    call  div_mul_inc_dec_address_player2
+                    jmp far ptr end_instruction_player2
+                reg_mode_DEC2:
+                    call  div_mul_inc_dec_register_player2 
+              jmp far ptr end_instruction_player2                
+        
 
     
 
-    NOP_instruction_player1: 
-        jmp far ptr end_instruction_player1 
-    SAR_instruction_player1: 
+    NOP_instruction_player2: 
+        jmp far ptr end_instruction_player2 
+    SAR_instruction_player2: 
             ; call drawing and clicking procedure --------------------------------
             ; set variable to number then compare
-            cmp power_up_player1,1
-            jz SAR_power_up1_player1
-            cmp power_up_player1,2
-            jz SAR_power_up2_player1
-                mov player_turn1,1
-                mov player_turn2,0
-                jmp perform_SAR_player1 
-            SAR_power_up1_player1:
-                cmp intial_points_player1,5
-                JB nopoints_SAR_powerup1_p1 ;-> end instruction of this player because of no points enough
-                jmp can_perform_SAR_powerup1_p1 
-                nopoints_SAR_powerup1_p1:
-                jmp far ptr end_instruction_player1
-                can_perform_SAR_powerup1_p1:
-                    mov player_turn1,0
-                    mov player_turn2,1
-                    sub intial_points_player1,5
-                    jmp perform_SAR_player1 
-            SAR_power_up2_player1: 
-                cmp intial_points_player1,3
-                JB nopoints_SAR_powerup2_p1 ;-> end instruction of this player because of no points enough
-                jmp can_perform_SAR_powerup2_p1 
-                nopoints_SAR_powerup2_p1:
-                jmp far ptr end_instruction_player1
-                can_perform_SAR_powerup2_p1:
+            cmp power_up_player2,1
+            jz SAR_power_up1_player2
+            cmp power_up_player2,2
+            jz SAR_power_up2_player2
+                mov player_turn1,0
+                mov player_turn2,1
+                jmp perform_SAR_player2 
+            SAR_power_up1_player2:
+                cmp intial_points_player2,5
+                JB nopoints_SAR_powerup1_p2 ;-> end instruction of this player because of no points enough
+                jmp can_perform_SAR_powerup1_p2 
+                nopoints_SAR_powerup1_p2:
+                jmp far ptr end_instruction_player2
+                can_perform_SAR_powerup1_p2:
+                    mov player_turn1,1
+                    mov player_turn2,0 
+                    sub intial_points_player2,5
+                    jmp perform_SAR_player2 
+            SAR_power_up2_player2: 
+                cmp intial_points_player2,3
+                JB nopoints_SAR_powerup2_p2 ;-> end instruction of this player because of no points enough
+                jmp can_perform_SAR_powerup2_p2 
+                nopoints_SAR_powerup2_p2:
+                jmp far ptr end_instruction_player2
+                can_perform_SAR_powerup2_p2:
                     mov player_turn1,1
                     mov player_turn2,1
-                    sub intial_points_player1,3
-                    jmp perform_SAR_player1
-            perform_SAR_player1:
+                    sub intial_points_player2,3
+                    jmp perform_SAR_player2
+            perform_SAR_player2:
             
             mov instruction_index,13
             mov al,address_mode
             cmp al,1
-            jz address_mode_sar1
-            jmp reg_mode_sar1        
+            jz address_mode_sar2
+            jmp reg_mode_sar2        
             ; address mode processing ---------------------------------------------------------         
-        address_mode_sar1:  
-            call  shl_shr_ror_rol_address_player1
-            jmp far ptr end_instruction_player1
-        reg_mode_sar1:
-            call  shl_shr_ror_rol_register_player1 
-      jmp far ptr end_instruction_player1
-    SAL_instruction_player1:  
-                ; call drawing and clicking procedure --------------------------------
+        address_mode_sar2:  
+            call  shl_shr_ror_rol_address_player2
+            jmp far ptr end_instruction_player2
+        reg_mode_sar2:
+            call  shl_shr_ror_rol_register_player2 
+      jmp far ptr end_instruction_player2
+    SAL_instruction_player2:  
+                        ; call drawing and clicking procedure --------------------------------
             ; set variable to number then compare
-            
-             cmp power_up_player1,1
-            jz sal_power_up1_player1
-            cmp power_up_player1,2
-            jz sal_power_up2_player1
-                mov player_turn1,1
-                mov player_turn2,0
-                jmp perform_SAL_player1 
-            sal_power_up1_player1:
-                cmp intial_points_player1,5
-                JB nopoints_sal_powerup1_p1 ;-> end instruction of this player because of no points enough
-                jmp can_perform_sal_powerup1_p1 
-                nopoints_sal_powerup1_p1:
-                jmp far ptr end_instruction_player1
-                can_perform_sal_powerup1_p1:
-                    mov player_turn1,0
-                    mov player_turn2,1 
-                    sub intial_points_player1,5
-                    jmp perform_SAL_player1 
-            sal_power_up2_player1:
-                cmp intial_points_player1,3
-                JB nopoints_sal_powerup2_p1 ;-> end instruction of this player because of no points enough
-                jmp can_perform_sal_powerup2_p1 
-                nopoints_sal_powerup2_p1:
-                jmp far ptr end_instruction_player1
-                can_perform_sal_powerup2_p1:
+            cmp power_up_player2,1
+            jz SAL_power_up1_player2
+            cmp power_up_player2,2
+            jz SAL_power_up2_player2
+                mov player_turn1,0
+                mov player_turn2,1
+                jmp perform_SAL_player2 
+            SAL_power_up1_player2:
+                cmp intial_points_player2,5
+                JB nopoints_SAL_powerup1_p2 ;-> end instruction of this player because of no points enough
+                jmp can_perform_SAL_powerup1_p2 
+                nopoints_SAL_powerup1_p2:
+                jmp far ptr end_instruction_player2
+                can_perform_SAL_powerup1_p2:
+                    mov player_turn1,1
+                    mov player_turn2,0 
+                    sub intial_points_player2,5
+                    jmp perform_SAL_player2 
+            SAL_power_up2_player2: 
+                cmp intial_points_player2,3
+                JB nopoints_SAL_powerup2_p2 ;-> end instruction of this player because of no points enough
+                jmp can_perform_SAL_powerup2_p2 
+                nopoints_SAL_powerup2_p2:
+                jmp far ptr end_instruction_player2
+                can_perform_SAL_powerup2_p2:
                     mov player_turn1,1
                     mov player_turn2,1
-                    sub intial_points_player1,3
-                    jmp perform_SAL_player1
-            perform_SAL_player1:
+                    sub intial_points_player2,3
+                    jmp perform_SAL_player2
+            perform_SAL_player2:
             
             mov instruction_index,8
             mov al,address_mode
             cmp al,1
-            jz address_mode_sal1
-            jmp reg_mode_sal1        
+            jz address_mode_sal2
+            jmp reg_mode_sal2        
             ; address mode processing ---------------------------------------------------------         
-        address_mode_sal1:  
-            call  shl_shr_ror_rol_address_player1
-            jmp far ptr end_instruction_player1
-        reg_mode_sal1:
-            call  shl_shr_ror_rol_register_player1 
-      jmp far ptr end_instruction_player1
+        address_mode_sal2:  
+            call  shl_shr_ror_rol_address_player2
+            jmp far ptr end_instruction_player2
+        reg_mode_sal2:
+            call  shl_shr_ror_rol_register_player2 
+      jmp far ptr end_instruction_player2
     
     SHR_instruction_player1:
-                ; call drawing and clicking procedure --------------------------------
+                       ; call drawing and clicking procedure --------------------------------
             ; set variable to number then compare
-            cmp power_up_player1,1
-            jz SHR_power_up1_player1
-            cmp power_up_player1,2
-            jz SHR_power_up2_player1
-                mov player_turn1,1
-                mov player_turn2,0
-                jmp perform_SHR_player1 
-            SHR_power_up1_player1: 
-                cmp intial_points_player1,5
-                JB nopoints_SHR_powerup1_p1 ;-> end instruction of this player because of no points enough
-                jmp can_perform_SHR_powerup1_p1 
-                nopoints_SHR_powerup1_p1:
-                jmp far ptr end_instruction_player1
-                can_perform_SHR_powerup1_p1:
-                    mov player_turn1,0
-                    mov player_turn2,1  
-                    sub intial_points_player1,5
-                    jmp perform_SHR_player1 
-            SHR_power_up2_player1:
-                cmp intial_points_player1,3
-                JB nopoints_SHR_powerup2_p1 ;-> end instruction of this player because of no points enough
-                jmp can_perform_SHR_powerup2_p1 
-                nopoints_SHR_powerup2_p1:
-                jmp far ptr end_instruction_player1
-                can_perform_SHR_powerup2_p1:
+            cmp power_up_player2,1
+            jz SHR_power_up1_player2
+            cmp power_up_player2,2
+            jz SHR_power_up2_player2
+                mov player_turn1,0
+                mov player_turn2,1
+                jmp perform_SHR_player2 
+            SHR_power_up1_player2:
+                cmp intial_points_player2,5
+                JB nopoints_SHR_powerup1_p2 ;-> end instruction of this player because of no points enough
+                jmp can_perform_SAR_powerup1_p2 
+                nopoints_SHR_powerup1_p2:
+                jmp far ptr end_instruction_player2
+                can_perform_SHR_powerup1_p2:
                     mov player_turn1,1
-                    mov player_turn2,1 
-                    sub intial_points_player1,3
-                    jmp perform_SHR_player1
-            perform_SHR_player1:
+                    mov player_turn2,0 
+                    sub intial_points_player2,5
+                    jmp perform_SHR_player2 
+            SHR_power_up2_player2: 
+                cmp intial_points_player2,3
+                JB nopoints_SHR_powerup2_p2 ;-> end instruction of this player because of no points enough
+                jmp can_perform_SHR_powerup2_p2 
+                nopoints_SHR_powerup2_p2:
+                jmp far ptr end_instruction_player2
+                can_perform_SHR_powerup2_p2:
+                    mov player_turn1,1
+                    mov player_turn2,1
+                    sub intial_points_player2,3
+                    jmp perform_SHR_player2
+            perform_SHR_player2:
             
             mov instruction_index,9
             mov al,address_mode
             cmp al,1
-            jz address_mode_shr1
-            jmp reg_mode_shr1        
+            jz address_mode_SHR2
+            jmp reg_mode_SHR2        
             ; address mode processing ---------------------------------------------------------         
-        address_mode_shr1:  
-            call  shl_shr_ror_rol_address_player1 
-            jmp far ptr end_instruction_player1
-        reg_mode_shr1:
-            call  shl_shr_ror_rol_register_player1 
-      jmp far ptr end_instruction_player1 
+        address_mode_SHR2:  
+            call  shl_shr_ror_rol_address_player2
+            jmp far ptr end_instruction_player2
+        reg_mode_SHR2:
+            call  shl_shr_ror_rol_register_player2 
+      jmp far ptr end_instruction_player2
      
     SHL_instruction_player1: 
-                ; call drawing and clicking procedure --------------------------------
+                       ; call drawing and clicking procedure --------------------------------
             ; set variable to number then compare
-            cmp power_up_player1,1
-            jz SHL_power_up1_player1
-            cmp power_up_player1,2
-            jz SHL_power_up2_player1
-                mov player_turn1,1
-                mov player_turn2,0
-                jmp perform_SHL_player1 
-            SHL_power_up1_player1: 
-                cmp intial_points_player1,5
-                JB nopoints_SHL_powerup1_p1 ;-> end instruction of this player because of no points enough
-                jmp can_perform_SHL_powerup1_p1 
-                nopoints_SHL_powerup1_p1:
-                jmp far ptr end_instruction_player1
-                can_perform_SHL_powerup1_p1:
-                    mov player_turn1,0
-                    mov player_turn2,1
-                    sub intial_points_player1,5
-                    jmp perform_SHL_player1 
-            SHL_power_up2_player1:
-                cmp intial_points_player1,3
-                JB nopoints_SHL_powerup2_p1 ;-> end instruction of this player because of no points enough
-                jmp can_perform_SHL_powerup2_p1 
-                nopoints_SHL_powerup2_p1:
-                jmp far ptr end_instruction_player1
-                can_perform_SHL_powerup2_p1:
+            cmp power_up_player2,1
+            jz SHL_power_up1_player2
+            cmp power_up_player2,2
+            jz SHL_power_up2_player2
+                mov player_turn1,0
+                mov player_turn2,1
+                jmp perform_SHL_player2 
+            SHL_power_up1_player2:
+                cmp intial_points_player2,5
+                JB nopoints_SHL_powerup1_p2 ;-> end instruction of this player because of no points enough
+                jmp can_perform_SHL_powerup1_p2 
+                nopoints_SHL_powerup1_p2:
+                jmp far ptr end_instruction_player2
+                can_perform_SHL_powerup1_p2:
                     mov player_turn1,1
-                    mov player_turn2,1   
-                    sub intial_points_player1,3
-                    jmp perform_SHL_player1
-            perform_SHL_player1:
-                    mov instruction_index,10
-                    mov al,address_mode
-                    cmp al,1
-                    jz address_mode_shl1
-                    jmp reg_mode_shl1        
-                    ; address mode processing ---------------------------------------------------------         
-                address_mode_shl1:  
-                    call  shl_shr_ror_rol_address_player1
-                    jmp far ptr end_instruction_player1
-                reg_mode_shl1:
-                    call  shl_shr_ror_rol_register_player1 
-              jmp far ptr end_instruction_player1
-    ROR_instruction_player1: 
-            ; call drawing and clicking procedure --------------------------------
-            ; set variable to number then compare
+                    mov player_turn2,0 
+                    sub intial_points_player2,5
+                    jmp perform_SHL_player2 
+            SHL_power_up2_player2: 
+                cmp intial_points_player2,3
+                JB nopoints_SHL_powerup2_p2 ;-> end instruction of this player because of no points enough
+                jmp can_perform_SHL_powerup2_p2 
+                nopoints_SHL_powerup2_p2:
+                jmp far ptr end_instruction_player2
+                can_perform_SHL_powerup2_p2:
+                    mov player_turn1,1
+                    mov player_turn2,1
+                    sub intial_points_player2,3
+                    jmp perform_SHL_player2
+            perform_SHL_player2:
             
-            cmp power_up_player1,1
-            jz ror_power_up1_player1
-            cmp power_up_player1,2
-            jz ror_power_up2_player1
-                mov player_turn1,1
-                mov player_turn2,0
-                jmp perform_ror_player1 
-            ror_power_up1_player1:
-                cmp intial_points_player1,5
-                JB nopoints_ror_powerup1_p1 ;-> end instruction of this player because of no points enough
-                jmp can_perform_Ror_powerup1_p1 
-                nopoints_ror_powerup1_p1:
-                jmp far ptr end_instruction_player1
-                can_perform_Ror_powerup1_p1:
-                    mov player_turn1,0
-                    mov player_turn2,1
-                    sub intial_points_player1,5
-                    jmp perform_ror_player1 
-            ror_power_up2_player1:
-                cmp intial_points_player1,3
-                JB nopoints_ror_powerup2_p1 ;-> end instruction of this player because of no points enough
-                jmp can_perform_Ror_powerup2_p1 
-                nopoints_ror_powerup2_p1:
-                jmp far ptr end_instruction_player1
-                can_perform_Ror_powerup2_p1:
+            mov instruction_index,10
+            mov al,address_mode
+            cmp al,1
+            jz address_mode_SHL2
+            jmp reg_mode_SHL2        
+            ; address mode processing ---------------------------------------------------------         
+        address_mode_SHL2:  
+            call  shl_shr_ror_rol_address_player2
+            jmp far ptr end_instruction_player2
+        reg_mode_SHL2:
+            call  shl_shr_ror_rol_register_player2 
+      jmp far ptr end_instruction_player2
+    ROR_instruction_player1: 
+                       ; call drawing and clicking procedure --------------------------------
+            ; set variable to number then compare
+            cmp power_up_player2,1
+            jz ROR_power_up1_player2
+            cmp power_up_player2,2
+            jz ROR_power_up2_player2
+                mov player_turn1,0
+                mov player_turn2,1
+                jmp perform_ROR_player2 
+            ROR_power_up1_player2:
+                cmp intial_points_player2,5
+                JB nopoints_ROR_powerup1_p2 ;-> end instruction of this player because of no points enough
+                jmp can_perform_ROR_powerup1_p2 
+                nopoints_ROR_powerup1_p2:
+                jmp far ptr end_instruction_player2
+                can_perform_ROR_powerup1_p2:
+                    mov player_turn1,1
+                    mov player_turn2,0 
+                    sub intial_points_player2,5
+                    jmp perform_ROR_player2 
+            ROR_power_up2_player2: 
+                cmp intial_points_player2,3
+                JB nopoints_ROR_powerup2_p2 ;-> end instruction of this player because of no points enough
+                jmp can_perform_ROR_powerup2_p2 
+                nopoints_ROR_powerup2_p2:
+                jmp far ptr end_instruction_player2
+                can_perform_ROR_powerup2_p2:
                     mov player_turn1,1
                     mov player_turn2,1
-                    sub intial_points_player1,3
-                    jmp perform_ror_player1
-            perform_ror_player1:
+                    sub intial_points_player2,3
+                    jmp perform_ROR_player2
+            perform_ROR_player2:
             
             mov instruction_index,11
             mov al,address_mode
             cmp al,1
-            jz address_mode_ror1
-            jmp reg_mode_ror1        
+            jz address_mode_ROR2
+            jmp reg_mode_ROR2        
             ; address mode processing ---------------------------------------------------------         
-        address_mode_ror1:  
-            call  shl_shr_ror_rol_address_player1 
-            jmp far ptr end_instruction_player1
-        reg_mode_ror1:
-            call  shl_shr_ror_rol_register_player1 
-      jmp far ptr end_instruction_player1
-    
+        address_mode_ROR2:  
+            call  shl_shr_ror_rol_address_player2
+            jmp far ptr end_instruction_player2
+        reg_mode_ROR2:
+            call  shl_shr_ror_rol_register_player2 
+      jmp far ptr end_instruction_player2
     ROL_instruction_player1: 
-            ; call drawing and clicking procedure --------------------------------
+                        ; call drawing and clicking procedure --------------------------------
             ; set variable to number then compare
-            cmp power_up_player1,1
-            jz rol_power_up1_player1
-            cmp power_up_player1,2
-            jz rol_power_up2_player1
-                mov player_turn1,1
-                mov player_turn2,0
-                jmp perform_rol_player1 
-            rol_power_up1_player1:
-               cmp intial_points_player1,5
-                JB nopoints_rol_powerup1_p1 ;-> end instruction of this player because of no points enough
-                jmp can_perform_Rol_powerup1_p1 
-                nopoints_rol_powerup1_p1:
-                jmp far ptr end_instruction_player1
-                can_perform_Rol_powerup1_p1:
-                    mov player_turn1,0
-                    mov player_turn2,1  
-                    sub intial_points_player1,5
-                    jmp perform_rol_player1 
-            rol_power_up2_player1:
-                cmp intial_points_player1,3
-                JB nopoints_rol_powerup2_p1 ;-> end instruction of this player because of no points enough
-                jmp can_perform_Rol_powerup2_p1 
-                nopoints_rol_powerup2_p1:
-                jmp far ptr end_instruction_player1
-                can_perform_Rol_powerup2_p1:
+            cmp power_up_player2,1
+            jz ROL_power_up1_player2
+            cmp power_up_player2,2
+            jz ROL_power_up2_player2
+                mov player_turn1,0
+                mov player_turn2,1
+                jmp perform_ROL_player2 
+            ROL_power_up1_player2:
+                cmp intial_points_player2,5
+                JB nopoints_ROL_powerup1_p2 ;-> end instruction of this player because of no points enough
+                jmp can_perform_ROL_powerup1_p2 
+                nopoints_ROL_powerup1_p2:
+                jmp far ptr end_instruction_player2
+                can_perform_ROL_powerup1_p2:
+                    mov player_turn1,1
+                    mov player_turn2,0 
+                    sub intial_points_player2,5
+                    jmp perform_ROL_player2 
+            ROL_power_up2_player2: 
+                cmp intial_points_player2,3
+                JB nopoints_ROL_powerup2_p2 ;-> end instruction of this player because of no points enough
+                jmp can_perform_ROL_powerup2_p2 
+                nopoints_ROL_powerup2_p2:
+                jmp far ptr end_instruction_player2
+                can_perform_ROL_powerup2_p2:
                     mov player_turn1,1
                     mov player_turn2,1
-                    sub intial_points_player1,3
-                    jmp perform_rol_player1
-            perform_rol_player1:
+                    sub intial_points_player2,3
+                    jmp perform_ROL_player2
+            perform_ROL_player2:
             
             mov instruction_index,12
             mov al,address_mode
             cmp al,1
-            jz address_mode_rol1
-            jmp reg_mode_rol1        
+            jz address_mode_ROL2
+            jmp reg_mode_ROL2        
             ; address mode processing ---------------------------------------------------------         
-        address_mode_rol1:  
-            call  shl_shr_ror_rol_address_player1
-            jmp far ptr end_instruction_player1
-        reg_mode_rol1:
-            call  shl_shr_ror_rol_register_player1 
-      jmp far ptr end_instruction_player1    
-
+        address_mode_ROL2:  
+            call  shl_shr_ror_rol_address_player2
+            jmp far ptr end_instruction_player2
+        reg_mode_ROL2:
+            call  shl_shr_ror_rol_register_player2 
+      jmp far ptr end_instruction_player2
     
     end_instruction_player2:             
-    end_instruction_player1:
-            mov power_up_player1,0             
+    ;end_instruction_player1:
+            mov power_up_player2,0             
 
 
     hlt
@@ -1464,7 +1460,7 @@ mov_address_player2  proc near
     mov_address_player2 endp 
 
 ;----------------------------div mul inc dec imul idiv reg ---------------------------------------------------
-div_mul_inc_dec_register_player1 proc near
+div_mul_inc_dec_register_player2 proc near
     
     check_forbidden Forbidden_instruction_2,instruction_index       
              
@@ -1474,310 +1470,310 @@ div_mul_inc_dec_register_player1 proc near
             check_forbidden Forbidden_Registers_2,bl
 
             mov al,losepoint 
-            mov losepoint_player1,al 
-            cmp losepoint_player1,1
-            jz   lose_point_2_reg_div_player1 
-            jmp cont_reg_mode_div 
-            lose_point_2_reg_div_player1:
-            jmp far ptr end_div_reg_player1                 
-         cont_reg_mode_div:
+            mov losepoint_player2,al 
+            cmp losepoint_player2,1
+            jz   lose_point_2_reg_div_player2 
+            jmp cont_reg_mode_2div 
+            lose_point_2_reg_div_player2:
+            jmp far ptr end_div_reg_player2                 
+         cont_reg_mode_2div:
             mov dl,count_bit_1
             mov dh,0
             cmp dl,2
-            jz temp_word_div_reg_player1
-            jmp temp_byte_div_reg_player1
-            temp_word_div_reg_player1:
-            jmp far ptr word_div_reg_player1
-            temp_byte_div_reg_player1:
+            jz temp_word_div_reg_player2
+            jmp temp_byte_div_reg_player2
+            temp_word_div_reg_player2:
+            jmp far ptr word_div_reg_player2
+            temp_byte_div_reg_player2:
                     mov bh,0
                     mov bl,src_index_val
                     mov ch,0
-                    mov cl,Player2_Data_Register[bx]            
-                    mov ah,Player2_Data_Register[0]
-                    mov al,Player2_Data_Register[1]
+                    mov cl,Player1_Data_Register[bx]            
+                    mov ah,Player1_Data_Register[0]
+                    mov al,Player1_Data_Register[1]
                     mov dx,0 
                     ; add player turn here : 
-                    cmp player_turn1,1
-                    jz player1_div_byte_turn
-                    jmp player1_div_byte_no_turn 
-                    player1_div_byte_turn:    
-                        cmp instruction_index,4
-                        jz div_reg_byte_player1
-                        cmp instruction_index,3
-                        jz mul_reg_byte_player1
-                        cmp instruction_index,14
-                        jz idiv_reg_byte_player1 
-                        cmp instruction_index,15
-                        jz imul_reg_byte_player1
-                        cmp instruction_index,5
-                        jz inc_reg_byte_player1
-                        cmp instruction_index,6
-                        jz dec_reg_byte_player1
-                        div_reg_byte_player1:                  ; div ------------------------
-                            cmp cx,0
-                            jz div_zero_byte_reg_p1
-                            jmp not_div_zero_byte_reg_p1
-                            div_zero_byte_reg_p1:
-                            jmp far ptr lose_point_div_player1
-                            not_div_zero_byte_reg_p1:
-                            div cx
-                            mov Player2_Data_Register[0],dl
-                            mov Player2_Data_Register[1],al
-                            jmp far ptr player1_div_byte_no_turn
-                        mul_reg_byte_player1:                  ; mul ------------------------
-                            mul cl
-                            mov Player2_Data_Register[0],ah
-                            mov Player2_Data_Register[1],al 
-                            jmp far ptr player1_div_byte_no_turn
-                        idiv_reg_byte_player1:                  ; idiv ------------------------
-                            cmp cx,0
-                            jz idiv_zero_byte_reg_p1
-                            jmp not_idiv_zero_byte_reg_p1
-                            idiv_zero_byte_reg_p1:
-                            jmp far ptr lose_point_div_player1
-                            not_idiv_zero_byte_reg_p1:
-                            idiv cx
-                            mov Player2_Data_Register[0],dl
-                            mov Player2_Data_Register[1],al
-                            jmp far ptr player1_div_byte_no_turn 
-                        imul_reg_byte_player1:                  ; imul ------------------------
-                            imul cl
-                            mov Player2_Data_Register[0],ah
-                            mov Player2_Data_Register[1],al
-                            jmp far ptr player1_div_byte_no_turn
-                        inc_reg_byte_player1:                  ; inc ------------------------
-                            inc cl
-                            mov Player2_Data_Register[bx],cl
-                            jmp far ptr player1_div_byte_no_turn
-                        dec_reg_byte_player1:                  ; dec ------------------------
-                            dec cx
-                            mov Player2_Data_Register[bx],cl
-                            jmp far ptr player1_div_byte_no_turn
-                    
-                    player1_div_byte_no_turn:        
                     cmp player_turn2,1
-                    jz player2_div_byte_turn
-                    jmp far ptr end_div_reg_player1 
-                    player2_div_byte_turn:
-                        mov cl,Player1_Data_Register[bx]            
-                        mov ah,Player1_Data_Register[0]
-                        mov al,Player1_Data_Register[1]    
+                    jz player22_div_byte_turn
+                    jmp player22_div_byte_no_turn 
+                    player22_div_byte_turn:    
                         cmp instruction_index,4
-                        jz div_reg_byte_player2
+                        jz div_reg_byte_player22
                         cmp instruction_index,3
-                        jz mul_reg_byte_player2
+                        jz mul_reg_byte_player22
                         cmp instruction_index,14
-                        jz idiv_reg_byte_player1 
+                        jz idiv_reg_byte_player22 
                         cmp instruction_index,15
-                        jz imul_reg_byte_player2
+                        jz imul_reg_byte_player22
                         cmp instruction_index,5
-                        jz inc_reg_byte_player2
+                        jz inc_reg_byte_player22
                         cmp instruction_index,6
-                        jz dec_reg_byte_player2
-                        div_reg_byte_player2:                  ; div ------------------------
+                        jz dec_reg_byte_player22
+                        div_reg_byte_player22:                  ; div ------------------------
                             cmp cx,0
-                            jz div_zero_byte_reg_p2
-                            jmp not_div_zero_byte_reg_p2
-                            div_zero_byte_reg_p2:
-                            jmp far ptr lose_point_div_player1
-                            not_div_zero_byte_reg_p2:
+                            jz div_zero_byte_reg_p22
+                            jmp not_div_zero_byte_reg_p22
+                            div_zero_byte_reg_p22:
+                            jmp far ptr lose_point_div_player2
+                            not_div_zero_byte_reg_p22:
                             div cx
                             mov Player1_Data_Register[0],dl
                             mov Player1_Data_Register[1],al
-                            jmp far ptr end_div_reg_player1
-                        mul_reg_byte_player2:                  ; mul ------------------------
+                            jmp far ptr player22_div_byte_no_turn
+                        mul_reg_byte_player22:                  ; mul ------------------------
                             mul cl
                             mov Player1_Data_Register[0],ah
                             mov Player1_Data_Register[1],al 
-                            jmp far ptr end_div_reg_player1
-                        idiv_reg_byte_player2:                  ; idiv ------------------------
+                            jmp far ptr player22_div_byte_no_turn
+                        idiv_reg_byte_player22:                  ; idiv ------------------------
                             cmp cx,0
-                            jz idiv_zero_byte_reg_p2
-                            jmp not_idiv_zero_byte_reg_p2
-                            idiv_zero_byte_reg_p2:
-                            jmp far ptr lose_point_div_player1
-                            not_idiv_zero_byte_reg_p2:
+                            jz idiv_zero_byte_reg_p22
+                            jmp not_idiv_zero_byte_reg_p22
+                            idiv_zero_byte_reg_p22:
+                            jmp far ptr lose_point_div_player2
+                            not_idiv_zero_byte_reg_p22:
                             idiv cx
                             mov Player1_Data_Register[0],dl
                             mov Player1_Data_Register[1],al
-                            jmp far ptr end_div_reg_player1 
-                        imul_reg_byte_player2:                  ; imul ------------------------
+                            jmp far ptr player22_div_byte_no_turn 
+                        imul_reg_byte_player22:                  ; imul ------------------------
                             imul cl
                             mov Player1_Data_Register[0],ah
                             mov Player1_Data_Register[1],al
-                            jmp far ptr end_div_reg_player1
-                        inc_reg_byte_player2:                  ; inc ------------------------
+                            jmp far ptr player22_div_byte_no_turn
+                        inc_reg_byte_player22:                  ; inc ------------------------
                             inc cl
                             mov Player1_Data_Register[bx],cl
-                            jmp far ptr end_div_reg_player1
-                        dec_reg_byte_player2:                  ; dec ------------------------
+                            jmp far ptr player22_div_byte_no_turn
+                        dec_reg_byte_player22:                  ; dec ------------------------
                             dec cx
                             mov Player1_Data_Register[bx],cl
-                            jmp far ptr end_div_reg_player1     
-            word_div_reg_player1:
+                            jmp far ptr player22_div_byte_no_turn
+                    
+                    player22_div_byte_no_turn:        
+                    cmp player_turn1,1
+                    jz player11_div_byte_turn
+                    jmp far ptr end_div_reg_player2 
+                    player11_div_byte_turn:
+                        mov cl,Player2_Data_Register[bx]            
+                        mov ah,Player2_Data_Register[0]
+                        mov al,Player2_Data_Register[1]    
+                        cmp instruction_index,4
+                        jz div_reg_byte_player11
+                        cmp instruction_index,3
+                        jz mul_reg_byte_player11
+                        cmp instruction_index,14
+                        jz idiv_reg_byte_player11 
+                        cmp instruction_index,15
+                        jz imul_reg_byte_player11
+                        cmp instruction_index,5
+                        jz inc_reg_byte_player11
+                        cmp instruction_index,6
+                        jz dec_reg_byte_player11
+                        div_reg_byte_player11:                  ; div ------------------------
+                            cmp cx,0
+                            jz div_zero_byte_reg_p11
+                            jmp not_div_zero_byte_reg_p11
+                            div_zero_byte_reg_p11:
+                            jmp far ptr lose_point_div_player2
+                            not_div_zero_byte_reg_p11:
+                            div cx
+                            mov Player2_Data_Register[0],dl
+                            mov Player2_Data_Register[1],al
+                            jmp far ptr end_div_reg_player2
+                        mul_reg_byte_player11:                  ; mul ------------------------
+                            mul cl
+                            mov Player2_Data_Register[0],ah
+                            mov Player2_Data_Register[1],al 
+                            jmp far ptr end_div_reg_player2
+                        idiv_reg_byte_player11:                  ; idiv ------------------------
+                            cmp cx,0
+                            jz idiv_zero_byte_reg_p11
+                            jmp not_idiv_zero_byte_reg_p11
+                            idiv_zero_byte_reg_p11:
+                            jmp far ptr lose_point_div_player2
+                            not_idiv_zero_byte_reg_p11:
+                            idiv cx
+                            mov Player2_Data_Register[0],dl
+                            mov Player2_Data_Register[1],al
+                            jmp far ptr end_div_reg_player2 
+                        imul_reg_byte_player11:                  ; imul ------------------------
+                            imul cl
+                            mov Player2_Data_Register[0],ah
+                            mov Player2_Data_Register[1],al
+                            jmp far ptr end_div_reg_player2
+                        inc_reg_byte_player11:                  ; inc ------------------------
+                            inc cl
+                            mov Player2_Data_Register[bx],cl
+                            jmp far ptr end_div_reg_player2
+                        dec_reg_byte_player11:                  ; dec ------------------------
+                            dec cx
+                            mov Player2_Data_Register[bx],cl
+                            jmp far ptr end_div_reg_player2     
+            word_div_reg_player2:
                     mov bh,0
                     mov bl,src_index_val
-                    mov ch,Player2_Data_Register[bx]
-                    mov cl,Player2_Data_Register[bx+1]             
-                    mov ah,Player2_Data_Register[0]
-                    mov al,Player2_Data_Register[1]
-                    mov dh,Player2_Data_Register[6]
-                    mov dl,Player2_Data_Register[7] 
+                    mov ch,Player1_Data_Register[bx]
+                    mov cl,Player1_Data_Register[bx+1]             
+                    mov ah,Player1_Data_Register[0]
+                    mov al,Player1_Data_Register[1]
+                    mov dh,Player1_Data_Register[6]
+                    mov dl,Player1_Data_Register[7] 
                     ; add player turn here
                      
-                    cmp player_turn1,1
-                    jz player1_div_word_turn
-                    jmp player1_div_word_no_turn 
-                    player1_div_word_turn: 
-                        cmp instruction_index,4
-                        jz div_reg_word_player1
-                        cmp instruction_index,3
-                        jz mul_reg_word_player1
-                        cmp instruction_index,14
-                        jz idiv_reg_word_player1 
-                        cmp instruction_index,15
-                        jz imul_reg_word_player1
-                        cmp instruction_index,5
-                        jz inc_reg_word_player1
-                        cmp instruction_index,6
-                        jz dec_reg_word_player1
-                        div_reg_word_player1:                  ; div ------------------------
-                            cmp cx,0
-                            jz div_zero_word_reg_p1
-                            div cx
-                            mov Player2_Data_Register[0],ah
-                            mov Player2_Data_Register[1],al
-                            mov Player2_Data_Register[6],dh
-                            mov Player2_Data_Register[7],dl
-                            jmp far ptr player1_div_word_no_turn
-                            div_zero_word_reg_p1:
-                            jmp far ptr lose_point_div_player1
-                            not_div_zero_word_reg_p1:
-
-                        mul_reg_word_player1:                  ; mul ------------------------
-                            mul cx
-                            mov Player2_Data_Register[0],ah
-                            mov Player2_Data_Register[1],al
-                            mov Player2_Data_Register[6],dh
-                            mov Player2_Data_Register[7],dl
-                            jmp far ptr player1_div_word_no_turn 
-                        idiv_reg_word_player1:                  ; idiv ------------------------
-                            cmp cx,0
-                            jz idiv_zero_word_reg_p1
-                            jmp not_idiv_zero_word_reg_p1
-                            idiv_zero_word_reg_p1:
-                            jmp far ptr lose_point_div_player1
-                            not_idiv_zero_word_reg_p1:
-                            idiv cx
-                            mov Player2_Data_Register[0],ah
-                            mov Player2_Data_Register[1],al 
-                            mov Player2_Data_Register[6],dh
-                            mov Player2_Data_Register[7],dl
-                            jmp far ptr player1_div_word_no_turn 
-                        imul_reg_word_player1:                  ; imul ------------------------
-                            imul cx
-                            mov Player2_Data_Register[0],ah
-                            mov Player2_Data_Register[1],al
-                            mov Player2_Data_Register[6],dh
-                            mov Player2_Data_Register[7],dl
-                            jmp far ptr player1_div_word_no_turn
-                        inc_reg_word_player1:                  ; inc ------------------------
-                            inc cx
-                            mov Player2_Data_Register[bx],ch
-                            mov Player2_Data_Register[bx+1],cl
-                            jmp far ptr player1_div_word_no_turn
-                        dec_reg_word_player1:                  ; dec ------------------------
-                            dec cx
-                            mov Player2_Data_Register[bx],ch
-                            mov Player2_Data_Register[bx+1],cl
-                            jmp far ptr player1_div_word_no_turn 
-                    
-                    ; add player turn here 
-                    player1_div_word_no_turn:
                     cmp player_turn2,1
-                    jz player2_div_word_turn
-                    jmp far ptr end_div_reg_player1
-                    player2_div_word_turn:
-                        
-                        mov ch,Player1_Data_Register[bx]
-                        mov cl,Player1_Data_Register[bx+1]             
-                        mov ah,Player1_Data_Register[0]
-                        mov al,Player1_Data_Register[1]
-                        mov dh,Player1_Data_Register[6]
-                        mov dl,Player1_Data_Register[7] 
+                    jz player22_div_word_turn
+                    jmp player22_div_word_no_turn 
+                    player22_div_word_turn: 
                         cmp instruction_index,4
-                        jz div_reg_word_player2
+                        jz div_reg_word_player22
                         cmp instruction_index,3
-                        jz mul_reg_word_player2
+                        jz mul_reg_word_player22
                         cmp instruction_index,14
-                        jz idiv_reg_word_player2 
+                        jz idiv_reg_word_player22 
                         cmp instruction_index,15
-                        jz imul_reg_word_player2
+                        jz imul_reg_word_player22
                         cmp instruction_index,5
-                        jz inc_reg_word_player2
+                        jz inc_reg_word_player22
                         cmp instruction_index,6
-                        jz dec_reg_word_player2
-                        div_reg_word_player2:                  ; div ------------------------
+                        jz dec_reg_word_player22
+                        div_reg_word_player22:                  ; div ------------------------
                             cmp cx,0
-                            jz div_zero_word_reg_p2
+                            jz div_zero_word_reg_p22
                             div cx
                             mov Player1_Data_Register[0],ah
                             mov Player1_Data_Register[1],al
                             mov Player1_Data_Register[6],dh
                             mov Player1_Data_Register[7],dl
-                            jmp far ptr end_div_reg_player1
-                            div_zero_word_reg_p2:
-                            jmp far ptr lose_point_div_player1
+                            jmp far ptr player22_div_word_no_turn
+                            div_zero_word_reg_p22:
+                            jmp far ptr lose_point_div_player2
+                            not_div_zero_word_reg_p22:
 
-                        mul_reg_word_player2:                  ; mul ------------------------
+                        mul_reg_word_player22:                  ; mul ------------------------
                             mul cx
                             mov Player1_Data_Register[0],ah
                             mov Player1_Data_Register[1],al
                             mov Player1_Data_Register[6],dh
                             mov Player1_Data_Register[7],dl
-                            jmp far ptr end_div_reg_player1 
-                        idiv_reg_word_player2:                  ; idiv ------------------------
+                            jmp far ptr player22_div_word_no_turn 
+                        idiv_reg_word_player22:                  ; idiv ------------------------
                             cmp cx,0
-                            jz idiv_zero_word_reg_p2
-                            jmp not_idiv_zero_word_reg_p2
-                            idiv_zero_word_reg_p2:
-                            jmp far ptr lose_point_div_player1
-                            not_idiv_zero_word_reg_p2:
+                            jz idiv_zero_word_reg_p22
+                            jmp not_idiv_zero_word_reg_p22
+                            idiv_zero_word_reg_p22:
+                            jmp far ptr lose_point_div_player2
+                            not_idiv_zero_word_reg_p22:
                             idiv cx
                             mov Player1_Data_Register[0],ah
                             mov Player1_Data_Register[1],al 
                             mov Player1_Data_Register[6],dh
                             mov Player1_Data_Register[7],dl
-                            jmp far ptr end_div_reg_player1 
-                        imul_reg_word_player2:                  ; imul ------------------------
+                            jmp far ptr player22_div_word_no_turn 
+                        imul_reg_word_player22:                  ; imul ------------------------
                             imul cx
                             mov Player1_Data_Register[0],ah
                             mov Player1_Data_Register[1],al
                             mov Player1_Data_Register[6],dh
                             mov Player1_Data_Register[7],dl
-                            jmp far ptr end_div_reg_player1
-                        inc_reg_word_player2:                  ; inc ------------------------
+                            jmp far ptr player22_div_word_no_turn
+                        inc_reg_word_player22:                  ; inc ------------------------
                             inc cx
                             mov Player1_Data_Register[bx],ch
                             mov Player1_Data_Register[bx+1],cl
-                            jmp far ptr end_div_reg_player1
-                        dec_reg_word_player2:                  ; dec ------------------------
+                            jmp far ptr player22_div_word_no_turn
+                        dec_reg_word_player22:                  ; dec ------------------------
                             dec cx
                             mov Player1_Data_Register[bx],ch
                             mov Player1_Data_Register[bx+1],cl
-                            jmp far ptr end_div_reg_player1 
+                            jmp far ptr player22_div_word_no_turn 
+                    
+                    ; add player turn here 
+                    player22_div_word_no_turn:
+                    cmp player_turn1,1
+                    jz player11_div_word_turn
+                    jmp far ptr end_div_reg_player2
+                    player11_div_word_turn:
+                        
+                        mov ch,Player2_Data_Register[bx]
+                        mov cl,Player2_Data_Register[bx+1]             
+                        mov ah,Player2_Data_Register[0]
+                        mov al,Player2_Data_Register[1]
+                        mov dh,Player2_Data_Register[6]
+                        mov dl,Player2_Data_Register[7] 
+                        cmp instruction_index,4
+                        jz div_reg_word_player11
+                        cmp instruction_index,3
+                        jz mul_reg_word_player11
+                        cmp instruction_index,14
+                        jz idiv_reg_word_player11 
+                        cmp instruction_index,15
+                        jz imul_reg_word_player11
+                        cmp instruction_index,5
+                        jz inc_reg_word_player11
+                        cmp instruction_index,6
+                        jz dec_reg_word_player11
+                        div_reg_word_player11:                  ; div ------------------------
+                            cmp cx,0
+                            jz div_zero_word_reg_p11
+                            div cx
+                            mov Player2_Data_Register[0],ah
+                            mov Player2_Data_Register[1],al
+                            mov Player2_Data_Register[6],dh
+                            mov Player2_Data_Register[7],dl
+                            jmp far ptr end_div_reg_player2
+                            div_zero_word_reg_p11:
+                            jmp far ptr lose_point_div_player2
+
+                        mul_reg_word_player11:                  ; mul ------------------------
+                            mul cx
+                            mov Player2_Data_Register[0],ah
+                            mov Player2_Data_Register[1],al
+                            mov Player2_Data_Register[6],dh
+                            mov Player2_Data_Register[7],dl
+                            jmp far ptr end_div_reg_player2 
+                        idiv_reg_word_player11:                  ; idiv ------------------------
+                            cmp cx,0
+                            jz idiv_zero_word_reg_p11
+                            jmp not_idiv_zero_word_reg_p11
+                            idiv_zero_word_reg_p11:
+                            jmp far ptr lose_point_div_player2
+                            not_idiv_zero_word_reg_p11:
+                            idiv cx
+                            mov Player2_Data_Register[0],ah
+                            mov Player2_Data_Register[1],al 
+                            mov Player2_Data_Register[6],dh
+                            mov Player2_Data_Register[7],dl
+                            jmp far ptr end_div_reg_player2 
+                        imul_reg_word_player11:                  ; imul ------------------------
+                            imul cx
+                            mov Player2_Data_Register[0],ah
+                            mov Player2_Data_Register[1],al
+                            mov Player2_Data_Register[6],dh
+                            mov Player2_Data_Register[7],dl
+                            jmp far ptr end_div_reg_player2
+                        inc_reg_word_player11:                  ; inc ------------------------
+                            inc cx
+                            mov Player2_Data_Register[bx],ch
+                            mov Player2_Data_Register[bx+1],cl
+                            jmp far ptr end_div_reg_player2
+                        dec_reg_word_player11:                  ; dec ------------------------
+                            dec cx
+                            mov Player2_Data_Register[bx],ch
+                            mov Player2_Data_Register[bx+1],cl
+                            jmp far ptr end_div_reg_player2 
                     
     
-   lose_point_div_player1:
-        dec intial_points_player1
-        mov losepoint_player1,0 
+   lose_point_div_player2:
+        dec intial_points_player2
+        mov losepoint_player2,0 
         mov losepoint,0                
-    end_div_reg_player1:
+    end_div_reg_player2:
      
     ret 
-    div_mul_inc_dec_register_player1 endp
+    div_mul_inc_dec_register_player2 endp
 ;---------------------------------------------------  mov to datasegment  -----------------------------------------------------------------
-div_mul_inc_dec_address_player1  proc near
+div_mul_inc_dec_address_player2  proc near
     
         check_forbidden Forbidden_instruction_2,instruction_index                   
             mov bl,src_index_reg
@@ -1786,213 +1782,213 @@ div_mul_inc_dec_address_player1  proc near
             ; check if src_index_reg is value or register
             ;cmp bl,17                        ; index to value
             cmp bl , 18                      ; index to address value -> choose which value ?!
-            jz forbidden_digit_address_div 
-            jnz forbidden_regsiter_address_div 
-            forbidden_digit_address_div:
+            jz forbidden_digit_address_2div 
+            jnz forbidden_regsiter_address_2div 
+            forbidden_digit_address_2div:
                 ; macro needed to check if value has a forbidden digit or not
                 mov bh,0
                 mov bl,src_index_val
-                mov ah,Player2_Data_Register[bx]
-                mov al,Player2_Data_Register[bx+1]
+                mov ah,Player1_Data_Register[bx]
+                mov al,Player1_Data_Register[bx+1]
                 ; call macro that check if value in ax is correct 
                 
                 check_word_valid ax, Forbidden_digits_2 
                 ;check_forbidden Forbidden_digits_2,0    <----------- not working should be removed later
                 mov al,losepoint 
-                mov losepoint_player1,al 
-                cmp losepoint_player1,1
-                jz  lose_point_1_div_address_player1
-                jmp cont_address_mode_div 
-                lose_point_1_div_address_player1:
+                mov losepoint_player2,al 
+                cmp losepoint_player2,1
+                jz  lose_point_1_div_address_player2
+                jmp cont_address_mode_2div 
+                lose_point_1_div_address_player2:
                 ;jmp far ptr lose_point_player1
-                jmp far ptr end_div_address_player1
+                jmp far ptr end_div_address_player2
         ; destination now is correct  value ------------------------------------------------------------------------------                 
-                jmp cont_address_mode_div 
-           forbidden_regsiter_address_div:
+                jmp cont_address_mode_2div 
+           forbidden_regsiter_address_2div:
                 check_forbidden Forbidden_Registers_2,bl
                 ; need macro to check if this register is not bx or di or si to make later -> should jmp lose_point
                 mov al,losepoint 
-                mov losepoint_player1,al 
-                cmp losepoint_player1,1
-                jz   lose_point_2_div_address_player1 
-                jmp cont_address_mode_div 
-                lose_point_2_div_address_player1:
-                jmp far ptr lose_point_div_address_player1                 
-         cont_address_mode_div:
+                mov losepoint_player2,al 
+                cmp losepoint_player2,1
+                jz   lose_point_2_div_address_player2 
+                jmp cont_address_mode_2div 
+                lose_point_2_div_address_player2:
+                jmp far ptr lose_point_div_address_player2                 
+         cont_address_mode_2div:
             ;check if value in ax is less than f
             mov bh,0
             mov bl,src_index_val 
-            cmp player_turn1,1              ;-> player1 turn 
-            jz player1_check_address_div
-            jmp cont_check_address_mode_div2
-            player1_check_address_div:
-            mov ah,Player2_Data_Register[bx]
-            mov al,Player2_Data_Register[bx+1] 
-            cmp ax,000fh
-            JA lose_point_3_div_address_player1  ; out of index of data segment -> should be error 
-            jmp cont_check_address_mode_div2 
-            lose_point_3_div_address_player1:
-            jmp far ptr lose_point_div_address_player1
-            cont_check_address_mode_div2:
             cmp player_turn2,1              ;-> player1 turn 
-            jz player2_check_address_div
-            jmp final_address_mode_div
-            player2_check_address_div:
+            jz player22_check_address_div
+            jmp cont_check_address_mode_2div2
+            player22_check_address_div:
             mov ah,Player1_Data_Register[bx]
             mov al,Player1_Data_Register[bx+1] 
+            cmp ax,000fh
+            JA lose_point_3_div_address_player2  ; out of index of data segment -> should be error 
+            jmp cont_check_address_mode_2div2 
+            lose_point_3_div_address_player2:
+            jmp far ptr lose_point_div_address_player2
+            cont_check_address_mode_2div2:
+            cmp player_turn1,1              ;-> player1 turn 
+            jz player11_check_address_div
+            jmp final_address_mode_2div
+            player11_check_address_div:
+            mov ah,Player2_Data_Register[bx]
+            mov al,Player2_Data_Register[bx+1] 
             cmp ax,000fh  
-            JA lose_point_4_div_address_player1  ; out of index of data segment -> should be error 
-            jmp final_address_mode_div 
-            lose_point_4_div_address_player1:
-            jmp far ptr lose_point_div_address_player1
-            final_address_mode_div:
+            JA lose_point_4_div_address_player2  ; out of index of data segment -> should be error 
+            jmp final_address_mode_2div 
+            lose_point_4_div_address_player2:
+            jmp far ptr lose_point_div_address_player2
+            final_address_mode_2div:
                     mov bh,0
                     mov bl,src_index_val
-                    mov ch,Player2_Data_Register[bx]
-                    mov cl,Player2_Data_Register[bx+1]
+                    mov ch,Player1_Data_Register[bx]
+                    mov cl,Player1_Data_Register[bx+1]
                     mov si,cx
-                    mov cl,data_segment_2[si]
+                    mov cl,data_segment_1[si]
                     mov ch,0            
-                    mov ah,Player2_Data_Register[0]
-                    mov al,Player2_Data_Register[1]
+                    mov ah,Player1_Data_Register[0]
+                    mov al,Player1_Data_Register[1]
                     
                     ; paste here
-                    cmp player_turn1,1              ;-> player1 turn 
-                    jz player1_div_address_byte_turn
-                    jmp player1_div_address_byte_no_turn 
-                    player1_div_address_byte_turn:
+                    cmp player_turn2,1              ;-> player1 turn 
+                    jz player22_div_address_byte_turn
+                    jmp player22_div_address_byte_no_turn 
+                    player22_div_address_byte_turn:
                         cmp instruction_index,4
-                        jz div_address_byte_player1
+                        jz div_address_byte_player22
                         cmp instruction_index,3
-                        jz mul_address_byte_player1
+                        jz mul_address_byte_player22
                         cmp instruction_index,14
-                        jz idiv_address_byte_player1 
+                        jz idiv_address_byte_player22 
                         cmp instruction_index,15
-                        jz imul_address_byte_player1
+                        jz imul_address_byte_player22
                         cmp instruction_index,5
-                        jz inc_address_byte_player1
+                        jz inc_address_byte_player22
                         cmp instruction_index,6
-                        jz dec_address_byte_player1
-                        div_address_byte_player1:                  ; div ------------------------
+                        jz dec_address_byte_player22
+                        div_address_byte_player22:                  ; div ------------------------
                             cmp cx,0
-                            jz div_zero_address_reg_p1
-                            jmp not_div_zero_address_reg_p1
-                            div_zero_address_reg_p1:
-                            jmp far ptr lose_point_div_player1
-                            not_div_zero_address_reg_p1:
+                            jz div_zero_address_reg_p22
+                            jmp not_div_zero_address_reg_p22
+                            div_zero_address_reg_p22:
+                            jmp far ptr lose_point_div_player2
+                            not_div_zero_address_reg_p22:
                             div cx
-                            mov Player2_Data_Register[0],dh
-                            mov Player2_Data_Register[1],al
-                            jmp far ptr player1_div_address_byte_no_turn
-                        mul_address_byte_player1:                  ; mul ------------------------
+                            mov Player1_Data_Register[0],dh
+                            mov Player1_Data_Register[1],al
+                            jmp far ptr player22_div_address_byte_no_turn
+                        mul_address_byte_player22:                  ; mul ------------------------
                             mul cl
-                            mov Player2_Data_Register[0],ah
-                            mov Player2_Data_Register[1],al 
-                            jmp far ptr player1_div_address_byte_no_turn
-                        idiv_address_byte_player1:                  ; idiv ------------------------
+                            mov Player1_Data_Register[0],ah
+                            mov Player1_Data_Register[1],al 
+                            jmp far ptr player22_div_address_byte_no_turn
+                        idiv_address_byte_player22:                  ; idiv ------------------------
                             cmp cx,0
-                            jz idiv_zero_address_reg_p1
-                            jmp not_idiv_zero_address_reg_p1
-                            idiv_zero_address_reg_p1:
-                            jmp far ptr lose_point_div_player1
-                            not_idiv_zero_address_reg_p1:
+                            jz idiv_zero_address_reg_p22
+                            jmp not_idiv_zero_address_reg_p22
+                            idiv_zero_address_reg_p22:
+                            jmp far ptr lose_point_div_player2
+                            not_idiv_zero_address_reg_p22:
                             idiv cx
-                            mov Player2_Data_Register[0],dh
-                            mov Player2_Data_Register[1],al
-                            jmp far ptr player1_div_address_byte_no_turn 
-                        imul_address_byte_player1:                  ; imul ------------------------
+                            mov Player1_Data_Register[0],dh
+                            mov Player1_Data_Register[1],al
+                            jmp far ptr player22_div_address_byte_no_turn 
+                        imul_address_byte_player22:                  ; imul ------------------------
                             imul cl
-                            mov Player2_Data_Register[0],ah
-                            mov Player2_Data_Register[1],al
-                            jmp far ptr player1_div_address_byte_no_turn
-                        inc_address_byte_player1:                  ; inc ------------------------
+                            mov Player1_Data_Register[0],ah
+                            mov Player1_Data_Register[1],al
+                            jmp far ptr player22_div_address_byte_no_turn
+                        inc_address_byte_player22:                  ; inc ------------------------
                             inc cl
-                            mov data_segment_2[si],cl
-                            jmp far ptr player1_div_address_byte_no_turn
-                        dec_address_byte_player1:                  ; dec ------------------------
+                            mov data_segment_1[si],cl
+                            jmp far ptr player22_div_address_byte_no_turn
+                        dec_address_byte_player22:                  ; dec ------------------------
                             dec cx
-                            mov data_segment_2[si],cl
-                            jmp far ptr player1_div_address_byte_no_turn 
+                            mov data_segment_1[si],cl
+                            jmp far ptr player22_div_address_byte_no_turn 
 
                                         
-                    player1_div_address_byte_no_turn:
-                        cmp player_turn2,1
-                        jz player2_div_address_byte_turn
-                        jmp far ptr end_div_address_player1
-                        player2_div_address_byte_turn:
-                            mov ch,Player1_Data_Register[bx]
-                            mov cl,Player1_Data_Register[bx+1]
+                    player22_div_address_byte_no_turn:
+                        cmp player_turn1,1
+                        jz player11_div_address_byte_turn
+                        jmp far ptr end_div_address_player2
+                        player11_div_address_byte_turn:
+                            mov ch,Player2_Data_Register[bx]
+                            mov cl,Player2_Data_Register[bx+1]
                             mov si,cx
-                            mov cl,data_segment_1[si]
+                            mov cl,data_segment_2[si]
                             mov ch,0            
-                            mov ah,Player1_Data_Register[0]
-                            mov al,Player1_Data_Register[1]
+                            mov ah,Player2_Data_Register[0]
+                            mov al,Player2_Data_Register[1]
                             cmp instruction_index,4
-                            jz div_address_byte_player2
+                            jz div_address_byte_player11
                             cmp instruction_index,3
-                            jz mul_address_byte_player2
+                            jz mul_address_byte_player11
                             cmp instruction_index,14
-                            jz idiv_address_byte_player2 
+                            jz idiv_address_byte_player11 
                             cmp instruction_index,15
-                            jz imul_address_byte_player2
+                            jz imul_address_byte_player11
                             cmp instruction_index,5
-                            jz inc_address_byte_player2
+                            jz inc_address_byte_player11
                             cmp instruction_index,6
-                            jz dec_address_byte_player2
-                            div_address_byte_player2:                  ; div ------------------------
+                            jz dec_address_byte_player11
+                            div_address_byte_player11:                  ; div ------------------------
                                 cmp cx,0
-                                jz div_zero_address_reg_p2
-                                jmp not_div_zero_address_reg_p2
-                                div_zero_address_reg_p2:
-                                jmp far ptr lose_point_div_player1
-                                not_div_zero_address_reg_p2:
+                                jz div_zero_address_reg_p11
+                                jmp not_div_zero_address_reg_p11
+                                div_zero_address_reg_p11:
+                                jmp far ptr lose_point_div_player2
+                                not_div_zero_address_reg_p11:
                                 div cx
-                                mov Player1_Data_Register[0],dh
-                                mov Player1_Data_Register[1],al
-                                jmp far ptr end_div_address_player1
-                            mul_address_byte_player2:                  ; mul ------------------------
+                                mov Player2_Data_Register[0],dh
+                                mov Player2_Data_Register[1],al
+                                jmp far ptr end_div_address_player2
+                            mul_address_byte_player11:                  ; mul ------------------------
                                 mul cl
-                                mov Player1_Data_Register[0],ah
-                                mov Player1_Data_Register[1],al 
-                                jmp far ptr end_div_address_player1
-                            idiv_address_byte_player2:                  ; idiv ------------------------
+                                mov Player2_Data_Register[0],ah
+                                mov Player2_Data_Register[1],al 
+                                jmp far ptr end_div_address_player2
+                            idiv_address_byte_player11:                  ; idiv ------------------------
                                 cmp cx,0
-                                jz idiv_zero_address_reg_p2
-                                jmp not_idiv_zero_address_reg_p2
-                                idiv_zero_address_reg_p2:
-                                jmp far ptr lose_point_div_player1
-                                not_idiv_zero_address_reg_p2:
+                                jz idiv_zero_address_reg_p11
+                                jmp not_idiv_zero_address_reg_p11
+                                idiv_zero_address_reg_p11:
+                                jmp far ptr lose_point_div_player2
+                                not_idiv_zero_address_reg_p11:
                                 idiv cx
-                                mov Player1_Data_Register[0],dh
-                                mov Player1_Data_Register[1],al
-                                jmp far ptr end_div_address_player1 
-                            imul_address_byte_player2:                  ; imul ------------------------
+                                mov Player2_Data_Register[0],dh
+                                mov Player2_Data_Register[1],al
+                                jmp far ptr end_div_address_player2 
+                            imul_address_byte_player11:                  ; imul ------------------------
                                 imul cl
-                                mov Player1_Data_Register[0],ah
-                                mov Player1_Data_Register[1],al
-                                jmp far ptr end_div_address_player1
-                            inc_address_byte_player2:                  ; inc ------------------------
+                                mov Player2_Data_Register[0],ah
+                                mov Player2_Data_Register[1],al
+                                jmp far ptr end_div_address_player2
+                            inc_address_byte_player11:                  ; inc ------------------------
                                 inc cl
-                                mov data_segment_1[si],cl
-                                jmp far ptr end_div_address_player1
-                            dec_address_byte_player2:                  ; dec ------------------------
+                                mov data_segment_2[si],cl
+                                jmp far ptr end_div_address_player2
+                            dec_address_byte_player11:                  ; dec ------------------------
                                 dec cx
-                                mov data_segment_1[si],cl
-                                jmp far ptr end_div_address_player1 
+                                mov data_segment_2[si],cl
+                                jmp far ptr end_div_address_player2 
                     
               
-    lose_point_div_address_player1:
-        dec intial_points_player1
-        mov losepoint_player1,0 
+    lose_point_div_address_player2:
+        dec intial_points_player2
+        mov losepoint_player2,0 
         mov losepoint,0
     
-    end_div_address_player1:
+    end_div_address_player2:
     
     ret
-    div_mul_inc_dec_address_player1 endp
+    div_mul_inc_dec_address_player2 endp
     
 ;----------------------------shl  reg ---------------------------------------------------
-shl_shr_ror_rol_register_player1 proc near
+shl_shr_ror_rol_register_player2 proc near
     
     check_forbidden Forbidden_instruction_2,instruction_index       
              
@@ -2002,265 +1998,265 @@ shl_shr_ror_rol_register_player1 proc near
             check_forbidden Forbidden_Registers_2,bl
 
             mov al,losepoint 
-            mov losepoint_player1,al 
-            cmp losepoint_player1,1
-            jz   lose_point_2_reg_shl_player1 
-            jmp cont_reg_mode_shl 
-            lose_point_2_reg_shl_player1:
-            jmp far ptr end_shl_reg_player1                 
-         cont_reg_mode_shl:
+            mov losepoint_player2,al 
+            cmp losepoint_player2,1
+            jz   lose_point_2_reg_shl_player2 
+            jmp cont_reg_mode_2shl 
+            lose_point_2_reg_shl_player2:
+            jmp far ptr end_shl_reg_player2                 
+         cont_reg_mode_2shl:
          
            ; check if value or cl is valid 
             ; call lotfy code to get second operand 
             mov bl,dest_index_reg
             mov bh,0
             cmp bl,16                        ; index to value
-            jz check_forbidden_digit_reg_shl2 
-            jnz check_forbidden_regsiter_reg_shl2
-            check_forbidden_digit_reg_shl2:
+            jz check_forbidden_digit_reg2_shl2 
+            jnz check_forbidden_regsiter_reg2_shl2
+            check_forbidden_digit_reg2_shl2:
                 ; macro needed to check if value has a forbidden digit or not
                 mov bh,0
                 mov bl,dest_index_val
-                mov ah,Player2_Data_Register[bx]
-                mov Player1_Data_Register[bx],ah
+                mov ah,Player1_Data_Register[bx]
+                mov Player2_Data_Register[bx],ah
  
                 ; call macro that check if value in ax is correct
                 check_byte_valid ah, Forbidden_digits_2 
                 mov al,losepoint 
-                mov losepoint_player1,al  
-                cmp losepoint_player1,1
-                jz  forbidden_reg_shl_player1
-                jmp cont_reg_mode_shl2
-                forbidden_reg_shl_player1:
-                jmp far ptr end_shl_reg_player1  
+                mov losepoint_player2,al  
+                cmp losepoint_player2,1
+                jz  forbidden_reg_shl_player2
+                jmp cont_reg_mode_2shl2
+                forbidden_reg_shl_player2:
+                jmp far ptr end_shl_reg_player2  
             
-            check_forbidden_regsiter_reg_shl2:        
+            check_forbidden_regsiter_reg2_shl2:        
                 
                 cmp bl,7
-                jnz lose_point_not_reg_cl_p1
+                jnz lose_point_not_reg_cl_p2
                 check_forbidden Forbidden_Registers_2,bl                 
                 mov al,losepoint 
-                mov losepoint_player1,al  
-                cmp losepoint_player1,1   
-                jz temp_end_shl_reg_player1   ; -> jump far here
-                jmp  cont_reg_mode_shl2
-                temp_end_shl_reg_player1:
-                jmp far ptr end_shl_reg_player1
-                lose_point_not_reg_cl_p1:
-                jmp far ptr lose_point_shl_address_player1 
-         cont_reg_mode_shl2:
+                mov losepoint_player2,al  
+                cmp losepoint_player2,1   
+                jz temp_end_shl_reg_player2   ; -> jump far here
+                jmp  cont_reg_mode_2shl2
+                temp_end_shl_reg_player2:
+                jmp far ptr end_shl_reg_player2
+                lose_point_not_reg_cl_p2:
+                jmp far ptr lose_point_shl_address_player2 
+         cont_reg_mode_2shl2:
             mov dl,count_bit_1
             mov dh,0
             cmp dl,2
-            jz temp_word_shl_reg_player1
-            jmp temp_byte_shl_reg_player1
-            temp_word_shl_reg_player1:
-            jmp far ptr word_shl_reg_player1
-            temp_byte_shl_reg_player1:
+            jz temp_word_shl_reg_player2
+            jmp temp_byte_shl_reg_player2
+            temp_word_shl_reg_player2:
+            jmp far ptr word_shl_reg_player2
+            temp_byte_shl_reg_player2:
                     mov bh,0
                     mov bl,dest_index_val
                     mov ch,0
-                    mov cl,Player2_Data_Register[bx]
+                    mov cl,Player1_Data_Register[bx]
                     mov bl, src_index_val
                                  
                     ; paste here
-                    cmp player_turn1,1
-                    jz player1_shl_byte_turn
-                    jmp player1_shl_byte_no_turn 
-                    player1_shl_byte_turn:
-                        cmp instruction_index,10
-                        jz shl_reg_byte_player1
-                        cmp instruction_index,9
-                        jz shr_reg_byte_player1
-                        cmp instruction_index,11
-                        jz ror_reg_byte_player1 
-                        cmp instruction_index,12
-                        jz rol_reg_byte_player1
-                        cmp instruction_index,8
-                        jz sal_reg_byte_player1
-                        cmp instruction_index,13
-                        jz sar_reg_byte_player1
-                        shl_reg_byte_player1:                  ; div ------------------------
-                            shl Player2_Data_Register[bx],cl
-                            jmp far ptr player1_shl_byte_no_turn
-                        shr_reg_byte_player1:                  ; mul ------------------------
-                            shr Player2_Data_Register[bx],cl
-                            jmp far ptr player1_shl_byte_no_turn
-                        ror_reg_byte_player1:                  ; idiv ------------------------
-                            ror Player2_Data_Register[bx],cl
-                            jmp far ptr player1_shl_byte_no_turn 
-                        rol_reg_byte_player1:                  ; imul ------------------------
-                            rol Player2_Data_Register[bx],cl
-                            jmp far ptr player1_shl_byte_no_turn
-                        sal_reg_byte_player1:                  ; inc ------------------------
-                            sal Player2_Data_Register[bx],cl
-                            jmp far ptr player1_shl_byte_no_turn
-                        sar_reg_byte_player1:                  ; dec ------------------------
-                            sar Player2_Data_Register[bx],cl
-                            jmp far ptr player1_shl_byte_no_turn
-                   ; paste here     
-                    player1_shl_byte_no_turn:        
                     cmp player_turn2,1
-                    jz player2_shl_byte_turn
-                    jmp far ptr end_shl_reg_player1 
-                    player2_shl_byte_turn:
+                    jz player22_shl_byte_turn
+                    jmp player22_shl_byte_no_turn 
+                    player22_shl_byte_turn:
+                        cmp instruction_index,10
+                        jz shl_reg_byte_player22
+                        cmp instruction_index,9
+                        jz shr_reg_byte_player22
+                        cmp instruction_index,11
+                        jz ror_reg_byte_player22 
+                        cmp instruction_index,12
+                        jz rol_reg_byte_player22
+                        cmp instruction_index,8
+                        jz sal_reg_byte_player22
+                        cmp instruction_index,13
+                        jz sar_reg_byte_player22
+                        shl_reg_byte_player22:                  ; div ------------------------
+                            shl Player1_Data_Register[bx],cl
+                            jmp far ptr player22_shl_byte_no_turn
+                        shr_reg_byte_player22:                  ; mul ------------------------
+                            shr Player1_Data_Register[bx],cl
+                            jmp far ptr player22_shl_byte_no_turn
+                        ror_reg_byte_player22:                  ; idiv ------------------------
+                            ror Player1_Data_Register[bx],cl
+                            jmp far ptr player22_shl_byte_no_turn 
+                        rol_reg_byte_player22:                  ; imul ------------------------
+                            rol Player1_Data_Register[bx],cl
+                            jmp far ptr player22_shl_byte_no_turn
+                        sal_reg_byte_player22:                  ; inc ------------------------
+                            sal Player1_Data_Register[bx],cl
+                            jmp far ptr player22_shl_byte_no_turn
+                        sar_reg_byte_player22:                  ; dec ------------------------
+                            sar Player1_Data_Register[bx],cl
+                            jmp far ptr player22_shl_byte_no_turn
+                   ; paste here     
+                    player22_shl_byte_no_turn:        
+                    cmp player_turn1,1
+                    jz player11_shl_byte_turn
+                    jmp far ptr end_shl_reg_player2 
+                    player11_shl_byte_turn:
                         mov bl,dest_index_val
                         mov ch,0
-                        mov cl,Player1_Data_Register[bx]
+                        mov cl,Player2_Data_Register[bx]
                         mov bl, src_index_val
                         cmp instruction_index,10
-                        jz shl_reg_byte_player2
+                        jz shl_reg_byte_player11
                         cmp instruction_index,9
-                        jz shr_reg_byte_player2
+                        jz shr_reg_byte_player11
                         cmp instruction_index,11
-                        jz ror_reg_byte_player2 
+                        jz ror_reg_byte_player11 
                         cmp instruction_index,12
-                        jz rol_reg_byte_player2
+                        jz rol_reg_byte_player11
                         cmp instruction_index,8
-                        jz sal_reg_byte_player2
+                        jz sal_reg_byte_player11
                         cmp instruction_index,13
-                        jz sar_reg_byte_player2
-                        shl_reg_byte_player2:                  ; div ------------------------
-                            shl Player1_Data_Register[bx],cl
-                            jmp far ptr end_shl_reg_player1
-                        shr_reg_byte_player2:                  ; mul ------------------------
-                            shr Player1_Data_Register[bx],cl
-                            jmp far ptr end_shl_reg_player1
-                        ror_reg_byte_player2:                  ; idiv ------------------------
-                            ror Player1_Data_Register[bx],cl
-                            jmp far ptr end_shl_reg_player1 
-                        rol_reg_byte_player2:                  ; imul ------------------------
-                            rol Player1_Data_Register[bx],cl
-                            jmp far ptr end_shl_reg_player1
-                        sal_reg_byte_player2:                  ; inc ------------------------
-                            sal Player1_Data_Register[bx],cl
-                            jmp far ptr end_shl_reg_player1
-                        sar_reg_byte_player2:                  ; dec ------------------------
-                            sar Player1_Data_Register[bx],cl
-                            jmp far ptr end_shl_reg_player1
+                        jz sar_reg_byte_player11
+                        shl_reg_byte_player11:                  ; div ------------------------
+                            shl Player2_Data_Register[bx],cl
+                            jmp far ptr end_shl_reg_player2
+                        shr_reg_byte_player11:                  ; mul ------------------------
+                            shr Player2_Data_Register[bx],cl
+                            jmp far ptr end_shl_reg_player2
+                        ror_reg_byte_player11:                  ; idiv ------------------------
+                            ror Player2_Data_Register[bx],cl
+                            jmp far ptr end_shl_reg_player2 
+                        rol_reg_byte_player11:                  ; imul ------------------------
+                            rol Player2_Data_Register[bx],cl
+                            jmp far ptr end_shl_reg_player2
+                        sal_reg_byte_player11:                  ; inc ------------------------
+                            sal Player2_Data_Register[bx],cl
+                            jmp far ptr end_shl_reg_player2
+                        sar_reg_byte_player11:                  ; dec ------------------------
+                            sar Player2_Data_Register[bx],cl
+                            jmp far ptr end_shl_reg_player2
                          
                          
-            word_shl_reg_player1:
+            word_shl_reg_player2:
                     mov bh,0   
                     mov bl,dest_index_val
-                    mov cl,Player2_Data_Register[bx]
+                    mov cl,Player1_Data_Register[bx]
                     mov bl,src_index_val
-                    mov ah,Player2_Data_Register[bx]
-                    mov al,Player2_Data_Register[bx+1]
+                    mov ah,Player1_Data_Register[bx]
+                    mov al,Player1_Data_Register[bx+1]
                                   
                     ; paste here
-                    cmp player_turn1,1
-                    jz player1_shl_word_turn
-                    jmp player1_shl_word_no_turn 
-                    player1_shl_word_turn: 
+                    cmp player_turn2,1
+                    jz player22_shl_word_turn
+                    jmp player22_shl_word_no_turn 
+                    player22_shl_word_turn: 
                         cmp instruction_index,10
-                        jz shl_reg_word_player1
+                        jz shl_reg_word_player22
                         cmp instruction_index,9
-                        jz shr_reg_word_player1
+                        jz shr_reg_word_player22
                         cmp instruction_index,11
-                        jz ror_reg_word_player1 
+                        jz ror_reg_word_player22
                         cmp instruction_index,12
-                        jz rol_reg_word_player1
+                        jz rol_reg_word_player22
                         cmp instruction_index,8
-                        jz sal_reg_word_player1
+                        jz sal_reg_word_player22
                         cmp instruction_index,13
-                        jz sar_reg_word_player1 
-                        shl_reg_word_player1:              ; div ------------------------
+                        jz sar_reg_word_player22 
+                        shl_reg_word_player22:              ; div ------------------------
                             shl ax,cl
-                            mov Player2_Data_Register[bx],ah
-                            mov Player2_Data_Register[bx+1],al
-                            jmp far ptr player1_shl_word_no_turn
-                        shr_reg_word_player1:                  ; mul ------------------------
+                            mov Player1_Data_Register[bx],ah
+                            mov Player1_Data_Register[bx+1],al
+                            jmp far ptr player22_shl_word_no_turn
+                        shr_reg_word_player22:                  ; mul ------------------------
                             shr ax,cl
-                            mov Player2_Data_Register[bx],ah
-                            mov Player2_Data_Register[bx+1],al
-                            jmp far ptr player1_shl_word_no_turn 
-                        ror_reg_word_player1:                  ; idiv ------------------------
+                            mov Player1_Data_Register[bx],ah
+                            mov Player1_Data_Register[bx+1],al
+                            jmp far ptr player22_shl_word_no_turn 
+                        ror_reg_word_player22:                  ; idiv ------------------------
                             ror ax,cl
-                            mov Player2_Data_Register[bx],ah
-                            mov Player2_Data_Register[bx+1],al
-                            jmp far ptr player1_shl_word_no_turn 
-                        rol_reg_word_player1:                  ; imul ------------------------
+                            mov Player1_Data_Register[bx],ah
+                            mov Player1_Data_Register[bx+1],al
+                            jmp far ptr player22_shl_word_no_turn 
+                        rol_reg_word_player22:                  ; imul ------------------------
                             rol ax,cl
-                            mov Player2_Data_Register[bx],ah
-                            mov Player2_Data_Register[bx+1],al
-                            jmp far ptr player1_shl_word_no_turn
-                        sal_reg_word_player1:                  ; inc ------------------------
+                            mov Player1_Data_Register[bx],ah
+                            mov Player1_Data_Register[bx+1],al
+                            jmp far ptr player22_shl_word_no_turn
+                        sal_reg_word_player22:                  ; inc ------------------------
                             sal ax,cl
-                            mov Player2_Data_Register[bx],ah
-                            mov Player2_Data_Register[bx+1],al
-                            jmp far ptr player1_shl_word_no_turn
-                        sar_reg_word_player1:                  ; dec ------------------------
+                            mov Player1_Data_Register[bx],ah
+                            mov Player1_Data_Register[bx+1],al
+                            jmp far ptr player22_shl_word_no_turn
+                        sar_reg_word_player22:                  ; dec ------------------------
                             sar ax,cl
-                            mov Player2_Data_Register[bx],ah
-                            mov Player2_Data_Register[bx+1],al
-                            jmp far ptr player1_shl_word_no_turn
+                            mov Player1_Data_Register[bx],ah
+                            mov Player1_Data_Register[bx+1],al
+                            jmp far ptr player22_shl_word_no_turn
                   
                   ; paste here
-                    player1_shl_word_no_turn:
-                    cmp player_turn2,1
-                    jz player2_shl_word_turn
-                    jmp far ptr end_shl_reg_player1
-                    player2_shl_word_turn: 
+                    player22_shl_word_no_turn:
+                    cmp player_turn1,1
+                    jz player11_shl_word_turn
+                    jmp far ptr end_shl_reg_player2
+                    player11_shl_word_turn: 
                         mov bl,dest_index_val
-                        mov cl,Player1_Data_Register[bx]
+                        mov cl,Player2_Data_Register[bx]
                         mov bl,src_index_val
-                        mov ah,Player1_Data_Register[bx]
-                        mov al,Player1_Data_Register[bx+1]
+                        mov ah,Player2_Data_Register[bx]
+                        mov al,Player2_Data_Register[bx+1]
                         cmp instruction_index,10
-                        jz shl_reg_word_player2
+                        jz shl_reg_word_player11
                         cmp instruction_index,9
-                        jz shr_reg_word_player2
+                        jz shr_reg_word_player11
                         cmp instruction_index,11
-                        jz ror_reg_word_player2 
+                        jz ror_reg_word_player11 
                         cmp instruction_index,12
-                        jz rol_reg_word_player2
+                        jz rol_reg_word_player11
                         cmp instruction_index,8
-                        jz sal_reg_word_player2
+                        jz sal_reg_word_player11
                         cmp instruction_index,13
-                        jz sar_reg_word_player2 
-                        shl_reg_word_player2:              ; div ------------------------
+                        jz sar_reg_word_player11
+                        shl_reg_word_player11:              ; div ------------------------
                             shl ax,cl
-                            mov Player1_Data_Register[bx],ah
-                            mov Player1_Data_Register[bx+1],al
-                            jmp far ptr end_shl_reg_player1
-                        shr_reg_word_player2:                  ; mul ------------------------
+                            mov Player2_Data_Register[bx],ah
+                            mov Player2_Data_Register[bx+1],al
+                            jmp far ptr end_shl_reg_player2
+                        shr_reg_word_player11:                  ; mul ------------------------
                             shr ax,cl
-                            mov Player1_Data_Register[bx],ah
-                            mov Player1_Data_Register[bx+1],al
-                            jmp far ptr end_shl_reg_player1 
-                        ror_reg_word_player2:                  ; idiv ------------------------
+                            mov Player2_Data_Register[bx],ah
+                            mov Player2_Data_Register[bx+1],al
+                            jmp far ptr end_shl_reg_player2 
+                        ror_reg_word_player11:                  ; idiv ------------------------
                             ror ax,cl
-                            mov Player1_Data_Register[bx],ah
-                            mov Player1_Data_Register[bx+1],al
-                            jmp far ptr end_shl_reg_player1 
-                        rol_reg_word_player2:                  ; imul ------------------------
+                            mov Player2_Data_Register[bx],ah
+                            mov Player2_Data_Register[bx+1],al
+                            jmp far ptr end_shl_reg_player2 
+                        rol_reg_word_player11:                  ; imul ------------------------
                             rol ax,cl
-                            mov Player1_Data_Register[bx],ah
-                            mov Player1_Data_Register[bx+1],al
-                            jmp far ptr end_shl_reg_player1
-                        sal_reg_word_player2:                  ; inc ------------------------
+                            mov Player2_Data_Register[bx],ah
+                            mov Player2_Data_Register[bx+1],al
+                            jmp far ptr end_shl_reg_player2
+                        sal_reg_word_player11:                  ; inc ------------------------
                             sal ax,cl
-                            mov Player1_Data_Register[bx],ah
-                            mov Player1_Data_Register[bx+1],al
-                            jmp far ptr end_shl_reg_player1
-                        sar_reg_word_player2:                  ; dec ------------------------
+                            mov Player2_Data_Register[bx],ah
+                            mov Player2_Data_Register[bx+1],al
+                            jmp far ptr end_shl_reg_player2
+                        sar_reg_word_player11:                  ; dec ------------------------
                             sar ax,cl
-                            mov Player1_Data_Register[bx],ah
-                            mov Player1_Data_Register[bx+1],al
-                            jmp far ptr end_shl_reg_player1
+                            mov Player2_Data_Register[bx],ah
+                            mov Player2_Data_Register[bx+1],al
+                            jmp far ptr end_shl_reg_player2
                   
-    lose_point_shl_reg_player1:
-        dec intial_points_player1
-        mov losepoint_player1,0 
+    lose_point_shl_reg_player2:
+        dec intial_points_player2
+        mov losepoint_player2,0 
         mov losepoint,0
             
-    end_shl_reg_player1:
+    end_shl_reg_player2:
      
     ret 
-    shl_shr_ror_rol_register_player1 endp
+    shl_shr_ror_rol_register_player2 endp
 ;---------------------------------------------------  shl to datasegment  -----------------------------------------------------------------
-shl_shr_ror_rol_address_player1  proc near
+shl_shr_ror_rol_address_player2  proc near
     
         check_forbidden Forbidden_instruction_2,instruction_index                   
             mov bl,src_index_reg
@@ -2269,190 +2265,190 @@ shl_shr_ror_rol_address_player1  proc near
             ; check if src_index_reg is value or register
             ;cmp bl,17                        ; index to value
             cmp bl , 17                      ; index to address value -> choose which value ?!
-            jz forbidden_digit_address_shl 
-            jnz forbidden_regsiter_address_shl 
-            forbidden_digit_address_shl:
+            jz forbidden_digit_address_22shl 
+            jnz forbidden_regsiter_address_22shl 
+            forbidden_digit_address_22shl:
                 ; macro needed to check if value has a forbidden digit or not
                 mov bh,0
                 mov bl,src_index_val
-                mov ah,Player2_Data_Register[bx]
-                mov al,Player2_Data_Register[bx+1]
+                mov ah,Player1_Data_Register[bx]
+                mov al,Player1_Data_Register[bx+1]
                 ; call macro that check if value in ax is correct 
                 
                 check_word_valid ax, Forbidden_digits_2 
                 ;check_forbidden Forbidden_digits_2,0    <----------- not working should be removed later
                 mov al,losepoint 
-                mov losepoint_player1,al 
-                cmp losepoint_player1,1
-                jz  lose_point_1_shl_address_player1
-                jmp cont_address_mode_shl 
-                lose_point_1_shl_address_player1:
+                mov losepoint_player2,al 
+                cmp losepoint_player2,1
+                jz  lose_point_1_shl_address_player2
+                jmp cont_address_mode_2shl 
+                lose_point_1_shl_address_player2:
                 ;jmp far ptr lose_point_player1
-                jmp far ptr end_shl_address_player1
+                jmp far ptr end_shl_address_player2
         ; destination now is correct  value ------------------------------------------------------------------------------                 
-                jmp cont_address_mode_shl 
-           forbidden_regsiter_address_shl:
+                jmp cont_address_mode_2shl 
+           forbidden_regsiter_address_22shl:
                 check_forbidden Forbidden_Registers_2,bl
                 ; need macro to check if this register is not bx or di or si to make later -> should jmp lose_point
                 mov al,losepoint 
                 mov losepoint_player1,al 
                 cmp losepoint_player1,1
-                jz   lose_point_2_shl_address_player1 
-                jmp cont_address_mode_shl 
-                lose_point_2_shl_address_player1:
-                jmp far ptr lose_point_shl_address_player1                 
-         cont_address_mode_shl:
+                jz   lose_point_2_shl_address_player2 
+                jmp cont_address_mode_2shl 
+                lose_point_2_shl_address_player2:
+                jmp far ptr lose_point_shl_address_player2                 
+         cont_address_mode_2shl:
             ;check if value in ax is less than f
             mov bh,0
             mov bl,src_index_val
-            mov ah,Player2_Data_Register[bx]
-            mov al,Player2_Data_Register[bx+1] 
+            mov ah,Player1_Data_Register[bx]
+            mov al,Player1_Data_Register[bx+1] 
             cmp ax,000fh
-            JA lose_point_3_shl_address_player1  ; out of index of data segment -> should be error 
-            jmp cont_address_mode_shl2 
-            lose_point_3_shl_address_player1:
-            jmp far ptr lose_point_shl_address_player1 
+            JA lose_point_3_shl_address_player2  ; out of index of data segment -> should be error 
+            jmp cont_address_mode_shl22 
+            lose_point_3_shl_address_player2:
+            jmp far ptr lose_point_shl_address_player2 
             
-            cont_address_mode_shl2:
+            cont_address_mode_shl22:
            ; check if value or cl is valid 
             ; call lotfy code to get second operand 
             mov bl,dest_index_reg
             mov bh,0
             cmp bl,16                        ; index to value
-            jz check_forbidden_digit_address_shl2 
-            jnz check_forbidden_regsiter_address_shl2
-            check_forbidden_digit_address_shl2:
+            jz check_forbidden_digit_address_shl22 
+            jnz check_forbidden_regsiter_address_shl22
+            check_forbidden_digit_address_shl22:
                 ; macro needed to check if value has a forbidden digit or not
                 mov bh,0
                 mov bl,dest_index_val
-                mov ah,Player2_Data_Register[bx]
-                mov Player1_Data_Register[bx],ah
+                mov ah,Player1_Data_Register[bx]
+                mov Player2_Data_Register[bx],ah
  
                 ; call macro that check if value in ax is correct
                 check_byte_valid ah, Forbidden_digits_2 
                 mov al,losepoint 
-                mov losepoint_player1,al  
-                cmp losepoint_player1,1
-                jz  forbidden_address_shl_player1
-                jmp final_address_mode_shl
-                forbidden_address_shl_player1:
-                jmp far ptr end_shl_address_player1  
+                mov losepoint_player2,al  
+                cmp losepoint_player2,1
+                jz  forbidden_address_shl_player2
+                jmp final_address_mode_shl2
+                forbidden_address_shl_player2:
+                jmp far ptr end_shl_address_player2  
             
-            check_forbidden_regsiter_address_shl2:        
+            check_forbidden_regsiter_address_shl22:        
                 
                 cmp bl,7
-                jnz lose_point_not_address_cl_p1
+                jnz lose_point_not_address_cl_p2
                 check_forbidden Forbidden_Registers_2,bl                 
                 mov al,losepoint 
-                mov losepoint_player1,al  
-                cmp losepoint_player1,1
+                mov losepoint_player2,al  
+                cmp losepoint_player2,1
                 ;jz  lose_point_player1   
-                jz temp_end_shl_address_player1   ; -> jump far here
-                jmp  final_address_mode_shl
-                temp_end_shl_address_player1:
-                jmp far ptr end_shl_address_player1
-                jmp final_address_mode_shl
-                 lose_point_not_address_cl_p1:
-                 jmp far ptr lose_point_shl_address_player1
-            final_address_mode_shl:
+                jz temp_end_shl_address_player2   ; -> jump far here
+                jmp  final_address_mode_shl2
+                temp_end_shl_address_player2:
+                jmp far ptr end_shl_address_player2
+                jmp final_address_mode_shl2
+                 lose_point_not_address_cl_p2:
+                 jmp far ptr lose_point_shl_address_player2
+            final_address_mode_shl2:
                     mov bh,0
                     mov bl,src_index_val
-                    mov ch,Player2_Data_Register[bx]
-                    mov cl,Player2_Data_Register[bx+1]
+                    mov ch,Player1_Data_Register[bx]
+                    mov cl,Player1_Data_Register[bx+1]
                     mov si,cx 
                     mov bl, dest_index_val  
-                    mov cl, Player2_Data_Register[bx]
+                    mov cl, Player1_Data_Register[bx]
                     mov ch,0            
                     
-                    cmp player_turn1,1              ;-> player1 turn 
-                    jz player1_shl_address_byte_turn
-                    jmp player1_shl_address_byte_no_turn 
-                    player1_shl_address_byte_turn:       
+                    cmp player_turn2,1              ;-> player1 turn 
+                    jz player22_shl_address_byte_turn
+                    jmp player22_shl_address_byte_no_turn 
+                    player22_shl_address_byte_turn:       
                             cmp instruction_index,10
-                            jz shl_address_byte_player1
+                            jz shl_address_byte_player22
                             cmp instruction_index,9
-                            jz shr_address_byte_player1
+                            jz shr_address_byte_player22
                             cmp instruction_index,11
-                            jz ror_address_byte_player1 
+                            jz ror_address_byte_player22 
                             cmp instruction_index,12
-                            jz rol_address_byte_player1
+                            jz rol_address_byte_player22
                             cmp instruction_index,8
-                            jz sal_address_byte_player1
+                            jz sal_address_byte_player22
                             cmp instruction_index,13
-                            jz sar_address_byte_player1
-                            shl_address_byte_player1:                  ; div ------------------------
-                                shl data_segment_2[si],cl
-                                jmp far ptr player1_shl_address_byte_no_turn
-                            shr_address_byte_player1:                  ; mul ------------------------
-                                shr data_segment_2[si],cl
-                                jmp far ptr player1_shl_address_byte_no_turn
-                            ror_address_byte_player1:                  ; idiv ------------------------
-                                ror data_segment_2[si],cl
-                                jmp far ptr player1_shl_address_byte_no_turn 
-                            rol_address_byte_player1:                  ; imul ------------------------
-                                rol data_segment_2[si],cl
-                                jmp far ptr player1_shl_address_byte_no_turn
-                            sal_address_byte_player1:                  ; inc ------------------------
-                                sal data_segment_2[si],cl
-                                jmp far ptr player1_shl_address_byte_no_turn
-                            sar_address_byte_player1:                  ; dec ------------------------
-                                sar data_segment_2[si],cl
-                                jmp far ptr player1_shl_address_byte_no_turn  
-                    player1_shl_address_byte_no_turn:
-                        cmp player_turn2,1
-                        jz player2_shl_address_byte_turn
-                        jmp far ptr end_shl_address_player1
-                        player2_shl_address_byte_turn:     
+                            jz sar_address_byte_player22
+                            shl_address_byte_player22:                  ; div ------------------------
+                                shl data_segment_1[si],cl
+                                jmp far ptr player22_shl_address_byte_no_turn
+                            shr_address_byte_player22:                  ; mul ------------------------
+                                shr data_segment_1[si],cl
+                                jmp far ptr player22_shl_address_byte_no_turn
+                            ror_address_byte_player22:                  ; idiv ------------------------
+                                ror data_segment_1[si],cl
+                                jmp far ptr player22_shl_address_byte_no_turn 
+                            rol_address_byte_player22:                  ; imul ------------------------
+                                rol data_segment_1[si],cl
+                                jmp far ptr player22_shl_address_byte_no_turn
+                            sal_address_byte_player22:                  ; inc ------------------------
+                                sal data_segment_1[si],cl
+                                jmp far ptr player22_shl_address_byte_no_turn
+                            sar_address_byte_player22:                  ; dec ------------------------
+                                sar data_segment_1[si],cl
+                                jmp far ptr player22_shl_address_byte_no_turn  
+                    player22_shl_address_byte_no_turn:
+                        cmp player_turn1,1
+                        jz player11_shl_address_byte_turn
+                        jmp far ptr end_shl_address_player2
+                        player11_shl_address_byte_turn:     
                             
                             mov bl,src_index_val
-                            mov ch,Player1_Data_Register[bx]
-                            mov cl,Player1_Data_Register[bx+1]
+                            mov ch,Player2_Data_Register[bx]
+                            mov cl,Player2_Data_Register[bx+1]
                             mov si,cx 
                             mov bl, dest_index_val  
-                            mov cl, Player1_Data_Register[bx]
+                            mov cl, Player2_Data_Register[bx]
                             mov ch,0                            
                             cmp instruction_index,10
-                            jz shl_address_byte_player2
+                            jz shl_address_byte_player11
                             cmp instruction_index,9
-                            jz shr_address_byte_player2
+                            jz shr_address_byte_player11
                             cmp instruction_index,11
-                            jz ror_address_byte_player2 
+                            jz ror_address_byte_player11 
                             cmp instruction_index,12
-                            jz rol_address_byte_player2
+                            jz rol_address_byte_player11
                             cmp instruction_index,8
-                            jz sal_address_byte_player2
+                            jz sal_address_byte_player11
                             cmp instruction_index,13
-                            jz sar_address_byte_player2
-                            shl_address_byte_player2:                  ; div ------------------------
-                                shl data_segment_1[si],cl
-                                jmp far ptr end_shl_address_player1
-                            shr_address_byte_player2:                  ; mul ------------------------
-                                shr data_segment_1[si],cl
-                                jmp far ptr end_shl_address_player1
-                            ror_address_byte_player2:                  ; idiv ------------------------
-                                ror data_segment_1[si],cl
-                                jmp far ptr end_shl_address_player1 
-                            rol_address_byte_player2:                  ; imul ------------------------
-                                rol data_segment_1[si],cl
-                                jmp far ptr end_shl_address_player1
-                            sal_address_byte_player2:                  ; inc ------------------------
-                                sal data_segment_1[si],cl
-                                jmp far ptr end_shl_address_player1
-                            sar_address_byte_player2:                  ; dec ------------------------
-                                sar data_segment_1[si],cl
-                                jmp far ptr end_shl_address_player1  
+                            jz sar_address_byte_player11
+                            shl_address_byte_player11:                  ; div ------------------------
+                                shl data_segment_2[si],cl
+                                jmp far ptr end_shl_address_player2
+                            shr_address_byte_player11:                  ; mul ------------------------
+                                shr data_segment_2[si],cl
+                                jmp far ptr end_shl_address_player2
+                            ror_address_byte_player11:                  ; idiv ------------------------
+                                ror data_segment_2[si],cl
+                                jmp far ptr end_shl_address_player2 
+                            rol_address_byte_player11:                  ; imul ------------------------
+                                rol data_segment_2[si],cl
+                                jmp far ptr end_shl_address_player2
+                            sal_address_byte_player11:                  ; inc ------------------------
+                                sal data_segment_2[si],cl
+                                jmp far ptr end_shl_address_player2
+                            sar_address_byte_player11:                  ; dec ------------------------
+                                sar data_segment_2[si],cl
+                                jmp far ptr end_shl_address_player2  
 
             
               
-    lose_point_shl_address_player1:
-        dec intial_points_player1
-        mov losepoint_player1,0 
+    lose_point_shl_address_player2:
+        dec intial_points_player2
+        mov losepoint_player2,0 
         mov losepoint,0
     
-    end_shl_address_player1:
+    end_shl_address_player2:
     
     ret
-    shl_shr_ror_rol_address_player1 endp 
+    shl_shr_ror_rol_address_player2 endp 
      
     
 ;----------------------------shl  reg ---------------------------------------------------
