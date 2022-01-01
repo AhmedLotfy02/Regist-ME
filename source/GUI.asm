@@ -66,12 +66,48 @@
     PLAYER_ONE_TITLE DB 'PLAYER ONE:','$'
     PLAYER_TWO_TITLE DB 'PLAYER TWO:','$'
     INSTorPOWERUP DB ?
+    
+data_segment_1 db 01,02,03,73,66,0,0,0,0,0,0,0,0,0,0,0 
+Player1_Data_Register db 11h,22h,33h,44h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,05h
+data_segment_2 db 0,0,0,0,0,9,0,0,0,0,0,0,0,0,0,0
+Player2_Data_Register db 03h,02h,08h,07h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,05h,05h,00h,05h
+Data_Segment_X db 27
+Data_Segment_Y db 1
+Counter db '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'
     ;;tests
     x DW ?
     y dw ?
     ;;;;
 
 .code
+DISPLAY_2_DIGITS_NEW    MACRO   NUMBER
+        PUSH AX
+        PUSH BX
+        PUSH DX
+        
+        MOV AH,0
+        MOV AL,NUMBER
+        MOV BL,10
+        DIV BL
+        
+        ADD AL,'0'
+        ADD AH,'0'
+        
+        MOV BL,AH
+        
+        MOV DL,AL
+        MOV AH,2
+        INT 21H
+        
+        MOV DL,BL
+        INT 21H
+
+        POP DX
+        POP BX
+        POP AX
+    ENDM
+
+
     drawFilledRec MACRO xb,yb,xen,yen,color
         local firstLoop,secondLoop  
         PUSH AX
@@ -156,6 +192,8 @@
     ENDM
 
 
+
+
     PRINT_STRING_2DIGIT MACRO Stringo
         local loop4
         mov di,0    
@@ -192,7 +230,7 @@
 
     ENDM
 
-
+        
 
 
     DrawButtonMessage macro String
@@ -813,12 +851,127 @@ DRAW_VERTICAL_LINE proc far
     inc dx
     cmp dx, 400
     jne back0
+    
+    ;;;;;;;;Data Segment Vertical Lines
+    mov cx, 350;Column
+    mov dx,0 ;Row
+    mov si,400
+    mov al,0ah ;Pixel color
+    mov ah,0ch ;Draw Pixel Command
+    back01: int 10h
+    inc dx
+    cmp dx, 400
+    jne back01
+    ;;;;;;;;;;;;;;;;;;;;;
+    mov cx, 300;Column
+    mov dx,0 ;Row
+    mov si,400
+    mov al,0ah ;Pixel color
+    mov ah,0ch ;Draw Pixel Command
+    back02: int 10h
+    inc dx
+    cmp dx, 400
+    jne back02
+    ;;;;;;;;;;;;;;;;;;;
+     mov cx, 250;Column
+    mov dx,0 ;Row
+    mov si,400
+    mov al,0ah ;Pixel color
+    mov ah,0ch ;Draw Pixel Command
+    back03: int 10h
+    inc dx
+    cmp dx, 400
+    jne back03
+    ;;;;;;;;;;;;;;
+       mov cx, 200;Column
+    mov dx,0 ;Row
+    mov si,400
+    mov al,0ah ;Pixel color
+    mov ah,0ch ;Draw Pixel Command
+    back04: int 10h
+    inc dx
+    cmp dx, 400
+    jne back04
+
+
     pop si
     pop dx
     pop cx
     pop ax
     ret
 DRAW_VERTICAL_LINE endp
+
+
+DRAW_DATA_SEGMENT   PROC FAR
+ 
+ mov ah,16
+ mov di,0
+ loop1:
+
+  movCursor Data_Segment_X,Data_Segment_Y
+  mov ch ,data_segment_1[di]
+    DISPLAY_2_DIGITS_NEW  ch
+    add Data_Segment_Y,1
+    inc di
+    dec ah
+    cmp ah,0
+    jnz loop1
+
+mov ch,16
+mov di,0
+
+mov Data_Segment_Y,1
+add Data_Segment_X,7
+    loop2:
+  movCursor Data_Segment_X,Data_Segment_Y
+    
+    printCharacter Counter[di]
+    add Data_Segment_Y,1
+    inc di
+    dec ch
+    cmp ch,0
+    jnz loop2
+
+mov ch,16
+mov di,0
+
+mov Data_Segment_Y,1
+add Data_Segment_X,12
+    loop3:
+  movCursor Data_Segment_X,Data_Segment_Y
+    
+    printCharacter Counter[di]
+    add Data_Segment_Y,1
+    inc di
+    dec ch
+    cmp ch,0
+    jnz loop3
+
+
+mov Data_Segment_Y,1
+sub Data_Segment_X,5
+
+ mov ah,16
+ mov di,0
+ loop4:
+
+  movCursor Data_Segment_X,Data_Segment_Y
+  mov ch ,data_segment_2[di]
+    DISPLAY_2_DIGITS_NEW  ch
+    add Data_Segment_Y,1
+    inc di
+    dec ah
+    cmp ah,0
+    jnz loop4
+
+
+
+RET
+DRAW_DATA_SEGMENT ENDP
+
+
+
+
 
 SHOW_PLAYERS_NAMES_ON_CHAT proc far
     movCursor 2,26
@@ -913,6 +1066,7 @@ MAIN PROC FAR
     ;CALL SHOW_INSTRUCTIONS
     ;CALL HIDE_POWER_UP
     CALL BEGIN_GAME
+    CALL DRAW_DATA_SEGMENT
     ;CALL SHOW_AFTER_INSTRUCTION
     ;CALL SHOW_2ND_OPERAND
     ;CALL SHOW_REGISTERS_CHOICE
