@@ -385,7 +385,7 @@ moveToRightLabelofPlayer1 proc FAR
     ; PUSH DX
     
 
-
+    
     GETMOUSEPOSITION y,x
     mov ax,x
     mov bx,y
@@ -480,7 +480,7 @@ moveToRightLabelofPlayer1 proc FAR
     cmp bx,word ptr ANDCORDINATES[6]
     ja notAND
     ;jmp ANDlabelOfPlayer1
-    print message
+    ;print message
     notAND:
 
 
@@ -580,6 +580,7 @@ CMP AX,word ptr ROLCORDINATES[0]
     jl notROL
     cmp bx,word ptr ROLCORDINATES[6]
     jg notROL
+    print mess
     ;jmp ROLlabelOfPlayer1
     noTROL:
 
@@ -701,7 +702,6 @@ CMP AX,word ptr IDivCORDINATES[0]
     jg notIMUL
     ;jmp IMULlabelOfPlayer1
     noTIMUL:
-
     ; POP DX
     ; POP CX
     ; POP BX
@@ -1643,7 +1643,7 @@ moveToRightLabelofPlayer2 ENDP
         int 10h
 
         ;CALL DRAW_REGISTER_NAMES
-        ;CALL SHOW_POWER_UP
+        CALL SHOW_POWER_UP
         ;CALL SHOW_INSTRUCTION_BUTTON
         ;CALL SHOW_INSTRUCTIONS
         ;CALL HIDE_POWER_UP
