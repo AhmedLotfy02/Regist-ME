@@ -21,10 +21,12 @@ PLAYERTURN DB 0
     initialP db "Initial Points: $"
     press db "Press Enter key to continue$"
     forbiddenCharMess db "Enter forbidden char for your opponent: $"
-    
+    LEVEL2MESS db "Enter Initial Values for Your Registers$"
     DESTORSRC DB 0    ;      0----->DEST  , 1------>SRC
 power3_player1_used db 0
 power3_player2_used db 0
+INITIALVALUE DW ? 
+TEMP DB ?  
 
 power5_player1_used db 0
 power5_player2_used db 0
@@ -147,13 +149,16 @@ REG_COORDINATES DW 210,90,250,190
 inputValueString db 5, ?, 5 dup('$')   
 inputValueSize db ?
 NUMBER DW ?
-TEMP DB ?
 player_turn db 1   ; player1-> 1 , player2-> 2 
 player_turn1 db 1   ; power up 2
 player_turn2 db 1   ; power up 2 
 win_player1 db 0
 win_player2 db 0   
-
+Initial_PL1 db 'I1:','$'
+Initial_PL2 db 'I2:','$'
+For1 db 'F1:','$'
+For2 db 'F2:','$'
+GOAL_VAR db 'GOAL:',"$"
 target dw 105eh
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; instructions coordinates;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -173,7 +178,10 @@ target dw 105eh
     ORCORDINATES  dw 315,90,345,130
     IMULCORDINATES dw 360,30,385,80
     IDIVCORDINATES dw 360,90,385,140
-
+    P1CORDINATES dw 315,480,345,520
+    P2CORDINATES DW 315,540,345,580
+    P3CORDINATES DW 360,480,385,520
+    P5CORDINATES DW 360,540,385,580
 ;start game messages
     message1 db 'to start game prress f1$'
     message2 db 'to start chat prress f2$'
@@ -181,6 +189,26 @@ target dw 105eh
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .code
 
+DISPLAY_2_DIGITS    MACRO   NUMBER
+        pusha
+        MOV AH,0
+        MOV AL,NUMBER
+        MOV BL,10
+        DIV BL
+        
+        ADD AL,'0'
+        ADD AH,'0'
+        
+        MOV BL,AH
+        
+        MOV DL,AL
+        MOV AH,2
+        INT 21H
+        
+        MOV DL,BL
+        INT 21H
+        popa
+    ENDM
 
 
 
@@ -2416,6 +2444,14 @@ moveToRightLabelofPlayer2 ENDP
         CALL FIXED
         ret
     BEGIN_GAME endp
+
+     BEGIN_GAME_LEVEL_TWO proc far
+    CALL SHOW_INSTRUCTION_BUTTON
+    CALL SHOW_POWER_UP
+    CALL FIXED_LEVEL_TWO  
+
+    ret
+    BEGIN_GAME_LEVEL_TWO endp
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     SHOW_1ST_OPERAND proc near
@@ -2786,6 +2822,239 @@ DRAW_VERTICAL_LINE endp
         jmp loo
     beginGame ENDP
 
+CLEAR_SCREEN PROC NEAR
+			
+		 mov ax,0600h
+        mov bh, 00h  ;set the color for the background
+        mov cx,0
+        mov dx,184fh
+        int 10h
+			
+			RET
+CLEAR_SCREEN ENDP
+FIXED_LEVEL_TWO proc far
+  CALL SHOW_GOAL
+    CALL SHOW_INITIAL_POINTS
+    CALL DRAW_DATA_SEGMENT
+    CALL SHOW_REGISTERS_VALUES
+    CALL DRAW_REGISTER_NAMES
+    DrawRec 30, 535, 280, 639; draw rectangle around player1 registers
+    call DRAW_VERTICAL_LINE
+
+   call DRAW_REGISTER_NAMES2
+    DrawRec 30, 405, 280,510
+    CALL SHOW_CHAT
+
+
+ret
+FIXED_LEVEL_TWO endp
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;nEW LOTFY
+SHOW_FORBIDDEN_CHARACTERS PROC FAR
+;;;;Player 1 Forbidden
+movCursor 51,18
+Print_Msg For1
+movCursor 54,18
+printCharacter Forbidden_char1
+;;;;player 2 forbidden
+movCursor 51,20
+Print_Msg For2
+movCursor 54,20
+printCharacter Forbidden_char2
+
+
+ret
+SHOW_FORBIDDEN_CHARACTERS ENDP
+POWER_UP_1_1 PROC FAR 
+ 
+CALL CLEAR_SCREEN 
+;NOT PLAYERTURN 
+MOV power_up_player1,1  
+MOV power_up_player2,1  
+CALL TURN  
+MOV power_up_player1,0  
+MOV power_up_player2,0 
+;NOT PLAYERTURN 
+ 
+RET 
+POWER_UP_1_1 ENDP 
+ 
+POWER_UP_2 PROC FAR  
+CALL CLEAR_SCREEN 
+;NOT PLAYERTURN 
+MOV power_up_player1,2 
+MOV power_up_player2,2  
+CALL TURN  
+MOV power_up_player1,0  
+MOV power_up_player2,0 
+;NOT PLAYERTURN 
+ 
+ 
+RET 
+POWER_UP_2 ENDP 
+ 
+POWER_UP_3 PROC FAR 
+ 
+CMP PLAYERTURN,0 
+JNZ SECONDPLAYER1 
+ 
+;;READ ONE DIGIT X 
+;MOV Forbidden_char1,X 
+CALL set_zero_forbidden_player1 
+CALL set_forbidden_player1 
+JMP CONT0007 
+SECONDPLAYER1: 
+ 
+;;READ ONE DIGIT X 
+;MOV Forbidden_char2,X 
+CALL set_zero_forbidden_player2 
+CALL set_forbidden_player2 
+ 
+ 
+CONT0007: 
+RET 
+POWER_UP_3 ENDP 
+ 
+POWER_UP_5 PROC FAR 
+ 
+CMP PLAYERTURN,0 
+JNZ SECONDPLAYER 
+ 
+call power5_player1 
+ 
+JMP CONT0009 
+SECONDPLAYER: 
+call power5_player2 
+ 
+ 
+CONT0009: 
+RET 
+POWER_UP_5 ENDP 
+ 
+POWER_UP_6 PROC FAR 
+ 
+CMP PLAYERTURN,0 
+JNZ SECONDPLAYER3 
+ 
+;call power6_player1 
+JMP CONT0004 
+SECONDPLAYER3: 
+;;call power6_player2 
+ 
+ 
+ 
+CONT0004: 
+RET 
+POWER_UP_6 ENDP
+
+CHOOSE_POWER_UP PROC FAR 
+CHECKCLICK2:     
+    GETMOUSEPOSITION y,x 
+    mov ax,x 
+    mov bx,y 
+    CMP Ax,word ptr P1CORDINATES[0] 
+    jb notP11 
+    cmp AX,word ptr P1CORDINATES[4] 
+    ja notP11 
+    cmp BX,word ptr P1CORDINATES[2] 
+    jb notP11 
+    cmp BX,word ptr P1CORDINATES[6] 
+    ja notP11 
+    cmp PLAYERTURN,0 
+    JNZ PLAYER2_PROC1 
+    cmp intial_points_player1,5 
+    jb FINISH_CHOOSING1 
+    ;sub intial_points_player1,5 
+    CALL POWER_UP_1_1 
+    jmp FINISH_CHOOSING1 
+    PLAYER2_PROC1: 
+    ;CMP intial_points_player2,5 
+    jb  FINISH_CHOOSING1 
+    sub intial_points_player2,5 
+    CALL POWER_UP_1_1 
+    JMP FINISH_CHOOSING1 
+    ;jmp movlabelOfplayer1 
+    notP11: 
+ 
+ 
+     
+    CMP AX,word ptr P2CORDINATES[0] 
+    jl notP22 
+    cmp AX,word ptr P2CORDINATES[4] 
+    jg notP22 
+    cmp bx,word ptr P2CORDINATES[2] 
+    jl notP22 
+    cmp bx,word ptr P2CORDINATES[6] 
+    jg noTP22 
+    cmp intial_points_player1,3 
+    jb FINISH_CHOOSING1 
+ 
+    sub intial_points_player1,3 
+ 
+    JMP FINISH_CHOOSING1 
+    ;jmp ADDlabelOfPlayer1 
+    notP22: 
+ 
+ 
+ 
+    CMP AX,word ptr P3CORDINATES[0] 
+    jl notP33 
+    cmp AX,word ptr P3CORDINATES[4] 
+    jg notP33 
+    cmp bx,word ptr P3CORDINATES[2] 
+    jl notP33 
+    cmp bx,word ptr P3CORDINATES[6] 
+    jg notP33 
+    cmp intial_points_player1,2 
+    jb FINISH_CHOOSING1 
+    sub intial_points_player1,2 
+ 
+ 
+ 
+    JMP FINISH_CHOOSING1 
+    notP33: 
+     
+ 
+ 
+ 
+    CMP AX,word ptr P5CORDINATES[0] 
+    jl notP55 
+    cmp AX,word ptr P5CORDINATES[4] 
+    jg notP55 
+    cmp bx,word ptr P5CORDINATES[2] 
+    jl notP55 
+    cmp bx,word ptr P5CORDINATES[6] 
+    jg notP55 
+    cmp intial_points_player1,30 
+    jb FINISH_CHOOSING1 
+    sub intial_points_player1,30 
+ 
+    JMP FINISH_CHOOSING1 
+    ;jmp SUBLabelOfPlayer1 
+    notP55: 
+ 
+ 
+ 
+ 
+    ; CMP AX,word ptr P4CORDINATES[0] 
+    ; jl notSBB 
+    ; cmp AX,word ptr P4CORDINATES[4] 
+    ; jg notSBB 
+    ; cmp bx,word ptr P4CORDINATES[2] 
+    ; jl notSBB 
+    ; cmp bx,word ptr P4CORDINATES[6] 
+    ; jg notSBB 
+    ; ;jmp SBBlabelOfPlayer1 
+    ; notSBB: 
+ 
+ 
+ 
+JMP CHECKCLICK2 
+        FINISH_CHOOSING1: 
+ 
+RET 
+CHOOSE_POWER_UP ENDP
+
     setTextCursor macro Column, Row
         pusha
             mov  dl,  Column    
@@ -3034,6 +3303,43 @@ print2Number MACRO num
 ENDM 
 
 
+SHOW_GOAL proc far
+movCursor 51,22
+Print_Msg GOAL_VAR
+movCursor 56,22
+push ax
+mov ax,target
+
+print2Number ah
+movCursor 58,22 
+print2Number al
+pop ax
+
+ret
+SHOW_GOAL endp
+
+
+
+SHOW_INITIAL_POINTS PROC FAR
+
+;;;;Player 1 initial Points
+movCursor 51,0
+Print_Msg Initial_PL1
+movCursor 54,0
+DISPLAY_2_DIGITS intial_points_player1
+
+;;;;;player 2 initial points
+movCursor 67,0
+Print_Msg Initial_PL2
+movCursor 70,0
+DISPLAY_2_DIGITS intial_points_player2
+
+
+
+RET
+SHOW_INITIAL_POINTS ENDP
+
+
    DRAW_DATA_SEGMENT  PROC FAR
 
         PUSH AX
@@ -3184,6 +3490,9 @@ SHOW_REGISTERS_VALUES PROC FAR
 
 ;description: the fixed data of each screen, players' registers
 FIXED proc far
+  CALL SHOW_GOAL
+    CALL SHOW_INITIAL_POINTS
+    CALL SHOW_FORBIDDEN_CHARACTERS
      CALL DRAW_DATA_SEGMENT
     CALL SHOW_REGISTERS_VALUES
     CALL DRAW_REGISTER_NAMES
@@ -3277,7 +3586,7 @@ TURN PROC FAR
         
         
         CALL  SHOW_POWER_UPS_CHOICE
-
+        CALL CHOOSE_POWER_UP
         NEXT_CHOICE:
             CMP INSTorPOWERUP,0
             JZ POWERUPisCHOSEN
@@ -3302,31 +3611,274 @@ TURN PROC FAR
         ; jmp loop1
         RET
        TURN ENDP
+    PLAYER1LEVEL2 PROC far
+    setTextCursor 20, 2
+    Print_Msg LEVEL2MESS
     
+    setTextCursor 20, 4
+    Print_Msg player1_mess
+    ;Read initial value for Player1 AX
+    setTextCursor 2, 5
+    print_Msg mess
+    setTextCursor 6, 5
+    call READFOURDIGITFROMKEYBOARD
+    mov AX, INITIALVALUE
+    mov player1_data_register[0], AH
+    mov player1_data_register[1], AL
+    
+    ;Read initial value for Player1 BX
+    setTextCursor 2, 6
+    print_Msg mess1
+    setTextCursor 6, 6
+   call READFOURDIGITFROMKEYBOARD
+    mov AX, INITIALVALUE
+    mov player1_data_register[2], AH
+    mov player1_data_register[3], AL
+
+    ;Read initial value for Player1 CX
+    setTextCursor 2, 7
+    print_Msg mess2
+    setTextCursor 6, 7
+   call READFOURDIGITFROMKEYBOARD
+    mov AX, INITIALVALUE
+    mov player1_data_register[4], AH
+    mov player1_data_register[5], AL  
+
+    ;Read initial value for Player1 DX
+    setTextCursor 2, 8
+    print_Msg mess3
+    setTextCursor 6, 8
+   call READFOURDIGITFROMKEYBOARD
+    mov AX, INITIALVALUE
+    mov player1_data_register[6], AH
+    mov player1_data_register[7], AL 
+
+    ;Read initial value for Player1 SI
+    setTextCursor 2, 9
+    print_Msg mess4
+    setTextCursor 6, 9
+   call READFOURDIGITFROMKEYBOARD
+    mov AX, INITIALVALUE
+    mov player1_data_register[8], AH
+    mov player1_data_register[9], AL
+
+    ;Read initial value for Player1 DI
+    setTextCursor 2, 10
+    print_Msg mess5
+    setTextCursor 6,10
+   call READFOURDIGITFROMKEYBOARD
+    mov AX, INITIALVALUE
+    mov player1_data_register[10], AH
+    mov player1_data_register[11], AL
+
+    ;Read initial value for Player1 BP
+    setTextCursor 2, 11
+    print_Msg mess6
+    setTextCursor 6, 11
+   call READFOURDIGITFROMKEYBOARD
+    mov AX, INITIALVALUE
+    mov player1_data_register[12], AH
+    mov player1_data_register[13], AL
+
+    ;Read initial value for Player1 DI
+    setTextCursor 2, 12
+    print_Msg mess4
+    setTextCursor 6, 12
+   call READFOURDIGITFROMKEYBOARD
+    mov AX, INITIALVALUE
+    mov player1_data_register[14], AH
+    mov player1_data_register[15], AL
+    ret    
+PLAYER1LEVEL2  ENDP
+
+    PLAYER2LEVEL2 PROC far
+    setTextCursor 20, 2
+    Print_Msg LEVEL2MESS
+    
+    setTextCursor 20, 4
+    Print_Msg player2_mess
+    ;Read initial value for Player1 AX
+    setTextCursor 2, 5
+    print_Msg mess
+    setTextCursor 6, 5
+    call READFOURDIGITFROMKEYBOARD
+    mov AX, INITIALVALUE
+    mov player2_data_register[0], AH
+    mov player2_data_register[1], AL
+    
+    ;Read initial value for Player1 BX
+    setTextCursor 2, 6
+    print_Msg mess1
+    setTextCursor 6, 6
+   call READFOURDIGITFROMKEYBOARD
+    mov AX, INITIALVALUE
+    mov player2_data_register[2], AH
+    mov player2_data_register[3], AL
+
+    ;Read initial value for Player1 CX
+    setTextCursor 2, 7
+    print_Msg mess2
+    setTextCursor 6, 7
+   call READFOURDIGITFROMKEYBOARD
+    mov AX, INITIALVALUE
+    mov player2_data_register[4], AH
+    mov player2_data_register[5], AL  
+
+    ;Read initial value for Player1 DX
+    setTextCursor 2, 8
+    print_Msg mess3
+    setTextCursor 6, 8
+   call READFOURDIGITFROMKEYBOARD
+    mov AX, INITIALVALUE
+    mov player2_data_register[6], AH
+    mov player2_data_register[7], AL 
+
+    ;Read initial value for Player1 SI
+    setTextCursor 2, 9
+    print_Msg mess4
+    setTextCursor 6, 9
+   call READFOURDIGITFROMKEYBOARD
+    mov AX, INITIALVALUE
+    mov player2_data_register[8], AH
+    mov player2_data_register[9], AL
+
+    ;Read initial value for Player1 DI
+    setTextCursor 2, 10
+    print_Msg mess5
+    setTextCursor 6,10
+   call READFOURDIGITFROMKEYBOARD
+    mov AX, INITIALVALUE
+    mov player2_data_register[10], AH
+    mov player2_data_register[11], AL
+
+    ;Read initial value for Player1 BP
+    setTextCursor 2, 11
+    print_Msg mess6
+    setTextCursor 6, 11
+   call READFOURDIGITFROMKEYBOARD
+    mov AX, INITIALVALUE
+    mov player2_data_register[12], AH
+    mov player2_data_register[13], AL
+
+    ;Read initial value for Player1 DI
+    setTextCursor 2, 12
+    print_Msg mess4
+    setTextCursor 6, 12
+   call READFOURDIGITFROMKEYBOARD
+    mov AX, INITIALVALUE
+    mov player2_data_register[14], AH
+    mov player2_data_register[15], AL
+    ret    
+PLAYER2LEVEL2  ENDP
+readonedigitfromkeyboard   PROC  
+
+mov ah,07
+int 21h
+mov ah,2
+mov dl,AL
+int 21h
+mov TEMP,al
+cmp TEMP, 30h
+jb alphabet
+cmp TEMP,39h
+ja alphabet
+;if not alphabet :
+sub TEMP,30h
+jmp next
+
+alphabet:
+cmp TEMP,41h 
+jb notcapital                                             
+cmp TEMP,46h
+ja notcapital
+sub TEMP,37h
+jmp next
+
+;if not capital 
+notcapital:
+cmp TEMP,61h
+jb error
+cmp TEMP,66h
+ja error
+sub TEMP,57h
+jmp next
 
 
+;if enter in valid number
+error:
+      
+next:            
+RET
+              readonedigitfromkeyboard   ENDP 
+                
+                
+READTWODIGITfromkeyboard PROC
+           
+  CALL  readonedigitfromkeyboard
+    MOV BL,TEMP
+  CALL  readonedigitfromkeyboard 
+  MOV AL,BL
+    MOV CL,10h
+    MUL CL     
+    ADD TEMP,AL   
+    RET
+READTWODIGITfromkeyboard ENDP 
+
+
+READFOURDIGITFROMKEYBOARD PROC
+   CALL READTWODIGITfromkeyboard       
+    MOV AL,TEMP
+    MOV BYTE PTR INITIALVALUE[1],AL
+    MOV AL,0 
+   CALL READTWODIGITfromkeyboard               
+    MOV AL,TEMP
+    MOV BYTE PTR INITIALVALUE[0],AL
+    RET
+
+READFOURDIGITFROMKEYBOARD ENDP
+                 
+                 
+  
     MAIN PROC near
         MOV AX,@DATA
         MOV DS,AX
         mov ax,@data
         mov ds,ax
         ;bbbb:
+        
+        ; call power5_player2
+        bbbb:
+        ; call power5_player1
         ClearScreen 0,0,79,24
         call player1Screen
+
         ClearScreen 0,0,79,24
+        call player1_forbidden_screen
+
+        cmp selected_level, "2"
+        jnz level1Player1SC 
+        
+        ClearScreen 0,0,79,24
+        call PLAYER1LEVEL2
+
+        level1Player1SC:ClearScreen 0,0,79,24
         call player2Screen
-        bbbb:
-        
-        call power5_player2
-        
-        call power5_player1
-        ;ClearScreen 0,0,79,24
-        ;call player1_forbidden_screen
-        ;ClearScreen 0,0,79,24
-        ;call player2_forbidden_screen
+
+        ClearScreen 0,0,79,24
+        call player2_forbidden_screen
         CALL set_forbidden_player1
         CALL set_forbidden_player2
+        
+        cmp selected_level, "2"
+        jnz level1Player2SC
+        
         ClearScreen 0,0,79,24
+        call PLAYER2LEVEL2
+
+        
+        ;  bbbb:
+        
+        level1Player2SC:
         call beginGame
 
 
