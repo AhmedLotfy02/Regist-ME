@@ -23,7 +23,11 @@ PLAYERTURN DB 0
     forbiddenCharMess db "Enter forbidden char for your opponent: $"
     
     DESTORSRC DB 0    ;      0----->DEST  , 1------>SRC
+power3_player1_used db 0
+power3_player2_used db 0
 
+power5_player1_used db 0
+power5_player2_used db 0
     ; player1 Data variables -----------------------------------------------------------------------------------
         Forbidden_digits_1 db '0000000000000000'
         Forbidden_Registers_1 db '0000000000000000'
@@ -2770,7 +2774,7 @@ DRAW_VERTICAL_LINE endp
         getKeyPressed
         cmp ah,1
         jne notscape
-        jmp finish
+        jmp endoffile
         notscape:
         cmp ah,59
         jne notf1
@@ -3306,10 +3310,16 @@ TURN PROC FAR
         MOV DS,AX
         mov ax,@data
         mov ds,ax
+        ;bbbb:
         ClearScreen 0,0,79,24
         call player1Screen
         ClearScreen 0,0,79,24
         call player2Screen
+        bbbb:
+        
+        call power5_player2
+        
+        call power5_player1
         ;ClearScreen 0,0,79,24
         ;call player1_forbidden_screen
         ;ClearScreen 0,0,79,24
@@ -3326,11 +3336,36 @@ TURN PROC FAR
         mov ah, 0h
         int 10h
     MAINLOOP:
+
+        MOV AH,1
+        INT 16h
+        JZ CHECKOUTGAME
+        MOV AH,0
+        INT 16h
+        cmp ah,1
+        jnz CHECKOUTGAME 
+        JMP FAR PTR bbbb
+    CHECKOUTGAME:
         CALL TURN 
         MOV AL,PLAYERTURN
         NOT AL
         MOV PLAYERTURN,AL
+        call Reach_target_player2
+        cmp win_player1,1 
+        jz endgame
+        call Reach_target_player1
+        cmp win_player2,1 
+        jz endgame
+        call zero_points_player1
+        cmp win_player2,1 
+        jz endgame
+        call zero_points_player2
+        cmp win_player1,1 
+        jz endgame
     JMP MAINLOOP
+    endgame:
+    call CLR
+    jmp far ptr bbbb 
         ; hlt
     MAIN endp
         finish :
@@ -8137,8 +8172,143 @@ change_src_dest proc near
     mov dest_index_val,al  
     ret
     change_src_dest endp     
+    Reach_target_player2 proc near
     
-;----------------------------shl  reg ---------------------------------------------------
+    mov ax, target
+    mov si,0
+    mov di,8
+    mov dx,0
+    loop_on_registers_2:
+        
+        mov ch,Player2_Data_Register[si]
+        mov cl,Player2_Data_Register[si+1]
+        cmp ax,cx   ; compare target and each register of player2 so that to check if player 1 wins or not
+        jz reached_win_player1  
+        jmp not_reached_player1
+        reached_win_player1:
+        mov dx,1
+        mov di,1
+        not_reached_player1:
+        add si,2
+        dec di 
+        
+    jnz loop_on_registers_2
+    
+    cmp dx,1
+    ; jz                  ; player1 wins 
+    ; jnz                 ; player1 doesnt win yet
+    ; set variable win_player1 to 1 or 0
+    jz player1_wins
+    jmp continue_playing_player2 
+    player1_wins:
+        mov win_player1,dl
+    continue_playing_player2:
+    
+    ret
+    Reach_target_player2 endp
 
+Reach_target_player1 proc near
+    
+    mov ax, target
+    mov si,0
+    mov di,8
+    mov dx,0
+    loop_on_registers_1:
+        
+        mov ch,Player1_Data_Register[si]
+        mov cl,Player1_Data_Register[si+1]
+        cmp ax,cx   ; compare target and each register of player2 so that to check if player 1 wins or not
+        jz reached_win_player2  
+        jmp not_reached_player2
+        reached_win_player2:
+        mov dx,1
+        mov di,1
+        not_reached_player2:
+        add si,2
+        dec di 
+        
+    jnz loop_on_registers_1
+    
+    cmp dx,1
+    ; jz                  ; player1 wins 
+    ; jnz                 ; player1 doesnt win yet
+    ; set variable win_player1 to 1 or 0
+    jz player2_wins
+    jmp continue_playing_player1 
+    player2_wins:
+        mov win_player2,dl
+    continue_playing_player1:
+    
+    ret
+    Reach_target_player1 endp
+
+zero_points_player1 proc near
+    
+    cmp intial_points_player1,0
+    jz player1_lose_zeropoints
+    jmp player1_not_lose_zeropoints
+    player1_lose_zeropoints:
+        mov win_player2,1
+    player1_not_lose_zeropoints: 
+    ret
+    zero_points_player1 endp 
+
+zero_points_player2 proc near
+    
+    cmp intial_points_player2,0
+    jz player2_lose_zeropoints
+    jmp player2_not_lose_zeropoints
+    player2_lose_zeropoints:
+        mov win_player1,1
+    player2_not_lose_zeropoints: 
+    ret
+    zero_points_player2 endp
+power5_player1 proc near                                             
+    cmp power5_player1_used,1
+    jz power5_used_by_player1
+    ; check if intial points are greater than 30 so that can use power 
+    cmp intial_points_player1,30
+    jb not_enough_points_5_player1    
+    mov cx,8
+    mov si,0
+    mov power5_player1_used ,1 
+    sub intial_points_player1,30
+    clear_registers_player1:
+        mov Player1_Data_Register[si],0
+        add si,2  
+        dec cx
+    jnz clear_registers_player1
+    ; cannot be executed -----------------------------
+    not_enough_points_5_player1:
+     
+    power5_used_by_player1:
+    ret
+    power5_player1 endp
+power5_player2 proc near                                             
+    
+    cmp power5_player2_used,1
+    jz power5_used_by_player2
+    ; check if intial points are greater than 30 so that can use power 
+    cmp intial_points_player2,30
+    jb not_enough_points_5_player2    
+    mov cx,8
+    mov si,0
+    mov power5_player2_used ,1 
+    sub intial_points_player2,30
+    clear_registers_player2:
+        mov Player2_Data_Register[si],0
+        add si,2  
+        dec cx
+    jnz clear_registers_player2
+    
+    ; cannot be executed -----------------------------
+    not_enough_points_5_player2:
+     
+    power5_used_by_player2:
+    ret
+    power5_player2 endp
+
+;----------------------------shl  reg ---------------------------------------------------
+endoffile:
     END MAIN
 
