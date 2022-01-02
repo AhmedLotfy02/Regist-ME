@@ -155,7 +155,7 @@ MAIN PROC
     mov al, 12h ; Video mode number 
     mov ah, 0h 
     int 10h 
-    CALL FIRSTSCREEN
+    CALL SECONDSCREEN
     RET    
 MAIN ENDP
 END MAIN
