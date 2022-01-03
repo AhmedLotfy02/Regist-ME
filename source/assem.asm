@@ -141,9 +141,10 @@ P2 db 'P2'
     ;;tests
     x DW ?
     y dw ?
-enterMemAdress db 'enter address','$'  
+enterMemAdress db 'Enter an address','$' 
+enterValue db 'Enter a value', '$' 
 ERROR_MESSAGE DB'ERROR','$'
-
+X_POWER_UP_3_TEMP db 'L'
 VALUE_COORDINATES DW 130,90,170,190
 REG_COORDINATES DW 210,90,250,190
 inputValueString db 5, ?, 5 dup('$')   
@@ -160,7 +161,13 @@ For1 db 'F1:','$'
 For2 db 'F2:','$'
 GOAL_VAR db 'GOAL:',"$"
 target dw 105eh
+NEWFORBIDDEN_MSG DB 'PLEASE ENTER NEW FORBIDDEN CHAR','$'
+P6_VAR DB 'P6'
+is_changed_p1 db 0 
+is_changed_p2 db 0
+is_changed db 0
 
+changed_target dw 1111h 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; instructions coordinates;;;;;;;;;;;;;;;;;;;;;;;;;;;
     MOVCORDINATES  dw 25,30,50,70
     ADDCORDINATES  dw 25,90,50,130
@@ -182,6 +189,10 @@ target dw 105eh
     P2CORDINATES DW 315,540,345,580
     P3CORDINATES DW 360,480,385,520
     P5CORDINATES DW 360,540,385,580
+    P6CORDINATES DW 360,594,385,630
+
+    ;DrawRec 360,594,385,630
+
 ;start game messages
     message1 db 'to start game prress f1$'
     message2 db 'to start chat prress f2$'
@@ -923,11 +934,15 @@ CONVERT PROC far
     RET
 CONVERT ENDP  
 
-     CHECKINPUTVALUESIZE PROC far
+    CHECKINPUTVALUESIZE PROC far
                          
        ;CALL CHECKISNUM
        cmp inputValueString[1], 0
        jz  setInvalid
+
+       cmp inputValueString[1], 1
+       jz convertToByte
+
        cmp inputValueString[1], 2
        jz setByte
        
@@ -936,9 +951,15 @@ CONVERT ENDP
        
        cmp inputValueString[1], 4
        jz setWord
+       
 
-       setByte: mov inputValueSize, 1
-       jmp endCheck
+       convertToByte:
+            mov bl, inputValueString[2]
+            mov inputValueString[3], bl
+            mov inputValueString[2], '0'
+
+        setByte: mov inputValueSize, 1
+                 jmp endCheck
        
        convertToWord:
             mov bl, inputValueString[4]
@@ -947,7 +968,7 @@ CONVERT ENDP
             mov inputValueString[4], bl
             mov bl, inputValueString[2]
             mov inputValueString[3], bl
-            mov inputValueString[2], 0
+            mov inputValueString[2], '0'
        
        setWord: mov inputValueSize, 2
        jmp endCheck
@@ -962,7 +983,7 @@ CONVERT ENDP
     call CLR
     call Fixed
     movCursor 5,2
-    Print_Msg enterMemAdress
+    Print_Msg enterValue
     movCursor 5,3
     readString inputValueString
     CALL CHECKINPUTVALUESIZE  
@@ -2347,7 +2368,16 @@ moveToRightLabelofPlayer2 ENDP
     SHOW_INSTRUCTION_BUTTON endp
 
     SHOW_INSTRUCTIONS proc near
-        CALL FIXED
+    
+         CMP selected_level,'1'
+        JNZ LEVEL2_LABEL2
+
+          CALL FIXED
+        JMP CONT01002
+        LEVEL2_LABEL2:
+        CALL FIXED_LEVEL_TWO
+
+        CONT01002:
         movCursor 5,2
         PRINT_STRING_3DIGIT MOV_INS
         movCursor 12,2
@@ -2597,10 +2627,30 @@ moveToRightLabelofPlayer2 ENDP
         ret
     SHOW_REGISTERS_CHOICE endp
 
+
+    SHOW_POWER_UP_6 PROC FAR
+        movCursor 75,23
+        PRINT_STRING_2DIGIT P6_VAR
+
+DrawRec 360,594,385,630
+
+    RET
+    SHOW_POWER_UP_6 ENDP
+
+
     ;;1,2,3,5
         SHOW_POWER_UPS_CHOICE proc near
 
-        CALL FIXED
+          CMP selected_level,'1'
+        JNZ LEVEL2_LABEL1
+
+          CALL FIXED
+        JMP CONT01001
+        LEVEL2_LABEL1:
+        CALL FIXED_LEVEL_TWO
+         CALL SHOW_POWER_UP_6
+        CONT01001:
+       
 
         movCursor 62,20
         PRINT_STRING_2DIGIT POWER_UP_1ST
@@ -2895,18 +2945,33 @@ POWER_UP_2 ENDP
  
 POWER_UP_3 PROC FAR 
  
+
 CMP PLAYERTURN,0 
 JNZ SECONDPLAYER1 
- 
-;;READ ONE DIGIT X 
-;MOV Forbidden_char1,X 
+cmp intial_points_player1,8
+jb CONT0007
+sub intial_points_player1,8
+
+movCursor 5,2
+Print_Msg NEWFORBIDDEN_MSG
+ movCursor 5,3
+  mov ah, 07
+        int 21h
+        mov Forbidden_char1, al
 CALL set_zero_forbidden_player1 
 CALL set_forbidden_player1 
 JMP CONT0007 
 SECONDPLAYER1: 
- 
-;;READ ONE DIGIT X 
-;MOV Forbidden_char2,X 
+ cmp intial_points_player2,8
+jb CONT0007
+sub intial_points_player2,8
+movCursor 5,2
+Print_Msg NEWFORBIDDEN_MSG
+ movCursor 5,3
+  mov ah, 07
+        int 21h
+        mov Forbidden_char2, al
+
 CALL set_zero_forbidden_player2 
 CALL set_forbidden_player2 
  
@@ -2919,11 +2984,18 @@ POWER_UP_5 PROC FAR
  
 CMP PLAYERTURN,0 
 JNZ SECONDPLAYER 
- 
+ cmp intial_points_player1,30
+ jb CONT0009
+; sub intial_points_player1,30
+MOV power5_player1_used,0
 call power5_player1 
  
 JMP CONT0009 
 SECONDPLAYER: 
+cmp intial_points_player2,30
+jb CONT0009
+;sub intial_points_player2,30
+mov power5_player2_used,0
 call power5_player2 
  
  
@@ -2935,10 +3007,12 @@ POWER_UP_6 PROC FAR
  
 CMP PLAYERTURN,0 
 JNZ SECONDPLAYER3 
- 
+CALL power6_p1
+ ;call power6_player1  
 ;call power6_player1 
 JMP CONT0004 
 SECONDPLAYER3: 
+CALL power6_p2
 ;;call power6_player2 
  
  
@@ -2970,7 +3044,7 @@ CHECKCLICK2:
     PLAYER2_PROC1: 
     ;CMP intial_points_player2,5 
     jb  FINISH_CHOOSING1 
-    sub intial_points_player2,5 
+    ;sub intial_points_player2,5 
     CALL POWER_UP_1_1 
     JMP FINISH_CHOOSING1 
     ;jmp movlabelOfplayer1 
@@ -2988,9 +3062,9 @@ CHECKCLICK2:
     jg noTP22 
     cmp intial_points_player1,3 
     jb FINISH_CHOOSING1 
- 
-    sub intial_points_player1,3 
- 
+    CALL POWER_UP_2
+    ;sub intial_points_player1,3 
+    
     JMP FINISH_CHOOSING1 
     ;jmp ADDlabelOfPlayer1 
     notP22: 
@@ -3005,10 +3079,8 @@ CHECKCLICK2:
     jl notP33 
     cmp bx,word ptr P3CORDINATES[6] 
     jg notP33 
-    cmp intial_points_player1,2 
-    jb FINISH_CHOOSING1 
-    sub intial_points_player1,2 
- 
+    CALL CLR    
+    CALL POWER_UP_3
  
  
     JMP FINISH_CHOOSING1 
@@ -3025,28 +3097,29 @@ CHECKCLICK2:
     jl notP55 
     cmp bx,word ptr P5CORDINATES[6] 
     jg notP55 
-    cmp intial_points_player1,30 
-    jb FINISH_CHOOSING1 
-    sub intial_points_player1,30 
- 
+    CALL POWER_UP_5
     JMP FINISH_CHOOSING1 
-    ;jmp SUBLabelOfPlayer1 
+    
     notP55: 
  
+        CMP selected_level,'1'
+        JNZ FINISH_CHOOSING1
+    CMP AX,word ptr P6CORDINATES[0] 
+    jl notP6 
+    cmp AX,word ptr P6CORDINATES[4] 
+    jg notP6 
+    cmp bx,word ptr P6CORDINATES[2] 
+    jl notP6 
+    cmp bx,word ptr P6CORDINATES[6] 
+    jg notP6 
+    CALL POWER_UP_6
+    JMP FINISH_CHOOSING1 
+    
+    notP6: 
  
  
  
-    ; CMP AX,word ptr P4CORDINATES[0] 
-    ; jl notSBB 
-    ; cmp AX,word ptr P4CORDINATES[4] 
-    ; jg notSBB 
-    ; cmp bx,word ptr P4CORDINATES[2] 
-    ; jl notSBB 
-    ; cmp bx,word ptr P4CORDINATES[6] 
-    ; jg notSBB 
-    ; ;jmp SBBlabelOfPlayer1 
-    ; notSBB: 
- 
+    
  
  
 JMP CHECKCLICK2 
@@ -3114,21 +3187,16 @@ CHOOSE_POWER_UP ENDP
         mov ah, intial_points_player2
         cmp ah, al
         ja  setP1Points 
-        mov bl, al
-        jmp compwith60
+        mov bl, ah
+        jmp finish2
         setP1Points:
-            mov bl, ah
+            mov bl, al
         
-        compwith60:
-            cmp bl, 60
-            ja setPoints 
-            mov initial_point, 60
-            jmp finish2
-            
-            setPoints:
-                mov initial_point, bl 
-            
-        finish2: ret    
+        finish2:
+        mov intial_points_player1, bl
+        mov intial_points_player2, bl
+        ret 
+               
     setInitialPoints endp
 
     GetEnterKeyPressed proc 
@@ -3520,8 +3588,20 @@ TURN PROC FAR
         CALL SHOW_POWER_UP
         ;CALL SHOW_INSTRUCTION_BUTTON
         ;CALL SHOW_INSTRUCTIONS
+        
         ;CALL HIDE_POWER_UP
+        CMP selected_level,'1'
+        JNZ LEVEL2_LABEL
+
         CALL BEGIN_GAME
+        JMP CONT0100
+        LEVEL2_LABEL:
+        CALL BEGIN_GAME_LEVEL_TWO
+
+        CONT0100:
+       
+        ; CALL SHOW_POWER_UPS_CHOICE
+        ;  CALL SHOW_POWER_UP_6
         ;CALL SHOW_AFTER_INSTRUCTION
         ;CALL SHOW_2ND_OPERAND
         ;CALL SHOW_REGISTERS_CHOICE
@@ -3868,7 +3948,7 @@ READFOURDIGITFROMKEYBOARD ENDP
         call player2_forbidden_screen
         CALL set_forbidden_player1
         CALL set_forbidden_player2
-        
+        CALL setInitialPoints
         cmp selected_level, "2"
         jnz level1Player2SC
         
@@ -8827,6 +8907,8 @@ power5_player1 proc near
     sub intial_points_player1,30
     clear_registers_player1:
         mov Player1_Data_Register[si],0
+                mov Player1_Data_Register[si+1],0
+
         add si,2  
         dec cx
     jnz clear_registers_player1
@@ -8849,6 +8931,7 @@ power5_player2 proc near
     sub intial_points_player2,30
     clear_registers_player2:
         mov Player2_Data_Register[si],0
+        mov Player2_Data_Register[si+1],0
         add si,2  
         dec cx
     jnz clear_registers_player2
@@ -8861,6 +8944,88 @@ power5_player2 proc near
     power5_player2 endp
 
 ;----------------------------shl  reg ---------------------------------------------------
+power6_p1 proc near
+    
+    mov al,is_changed_p1
+    mov is_changed ,al
+    call power6_both
+    mov is_changed_p1,1
+    
+    ret 
+    power6_p1 endp  
+power6_p2 proc near
+    
+    mov al,is_changed_p2
+    mov is_changed ,al
+    call power6_both
+    mov is_changed_p2,2
+    
+    ret 
+    power6_p2 endp
+
+power6_both proc near
+     
+    ;mov al,is_changed_p1
+    ;mov is_changed ,al
+    
+    cmp is_changed ,1
+    jz used_power6_p1
+    jmp far ptr check_p2
+    used_power6_p1:
+    jmp far ptr end_power6
+    check_p2:
+    cmp is_changed ,2
+    jz used_power6_p2
+    jmp far ptr not_used_power6
+    used_power6_p2:
+    jmp far ptr end_power6
+    
+    not_used_power6:
+    
+    ; ------------ loop on all registers of player1 16 byte  ------------------
+    
+    
+    mov cx,8
+    mov si,0
+    mov dx,changed_target
+    p1_targetE:
+               
+               cmp Player1_Data_Register[si],dh
+               jz  other_byte_p1
+               jmp not_equal_p1
+               other_byte_p1: 
+               cmp Player1_Data_Register[si+1],dl
+               jz end_power6
+               not_equal_p1:
+               add si,2
+               dec cx
+               jnz p1_targetE
+    
+        
+    ; ------------ loop on all registers of player2 ------------------
+    mov cx,8
+    mov si,0
+    p2_targetE:
+               cmp Player2_Data_Register[si],dh
+               jz  other_byte_p2
+               jmp not_equal_p2
+               other_byte_p2: 
+               cmp Player2_Data_Register[si+1],dl
+               jz end_power6
+               not_equal_p2:
+               add si,2
+               dec cx
+               jnz p2_targetE          
+     
+     jmp can_change 
+     
+     can_change:
+     mov target,dx
+     end_power6:     
+     
+     ret
+     power6_both endp
+
 endoffile:
     END MAIN
 
