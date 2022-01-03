@@ -141,7 +141,8 @@ P2 db 'P2'
     ;;tests
     x DW ?
     y dw ?
-enterMemAdress db 'enter address','$'  
+enterMemAdress db 'Enter an address','$' 
+enterValue db 'Enter a value', '$' 
 ERROR_MESSAGE DB'ERROR','$'
 X_POWER_UP_3_TEMP db 'L'
 VALUE_COORDINATES DW 130,90,170,190
@@ -162,6 +163,11 @@ GOAL_VAR db 'GOAL:',"$"
 target dw 105eh
 NEWFORBIDDEN_MSG DB 'PLEASE ENTER NEW FORBIDDEN CHAR','$'
 P6_VAR DB 'P6'
+is_changed_p1 db 0 
+is_changed_p2 db 0
+is_changed db 0
+
+changed_target dw 1111h 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; instructions coordinates;;;;;;;;;;;;;;;;;;;;;;;;;;;
     MOVCORDINATES  dw 25,30,50,70
     ADDCORDINATES  dw 25,90,50,130
@@ -928,11 +934,15 @@ CONVERT PROC far
     RET
 CONVERT ENDP  
 
-     CHECKINPUTVALUESIZE PROC far
+    CHECKINPUTVALUESIZE PROC far
                          
        ;CALL CHECKISNUM
        cmp inputValueString[1], 0
        jz  setInvalid
+
+       cmp inputValueString[1], 1
+       jz convertToByte
+
        cmp inputValueString[1], 2
        jz setByte
        
@@ -941,9 +951,15 @@ CONVERT ENDP
        
        cmp inputValueString[1], 4
        jz setWord
+       
 
-       setByte: mov inputValueSize, 1
-       jmp endCheck
+       convertToByte:
+            mov bl, inputValueString[2]
+            mov inputValueString[3], bl
+            mov inputValueString[2], '0'
+
+        setByte: mov inputValueSize, 1
+                 jmp endCheck
        
        convertToWord:
             mov bl, inputValueString[4]
@@ -952,7 +968,7 @@ CONVERT ENDP
             mov inputValueString[4], bl
             mov bl, inputValueString[2]
             mov inputValueString[3], bl
-            mov inputValueString[2], 0
+            mov inputValueString[2], '0'
        
        setWord: mov inputValueSize, 2
        jmp endCheck
@@ -967,7 +983,7 @@ CONVERT ENDP
     call CLR
     call Fixed
     movCursor 5,2
-    Print_Msg enterMemAdress
+    Print_Msg enterValue
     movCursor 5,3
     readString inputValueString
     CALL CHECKINPUTVALUESIZE  
@@ -2991,11 +3007,12 @@ POWER_UP_6 PROC FAR
  
 CMP PLAYERTURN,0 
 JNZ SECONDPLAYER3 
-
+CALL power6_p1
  ;call power6_player1  
 ;call power6_player1 
 JMP CONT0004 
 SECONDPLAYER3: 
+CALL power6_p2
 ;;call power6_player2 
  
  
@@ -3170,21 +3187,16 @@ CHOOSE_POWER_UP ENDP
         mov ah, intial_points_player2
         cmp ah, al
         ja  setP1Points 
-        mov bl, al
-        jmp compwith60
+        mov bl, ah
+        jmp finish2
         setP1Points:
-            mov bl, ah
+            mov bl, al
         
-        compwith60:
-            cmp bl, 60
-            ja setPoints 
-            mov initial_point, 60
-            jmp finish2
-            
-            setPoints:
-                mov initial_point, bl 
-            
-        finish2: ret    
+        finish2:
+        mov intial_points_player1, bl
+        mov intial_points_player2, bl
+        ret 
+               
     setInitialPoints endp
 
     GetEnterKeyPressed proc 
@@ -3936,7 +3948,7 @@ READFOURDIGITFROMKEYBOARD ENDP
         call player2_forbidden_screen
         CALL set_forbidden_player1
         CALL set_forbidden_player2
-        
+        CALL setInitialPoints
         cmp selected_level, "2"
         jnz level1Player2SC
         
@@ -8932,6 +8944,88 @@ power5_player2 proc near
     power5_player2 endp
 
 ;----------------------------shl  reg ---------------------------------------------------
+power6_p1 proc near
+    
+    mov al,is_changed_p1
+    mov is_changed ,al
+    call power6_both
+    mov is_changed_p1,1
+    
+    ret 
+    power6_p1 endp  
+power6_p2 proc near
+    
+    mov al,is_changed_p2
+    mov is_changed ,al
+    call power6_both
+    mov is_changed_p2,2
+    
+    ret 
+    power6_p2 endp
+
+power6_both proc near
+     
+    ;mov al,is_changed_p1
+    ;mov is_changed ,al
+    
+    cmp is_changed ,1
+    jz used_power6_p1
+    jmp far ptr check_p2
+    used_power6_p1:
+    jmp far ptr end_power6
+    check_p2:
+    cmp is_changed ,2
+    jz used_power6_p2
+    jmp far ptr not_used_power6
+    used_power6_p2:
+    jmp far ptr end_power6
+    
+    not_used_power6:
+    
+    ; ------------ loop on all registers of player1 16 byte  ------------------
+    
+    
+    mov cx,8
+    mov si,0
+    mov dx,changed_target
+    p1_targetE:
+               
+               cmp Player1_Data_Register[si],dh
+               jz  other_byte_p1
+               jmp not_equal_p1
+               other_byte_p1: 
+               cmp Player1_Data_Register[si+1],dl
+               jz end_power6
+               not_equal_p1:
+               add si,2
+               dec cx
+               jnz p1_targetE
+    
+        
+    ; ------------ loop on all registers of player2 ------------------
+    mov cx,8
+    mov si,0
+    p2_targetE:
+               cmp Player2_Data_Register[si],dh
+               jz  other_byte_p2
+               jmp not_equal_p2
+               other_byte_p2: 
+               cmp Player2_Data_Register[si+1],dl
+               jz end_power6
+               not_equal_p2:
+               add si,2
+               dec cx
+               jnz p2_targetE          
+     
+     jmp can_change 
+     
+     can_change:
+     mov target,dx
+     end_power6:     
+     
+     ret
+     power6_both endp
+
 endoffile:
     END MAIN
 
