@@ -3923,7 +3923,7 @@ READFOURDIGITFROMKEYBOARD ENDP
         MOV AX,@DATA
         MOV DS,AX
         mov ax,@data
-        mov ds,ax
+        mov Es,ax
         ;bbbb:
         
         ; call power5_player2
@@ -4036,6 +4036,8 @@ MOVPLAYER1PR PROC NEAR
                     sub intial_points_player1,3
                     jmp perform_mov_player1
                 perform_mov_player1:
+                        CMP FORBIDDEN_INSTRUCTION_1[0],'1'
+                        JZ end_MOV_instruction_player1
                         mov instruction_index,0
                         mov al,address_mode
                         cmp al,1
@@ -4089,6 +4091,8 @@ ADDPLAYER1PR  PROC NEAR
                     sub intial_points_player1,3
                     jmp perform_add_player1
                 perform_add_player1:
+                                        CMP FORBIDDEN_INSTRUCTION_1[1],'1'
+            JZ endADD_instruction_player1
                         mov instruction_index,1
                         mov al,address_mode
                         cmp al,1
@@ -4142,6 +4146,8 @@ call change_src_dest
                     sub intial_points_player1,3
                     jmp perform_sub_player1
             perform_sub_player1:
+                                    CMP FORBIDDEN_INSTRUCTION_1[2],'1'
+            JZ endSUB_instruction_player1
                         mov instruction_index,2
                         mov al,address_mode
                         cmp al,1
@@ -4195,6 +4201,8 @@ cmp power_up_player1,1
                     sub intial_points_player1,3
                     jmp perform_mul_player1
             perform_mul_player1:
+                                    CMP FORBIDDEN_INSTRUCTION_1[3],'1'
+            JZ endMUL_instruction_player1
                     mov instruction_index,3
                     mov al,address_mode
                     cmp al,1
@@ -4248,7 +4256,9 @@ call change_src_dest
                     mov player_turn2,1
                     sub intial_points_player1,3
                     jmp perform_div_player1
-            perform_div_player1:           
+            perform_div_player1:   
+                                    CMP FORBIDDEN_INSTRUCTION_1[4],'1'
+            JZ endDIV_instruction_player1        
                         mov instruction_index,4
                         mov al,address_mode
                         cmp al,1
@@ -4302,7 +4312,9 @@ IDIVPLAYER1PR PROC NEAR
                     mov player_turn2,1 
                     sub intial_points_player1,3
                     jmp perform_idiv_player1
-            perform_idiv_player1:            
+            perform_idiv_player1:  
+                                    CMP FORBIDDEN_INSTRUCTION_1[14],'1'
+            JZ endIDIV_instruction_player1          
                     mov instruction_index,14
                     mov al,address_mode
                     cmp al,1
@@ -4360,6 +4372,8 @@ cmp power_up_player1,1
                     sub intial_points_player1,3
                     jmp perform_imul_player1
             perform_imul_player1:
+                                    CMP FORBIDDEN_INSTRUCTION_1[15],'1'
+            JZ endIMUL_instruction_player1
                     mov instruction_index,15
                     mov al,address_mode
                     cmp al,1
@@ -4415,7 +4429,8 @@ call change_src_dest
                     sub intial_points_player1,3
                     jmp perform_INC_player1
             perform_INC_player1:
-            
+                                    CMP FORBIDDEN_INSTRUCTION_1[5],'1'
+            JZ endINC_instruction_player1
             mov instruction_index,5
             mov al,address_mode
             cmp al,1
@@ -4471,7 +4486,8 @@ cmp power_up_player1,1
                     sub intial_points_player1,3
                     jmp perform_DEC_player1
             perform_DEC_player1:
-            
+                                    CMP FORBIDDEN_INSTRUCTION_1[6],'1'
+            JZ endDEC_instruction_player1
             mov instruction_index,6
             mov al,address_mode
             cmp al,1
@@ -4528,7 +4544,8 @@ call change_src_dest
                     sub intial_points_player1,3
                     jmp perform_SAR_player1
             perform_SAR_player1:
-            
+                                    CMP FORBIDDEN_INSTRUCTION_1[13],'1'
+            JZ endSAR_instruction_player1
             mov instruction_index,13
             mov al,address_mode
             cmp al,1
@@ -4583,7 +4600,8 @@ call change_src_dest
                     sub intial_points_player1,3
                     jmp perform_SAL_player1
             perform_SAL_player1:
-            
+                                    CMP FORBIDDEN_INSTRUCTION_1[8],'1'
+            JZ endSAL_instruction_player1
             mov instruction_index,8
             mov al,address_mode
             cmp al,1
@@ -4638,7 +4656,8 @@ call change_src_dest
                     sub intial_points_player1,3
                     jmp perform_SHR_player1
             perform_SHR_player1:
-            
+                                    CMP FORBIDDEN_INSTRUCTION_1[9],'1'
+            JZ endSHR_instruction_player1
             mov instruction_index,9
             mov al,address_mode
             cmp al,1
@@ -4694,6 +4713,8 @@ cmp power_up_player1,1
                     sub intial_points_player1,3
                     jmp perform_SHL_player1
             perform_SHL_player1:
+                                    CMP FORBIDDEN_INSTRUCTION_1[10],'1'
+            JZ endSHL_instruction_player1
                     mov instruction_index,10
                     mov al,address_mode
                     cmp al,1
@@ -4749,7 +4770,8 @@ cmp power_up_player1,1
                     sub intial_points_player1,3
                     jmp perform_ror_player1
             perform_ror_player1:
-            
+                        CMP FORBIDDEN_INSTRUCTION_1[11],'1'
+            JZ endROR_instruction_player1
             mov instruction_index,11
             mov al,address_mode
             cmp al,1
@@ -4805,7 +4827,8 @@ cmp power_up_player1,1
                     sub intial_points_player1,3
                     jmp perform_rol_player1
             perform_rol_player1:
-            
+            CMP FORBIDDEN_INSTRUCTION_1[12],'1'
+            JZ endROL_instruction_player1
             mov instruction_index,12
             mov al,address_mode
             cmp al,1
@@ -4826,6 +4849,7 @@ cmp power_up_player1,1
 	mov power_up_player1,0
 RET
 ROLPLAYER1PR  ENDP
+
 
 
 
@@ -5215,6 +5239,8 @@ mov_address_player1  proc near
                 jmp far ptr end_mov_address_player1 
 
             STARTMOVREGSRCP1:
+            CMP ADDRESS_MODE2,1
+            JZ lose_point_player1
             mov bl,src_index_reg
             mov bh,0     
             ; check if is forbidden or not 
@@ -6440,6 +6466,8 @@ call change_src_dest
                     sub intial_points_player2,3
                     jmp perform_mov_player2
                 perform_mov_player2:
+                CMP FORBIDDEN_INSTRUCTION_2[0],'1'
+                    JZ endMOV_instruction_player2
                         mov instruction_index,0
                         mov al,address_mode
                         cmp al,1
@@ -6497,6 +6525,8 @@ call change_src_dest
                     sub intial_points_player2,3
                     jmp perform_add_player2
                 perform_add_player2:
+                                CMP FORBIDDEN_INSTRUCTION_2[1],'1'
+                    JZ endMOV_instruction_player2
                         mov instruction_index,1
                         mov al,address_mode
                         cmp al,1
@@ -6551,6 +6581,8 @@ SUBPLAYER2PR  PROC NEAR
                     sub intial_points_player2,3
                     jmp perform_sub_player2
             perform_sub_player2:
+                            CMP FORBIDDEN_INSTRUCTION_2[2],'1'
+                    JZ endSUB_instruction_player2
                         mov instruction_index,2
                         mov al,address_mode
                         cmp al,1
@@ -6604,6 +6636,8 @@ MULPLAYER2PR PROC NEAR
                     sub intial_points_player2,3
                     jmp perform_mul_player2
             perform_mul_player2:
+                            CMP FORBIDDEN_INSTRUCTION_2[3],'1'
+                    JZ endMUL_instruction_player2
                     mov instruction_index,3
                     mov al,address_mode
                     cmp al,1
@@ -6657,6 +6691,8 @@ cmp power_up_player2,1
                     sub intial_points_player2,3
                     jmp perform_div_player2
             perform_div_player2:
+                                        CMP FORBIDDEN_INSTRUCTION_2[4],'1'
+                    JZ endDIV_instruction_player2
                     mov instruction_index,4
                     mov al,address_mode
                     cmp al,1
@@ -6710,6 +6746,8 @@ call change_src_dest
                     sub intial_points_player2,3
                     jmp perform_Idiv_player2
             perform_Idiv_player2:
+                                        CMP FORBIDDEN_INSTRUCTION_2[14],'1'
+                    JZ endIDIV_instruction_player2
                     mov instruction_index,14
                     mov al,address_mode
                     cmp al,1
@@ -6765,6 +6803,8 @@ cmp power_up_player2,1
                     sub intial_points_player2,3
                     jmp perform_imul_player2
             perform_imul_player2:
+                                        CMP FORBIDDEN_INSTRUCTION_2[15],'1'
+                    JZ endIMUL_instruction_player2
                     mov instruction_index,15
                     mov al,address_mode
                     cmp al,1
@@ -6819,6 +6859,8 @@ call change_src_dest
                     sub intial_points_player2,3
                     jmp perform_INC_player2
             perform_INC_player2:
+                                        CMP FORBIDDEN_INSTRUCTION_2[5],'1'
+                    JZ endINC_instruction_player2
                     mov instruction_index,5
                     mov al,address_mode
                     cmp al,1
@@ -6874,6 +6916,8 @@ cmp power_up_player2,1
                     sub intial_points_player2,3
                     jmp perform_DEC_player2
             perform_DEC_player2:
+                                        CMP FORBIDDEN_INSTRUCTION_2[6],'1'
+                    JZ endDEC_instruction_player2
                     mov instruction_index,6
                     mov al,address_mode
                     cmp al,1
@@ -6930,7 +6974,8 @@ SARPLAYER2PR PROC NEAR
                     sub intial_points_player2,3
                     jmp perform_SAR_player2
             perform_SAR_player2:
-            
+                                        CMP FORBIDDEN_INSTRUCTION_2[13],'1'
+                    JZ endSAR_instruction_player2
             mov instruction_index,13
             mov al,address_mode
             cmp al,1
@@ -6986,7 +7031,8 @@ cmp power_up_player2,1
                     sub intial_points_player2,3
                     jmp perform_SAL_player2
             perform_SAL_player2:
-            
+                                        CMP FORBIDDEN_INSTRUCTION_2[8],'1'
+                    JZ endSAL_instruction_player2
             mov instruction_index,8
             mov al,address_mode
             cmp al,1
@@ -7042,7 +7088,8 @@ cmp power_up_player2,1
                     sub intial_points_player2,3
                     jmp perform_SHR_player2
             perform_SHR_player2:
-            
+                                        CMP FORBIDDEN_INSTRUCTION_2[9],'1'
+                    JZ endSHR_instruction_player2
             mov instruction_index,9
             mov al,address_mode
             cmp al,1
@@ -7097,7 +7144,8 @@ cmp power_up_player2,1
                     sub intial_points_player2,3
                     jmp perform_SHL_player2
             perform_SHL_player2:
-            
+                                        CMP FORBIDDEN_INSTRUCTION_2[10],'1'
+                    JZ endSHL_instruction_player2
             mov instruction_index,10
             mov al,address_mode
             cmp al,1
@@ -7153,7 +7201,8 @@ call change_src_dest
                     sub intial_points_player2,3
                     jmp perform_ROR_player2
             perform_ROR_player2:
-            
+                                        CMP FORBIDDEN_INSTRUCTION_2[11],'1'
+                    JZ endROR_instruction_player2
             mov instruction_index,11
             mov al,address_mode
             cmp al,1
@@ -7209,7 +7258,8 @@ ROLPLAYER2PR PROC NEAR
                     sub intial_points_player2,3
                     jmp perform_ROL_player2
             perform_ROL_player2:
-            
+                                        CMP FORBIDDEN_INSTRUCTION_2[12],'1'
+                    JZ endROL_instruction_player2
             mov instruction_index,12
             mov al,address_mode
             cmp al,1
@@ -7604,7 +7654,8 @@ mov_address_player2  proc near
         check_forbidden Forbidden_instruction_2,instruction_index       
 ;-----------------------------i have all indexes-------------------------------------------- 
 ; ---------------------------- assume bolbol will send byte indicate if its address or not (two address modes for destination & source)
-            
+            CMP ADDRESS_MODE2,1
+            JZ lose2_point_player2
             mov bl,src_index_reg
             mov bh,0     
             ; check if is forbidden or not 
