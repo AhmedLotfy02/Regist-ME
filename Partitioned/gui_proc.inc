@@ -1614,8 +1614,8 @@
         Print_Msg forbiddenCharMess
 
         setTextCursor 25, 11
-        readChar forbidden_char1
-        DisplayChar 25, 11,forbidden_char1
+        readChar forbidden_char2
+        DisplayChar 25, 11,forbidden_char2
 
         setTextCursor 20, 13
         Print_Msg press
@@ -1839,6 +1839,7 @@
     FIXED endp
 
     TURN PROC NEAR
+
         ; AH=2h: Set cursor position
         mov dl, 2 ; Column
         mov dh, 3 ; Row

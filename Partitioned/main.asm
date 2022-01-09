@@ -1,7 +1,23 @@
 .model huge 
 .stack 64
 .data
-    instructions db "MOV ", "ADD ", "SUB ", "MUL ", "DIV ", "INC ", "DEC ", "NOP ", "SAL ", "SHR ", "SHL ", "ROR ", "ROL ", "SAR ","IDIV ", "IMUL "  
+
+; 0 -> instruction 1 -> power1 2 -> power2 3 -> power3 5 -> power5 6 -> power6 7 -> chat  8 -> p1 win 9-> p2 win 
+
+sent_instruct_type db 0  
+instucti0n_type db 0   
+p1_button_F1_F2_ESC db 8
+p2_button_F1_F2_ESC db 7
+chat_invitation db    'you sent Chat invitation to ','$'
+game_invitation db    'you sent Game invitation to ','$'
+end_mes db 'end game $'
+chat_invitation2 db    ' sent Chat invitation to you ','$'
+game_invitation2 db    ' sent Game invitation to you','$' 
+
+V_S_R db 0
+not_r db 0
+check_buffer_status db 0
+instructions db "MOV ", "ADD ", "SUB ", "MUL ", "DIV ", "INC ", "DEC ", "NOP ", "SAL ", "SHR ", "SHL ", "ROR ", "ROL ", "SAR ","IDIV ", "IMUL "  
     registers db "AX ", "AL ", "AH ", "BX ", "BL ", "BH ", "CX ", "CL ", "CH ", "DX ", "DL ", "DH ", "SI ", "DI ", "SP ", "BP ","val ","address "
     digits db "0 ", "1 ", "2 ", "3 ", "4 ", "5 ", "6 ", "7 ", "8 ", "9 " ,"A ","B ","C ","D ","E ","F "  
     PLAYERTURN DB 0
@@ -36,13 +52,13 @@
             Forbidden_instruction_1 db '0000000000000000' 
             player1_mess db "Player 1 data$"
             levelMessage db "Enter the level (1 or 2): $"
-            player1_name db 15 , ?, 15 dup("$")
+            player1_name db 15 , ?, 15 dup("$"),'$'
             Forbidden_char1 db 'M'
             intial_points_player1 db 4, ?, 4 dup(0)
             losepoint_player1 db 0
             selected_level db ?
-            data_segment_1 db 0,0,0,0,0,45H,0,0,0,0,0,0,0,0,0,0 
-            Player1_Data_Register db 11h,33h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,05h
+            data_segment_1 db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 
+            Player1_Data_Register db 00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,05h
             power_up_player1 db 0
         ;------------------------    AH  -Al -BH-Bl -CH  -CL-DH  -DL-  SI -     DI --   SP    - BP   -value-addressvalue----
 
@@ -52,11 +68,11 @@
             Forbidden_Registers_2 db '0000000000000000'
             Forbidden_instruction_2 db '0000000000000000'
             Forbidden_char2 db 'M' 
-            player2_name db 15 , ?, 15 dup("$")
+            player2_name db 15 , ?, 15 dup("$"),'$'
             intial_points_player2 db 4, ?, 4 dup(0)
             losepoint_player2 db 0
             data_segment_2 db 0,0,0,0,0,9,0,0,0,0,0,0,0,0,0,0
-            Player2_Data_Register db 03h,02h,00h,07h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,05h,05h,00h,05h
+            Player2_Data_Register db 00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,00h,05h,05h,00h,05h
             power_up_player2 db 0
         ;------------------------AH  -Al -BH-Bl -CH  -CL-DH  -DL-  SI -     DI --   SP    - BP   -value-addressvalue---- 
         
@@ -198,6 +214,7 @@
         message1 db 'to start game prress f1$'
         message2 db 'to start chat prress f2$'
         message3 db 'to end game prress esc$'        ;;;;
+        ;;;;
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
                 rightShield db 23,5,40
@@ -519,7 +536,8 @@
         MOV DS,AX
         mov Es,ax
         
-        bbbb:
+        call intialize
+    ;bbbb:
         mov al, 03
         mov ah, 0
         int 10h
@@ -527,32 +545,132 @@
         call player1Screen
 
         ClearScreen 0,0,79,24
+
+        call check_R_Buffer
+        cmp check_buffer_status , 1
+        jz receive_then_send
+        call send_name_player2
+        call read_name_player2
+        ;call send_name_player2
+        jmp bbbb
+        receive_then_send:
+        mov V_S_R,3dh
+        call send_name_points
+        call read_name_player2
+        call send_name_player2
+        ;call read_name_player2
+
+        ;jmp bbbb
+        ;cmp not_r,1
+        ;jz send_again
+        ;jmp bbbb
+        ;send_again:
+        call send_name_player2
+        ;call read_name_player2
+        ;call send_receive_name
+        
+    bbbb:
+    ;Print_Msg player1_mess
+    ;call send_name_player2
+    ;call read_name_player2
+    setTextCursor 35, 6
+    Print_Msg player2_name[2]
+    ;DisplayChar  0,0 ,player2_name[2]
+    ;DisplayChar  1,0 ,player2_name[3]
+    ;DisplayChar  2,0 ,player2_name[4]
+    ;DisplayChar  3,0 ,player2_name[5]
+
+    
+    ;call beginGame
+
+    ;jmp bbbb
+
+    call check_R_Buffer
+    cmp check_buffer_status , 1
+    jnz Empty_buffer_here
+    jmp noEmpty_buffer_here
+    Empty_buffer_here:
+    call receive_name_points
+    noEmpty_buffer_here:
+    
+    mov V_S_R,0
+;-------------------------------------------  call main screen ---------------------------------------------------
+    
+    ClearScreen 0,0,79,24
+    call main_choose
+
+
+    ;---------------------------------------------------------chat assad code 
+    chat_logic:
+        ;ClearScreen 0,0,79,24
+         Print_Msg player1_name[2]
+
+    jmp chat_logic
+    
+    game_logic:
+        ClearScreen 0,0,79,24
+        ;Print_Msg player2_name[2]
+
+        ; if 1 -> my turn 0 -> other player
+        cmp player_turn,1
+        jz i_start
+        jmp he_start
+        i_start:
         call player1_forbidden_screen
+        mov al, forbidden_char2
+        mov V_S_R,al 
+        call send_name_points
+        mov al, selected_level
+        mov V_S_R,al 
+        call send_name_points
+        call receive_name_points
+        mov al,V_S_R
+        mov Forbidden_char1,al
+        jmp to_begin_game
+        jmp game_logic
+        he_start:   
+        call receive_name_points
+        mov al,V_S_R
+        mov Forbidden_char1,al
+        call receive_name_points
+        mov al,V_S_R
+        mov selected_level,al
+        call  player2_forbidden_screen
+        mov al,forbidden_char2
+        mov V_S_R,al
+        call send_name_points
+    jmp to_begin_game
+;    jmp game_logic
 
-        cmp selected_level, "2"
-        jnz level1Player1SC 
-        
+to_begin_game:
         ClearScreen 0,0,79,24
-        call PLAYER1LEVEL2
-        level1Player1SC:ClearScreen 0,0,79,24
-        call player2Screen
 
-        ClearScreen 0,0,79,24
-        call player2_forbidden_screen
-        CALL set_forbidden_player1
-        CALL set_forbidden_player2
-        CALL setInitialPoints
-        cmp selected_level, "2"
-        jnz level1Player2SC
-        
-        ClearScreen 0,0,79,24
-        call PLAYER2LEVEL2
+;jmp to_begin_game
 
+;----------------------------------------- setforbiddn for2 players and intial_points
+
+call set_forbidden_player1
+call set_forbidden_player2
+
+mov intial_points_player2,aL
+cmp intial_points_player1,al
+jA p1_greater
+jmp p2_greater
+p1_greater:
+mov al,intial_points_player2
+mov intial_points_player1,al
+jmp begin
+p2_greater:
+mov al,intial_points_player1
+mov intial_points_player2,al
+
+;------------------------------------------------------
         level1Player2SC:
-        call beginGame
-
+        ;call beginGame
 
         begin:
+
+
         mov al, 12h ; Video mode number
         mov ah, 0h
         int 10h
@@ -576,7 +694,21 @@
     ;     CONT109:
     ;     INC GAMECOUNTER
 
+;------------------------------------------------- now game begin with player_turn 1-> player1 start ---------------
+
+; --------------------------------
+;   compare PLAYERTURN with 1 so that determine which player will start 
+;   if 1 -> start with first procedure else receive
+;   sent_instruct_type 
+;   p1_turn 
+;
+;receive 0->instruction ; byte -> 0 mov 1 add 2 sub 
+;        1 ->  power1
+;        3 -> power3 -> forbidden 
+
+;----------------------------------------
         CALL TURN 
+
         MOV AL,PLAYERTURN
         NOT AL
         MOV PLAYERTURN,AL
@@ -592,13 +724,508 @@
         call zero_points_player2
         cmp win_player1,1 
         jz endgame
+
+
     JMP MAINLOOP
+
     endgame:
+
     CALL winnerscreen
     
-    jmp far ptr bbbb 
+    jmp far ptr to_begin_game 
         ; hlt
+
+
+    end_game_finihsed:
+        ClearScreen 0,0,79,24
+        ;print end_mes
+    jmp end_game_finihsed
+    
     MAIN endp
         finish:
     endoffile:
+
+
+
+
+
+    main_choose proc near
+;------------ draw first ---------------------
+        ;call CLR
+        ClearScreen 0,0,79,24
+        movCursor 25,7
+        print message1 
+        movCursor 25,12
+        print message2
+        movCursor 25,17
+        print message3
+
+;---------- take button click and send it 
+
+start_m_Chat_game:
+        mov ah,1
+        int 16h 
+        jz to_receive_pressed_button
+        jmp to_not_receive_pressed_button
+        to_receive_pressed_button:
+        jmp far ptr receive_pressed_button
+        to_not_receive_pressed_button:
+        mov ah,0
+        int 16H
+        
+        mov V_S_R,ah
+        ;call send_name_points
+        
+        call send_without_wait
+        mov p1_button_F1_F2_ESC,ah
+        cmp ah,1
+        jne not_ESC
+        DisplayChar 3,3,'E'
+        jmp far ptr Send_end_game
+        not_ESC:
+        cmp ah,59
+        jne notf11
+        DisplayChar 3,3,'G'
+        jmp far ptr game_clicked
+        notf11:
+        cmp ah,60
+        jne  start_m_Chat_game ; or receive ?!
+        DisplayChar 3,3,'C'
+        jmp chat_clicked
+        ;jmp far ptr loo
+
+chat_clicked:
+
+movCursor 0,22
+print chat_invitation
+print player2_name[2] 
+mov al,p2_button_F1_F2_ESC
+cmp p1_button_F1_F2_ESC,al
+jz now2_chat_begin
+jmp receive_pressed_button
+now2_chat_begin:
+    ClearScreen 0,0,79,24
+jmp far ptr chat_logic
+
+game_clicked:
+movCursor 0,22
+print game_invitation 
+print player2_name[2] 
+
+mov al,p2_button_F1_F2_ESC
+cmp p1_button_F1_F2_ESC,al
+
+jz now2_game_begin
+jmp receive_pressed_button
+now2_game_begin:
+    ClearScreen 0,0,79,24
+    mov player_turn ,0
+jmp far ptr game_logic
+
+
+
+; receive_without_wait-------------------------------------------------------------------------------------
+
+receive_pressed_button:
+
+        call receive_without_wait
+        mov al, V_S_R
+        mov p2_button_F1_F2_ESC,al
+        DisplayChar 30,0,ah
+
+; check if esc so that end
+        cmp p2_button_F1_F2_ESC ,1
+        jz yes_esc
+        jmp not_Send_end_game
+        ;jz Send_end_game
+        yes_esc:
+        jmp far ptr end_game_finihsed
+        not_Send_end_game:
+
+; check game or not 
+        cmp p2_button_F1_F2_ESC,59
+        jz yes_game_from2
+        jmp check_chat_from2
+        yes_game_from2:
+                movCursor 0,24
+                print player2_name[2]
+                movCursor 16,24
+                print game_invitation2 
+                jmp far ptr check_if_equal
+
+
+
+; check chat or not 
+check_chat_from2:
+        cmp p2_button_F1_F2_ESC,60
+        jz yes_chat_from2
+        jmp far ptr check_if_equal
+        yes_chat_from2:
+                movCursor 0,24
+                print player2_name[2]
+                movCursor 16,24
+                print chat_invitation2 
+
+
+; check if equal ----------------------------------------------------
+check_if_equal:
+        mov al, p1_button_F1_F2_ESC
+        cmp p2_button_F1_F2_ESC,al
+
+        jz chat_or_game_or_esc
+        jmp far ptr start_m_Chat_game
+        chat_or_game_or_esc:
+
+        cmp p2_button_F1_F2_ESC ,59
+        jz now_game_begin 
+        jmp far ptr start_m_Chat_game
+        now_game_begin:
+            ClearScreen 0,0,79,24
+            mov player_turn ,1
+        jmp far ptr game_logic
+
+        cmp p2_button_F1_F2_ESC ,60
+        jz now_chat_begin 
+        jmp far ptr start_m_Chat_game
+        now_chat_begin:
+            ClearScreen 0,0,79,24
+        jmp far ptr chat_logic
+
+Send_end_game:
+;-------------------- send here and end
+print end_mes
+jmp far ptr end_game_finihsed
+
+ret
+main_choose endp
+
+
+
+
+
+
+intialize proc near
+
+
+mov dx,3fbh 			
+mov al,10000000b		
+out dx,al				
+
+mov dx,3f8h			
+mov al,0ch			
+out dx,al
+
+mov dx,3f9h
+mov al,00h
+out dx,al
+
+mov dx,3fbh
+mov al,00011011b
+
+out dx,al
+
+
+ret
+
+intialize ENDp
+
+send_name_points proc near
+
+		mov dx , 3FDH		
+AGAIN_name_points:  	In al , dx 			
+  		test al , 00100000b
+  		JZ AGAIN_name_points    
+        DisplayChar  1,0 ,'a'                           
+        ;jmp AGAIN_name_points
+  		mov dx , 3F8H		
+  		mov  al,V_S_R
+  		out dx , al
+
+ret
+send_name_points endp
+
+
+send_without_wait proc near
+
+		mov dx , 3FDH		
+        In al , dx 			
+  		test al , 00100000b
+  		JZ AGAIN_without_no   
+        jmp AGAIN_without
+        AGAIN_without_no:
+          jmp far ptr receive_pressed_button 
+        AGAIN_without:
+        DisplayChar  1,0 ,'a'                           
+        ;jmp AGAIN_name_points
+  		mov dx , 3F8H		
+  		mov  al,V_S_R
+  		out dx , al
+
+ret
+send_without_wait endp
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;------ check line status
+check_R_Buffer proc near
+
+    mov dx , 3FDH
+    in al , dx
+    test al , 1
+    jz Empty_buffer
+    mov check_buffer_status,0
+    DisplayChar  8,0 ,'0'
+    jmp end_check_status
+    Empty_buffer:
+    mov check_buffer_status,1
+    DisplayChar  8,0 ,'1'
+    
+end_check_status:
+
+ret
+check_R_Buffer endp
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;------------------ receive without wait and jump to start_m_Chat_game
+receive_without_wait proc near
+
+    mov dx , 3FDH
+    in al , dx
+    test al , 1
+    JZ to_send_temp2
+    jmp con_rec
+    to_send_temp2:
+    DisplayChar 25,0,'N'
+    jmp far ptr start_m_Chat_game
+    ; jump to 
+con_rec:
+    mov dx , 03F8H
+    in al , dx
+    mov V_S_R , al
+    DisplayChar 28,0,'Y'
+    ret
+    receive_without_wait endp
+;;;;;;;;;;;;;;;;;;;;;;;;;;; receive_name_points and wait 
+receive_name_points proc near
+    
+    mov dx , 3FDH
+    CHK3: in al , dx
+    test al , 1
+    jz CHK3
+    JZ to_send_temp
+    jmp looo
+    to_send_temp:
+    ;jmp far ptr to_send
+looo:
+    mov dx , 03F8H
+    in al , dx
+    mov V_S_R , al
+    mov not_r,1
+    ret
+    receive_name_points endp
+
+
+
+send_receive_name proc near
+
+        mov cl,player1_name[1]
+        mov si ,2
+        mov di ,2
+    lopon_name_r:
+
+
+        call receive_name_points
+        mov al,V_S_R
+        mov player2_name[di],al
+        DisplayChar  1,0 ,player2_name[di]
+        inc di
+        cmp di,17
+        jz end_S_R_name
+        ;jz to_send
+    jmp lopon_name_r
+
+to_send:
+        
+; comment -> send a character 
+        
+        lopon_name:
+
+        mov al, player1_name[si]
+        mov V_S_R,al
+
+        call send_name_points
+        ;DisplayChar  2,0 ,V_S_R
+        inc si
+        cmp si,17
+        jz end_S_R_name
+        jmp lopon_name
+
+
+end_S_R_name:
+
+ret
+send_receive_name endp
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+read_name_player2 proc near
+
+    mov si ,2
+    loopon_name_r:
+
+    call receive_name_points
+        cmp V_S_R,1ch
+        jz cont_points
+        cmp V_S_R,3dh
+        jz loopon_name_r
+        mov al,V_S_R
+        mov player2_name[si],al
+        inc si
+    jmp loopon_name_r
+
+
+
+    cont_points:
+        call receive_name_points
+        mov al,V_S_R
+        mov intial_points_player2,al
+
+ret
+read_name_player2 endp
+
+send_name_player2 proc near
+
+
+        mov cl,player1_name[1]
+        mov si ,2
+
+        loopon_name:
+        mov al, player1_name[si]
+        mov V_S_R,al
+
+        call send_name_points
+        inc si
+        dec cx
+        jnz loopon_name
+
+        mov V_S_R, 1ch
+        call send_name_points
+
+        mov al,intial_points_player1
+        mov V_S_R, al
+        call send_name_points
+
+ret
+send_name_player2 endp
+
+
+
+TURN1 PROC NEAR
+
+        ; AH=2h: Set cursor position
+        mov dl, 2 ; Column
+        mov dh, 3 ; Row
+        mov bx, 0 ; Page number, 0 for graphics modes
+        mov ah, 2h
+        int 10h
+
+        CALL CLR
+        CALL SHOW_POWER_UP
+        
+        CMP selected_level,'1'
+        JNZ LEVEL2_LABEL
+
+        CALL BEGIN_GAME
+        JMP CONT00100
+        LEVEL2_LABEL9:
+        CALL BEGIN_GAME_LEVEL_TWO
+        CONT00100:
+        ;;ASAAD'S TEST OF MOUSE CLICKS
+        MainScreen9: getMousePosition x, y
+                    cmp x,150
+                    jb CHOICE_INSTRUCTION9
+                    JMP CHOICE_POWERUPS9
+        CHOICE_INSTRUCTION9:
+            cmp y, 20
+            jb MainScreen9
+            cmp y, 60
+            ja MainScreen9
+
+            cmp x, 30
+            jb MainScreen9
+            cmp x, 140
+            ja MainScreen_bridge9 
+            jmp continue_choice_instruction9
+            MainScreen_bridge: jmp MainScreen9
+            continue_choice_instruction9:
+            CALL CLR
+            MOV INSTorPOWERUP,1
+            CALL SHOW_INSTRUCTIONS
+            ;print message
+            CMP PLAYERTURN,0
+            ;JNZ PLAYER2TURNCALLPROC9
+            call moveToRightLabelofPlayer1
+            JMP CON159
+            ;PLAYER2TURNCALLPROC:
+            ;call moveToRightLabelofPlayer2
+        CON159:
+            JMP NEXT_CHOICE
+        CHOICE_POWERUPS9:
+            cmp y, 280
+            jb MainScreen_bridge9
+            cmp y, 310
+            ja MainScreen_bridge9
+            cmp x, 515
+            jb MainScreen_bridge9
+            cmp x, 600
+            ja MainScreen_bridge9
+            CALL CLR
+            MOV INSTorPOWERUP,0
+            CALL  SHOW_POWER_UPS_CHOICE
+            CALL CHOOSE_POWER_UP
+        NEXT_CHOICE9:
+            CMP INSTorPOWERUP,0
+            JZ POWERUPisCHOSEN9
+            JNZ firstoperand9
+        POWERUPisCHOSEN:
+        firstoperand9: 
+        Show_mouse
+        RET
+TURN1 ENDP
+
+
+
+;-------------------------------------send edits to player2 -----------------------------------------
+send_inst_sure proc near
+
+mov V_S_R,0
+call send_name_points
+
+mov al,src_index_reg
+mov V_S_R,0
+call send_name_points
+
+ret
+send_inst_sure endp
+
+send_instruction_p2 proc near 
+
+cmp sent_instruct_type ,0
+jnz not_instruct
+; send instruction to player 2 1) send 0 then 8 bytes 
+
+not_instruct:
+
+
+ret
+send_instruction_p2 endp 
+
+
+;-------------------------------------receive edits from player2 -----------------------------------------
+receive_instruction_p2 proc near 
+
+
+
+
+
+ret
+receive_instruction_p2 endp 
+
 END MAIN   
