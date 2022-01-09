@@ -1873,7 +1873,12 @@
             cmp x, 140
             ja MainScreen_bridge 
             jmp continue_choice_instruction
-            MainScreen_bridge: jmp MainScreen
+            MainScreen_bridge:
+                cmp y,400
+                jA choseChat
+                jmp MainScreen
+                choseChat:
+                ;call inlineChat
             continue_choice_instruction:
             CALL CLR
             MOV INSTorPOWERUP,1
