@@ -147,6 +147,7 @@
         jmp chatloop
         ExitChat:
             CLEARsCREEN 0,0, 79, 24
+            jmp return_after_finish
         ret
     MainChatting ENDP 
  

@@ -619,7 +619,6 @@
         ;---------------------------------------------------------chat assad code 
         chat_logic:
             call MainChatting
-            jmp return_after_finish
         jmp chat_logic
         
         game_logic:
